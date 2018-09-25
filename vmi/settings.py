@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 from django.contrib.messages import constants as messages
+from getenv import env
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,7 +29,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrapform',
     'oauth2_provider',
     'rest_framework',
-
     'apps.oidc',
+    'apps.home',
+    'apps.accounts',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +61,7 @@ ROOT_URLCONF = 'vmi.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['./templates'],
+        'DIRS':  [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django_settings_export.settings_export',
             ],
         },
     },
@@ -118,11 +121,22 @@ USE_L10N = True
 
 USE_TZ = True
 
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'sitestatic'),
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -144,3 +158,67 @@ OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'oauth2_provider.RefreshToken'
 # OIDC_PROVIDER = {
 #     'OIDC_ISSUER': 'http://localhost:8000',
 # }
+
+
+APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE',
+                        'Verify My Identity')
+ORGANIZATION_TITLE = env(
+    'DJANGO_ORGANIZATION_TITLE',
+    'Alliance for Better Health')
+ORGANIZATION_URI = env('DJANGO_ORGANIZATION_URI', 'https://abhealth.us')
+POLICY_URI = env(
+    'DJANGO_POLICY_URI',
+    'https://abhealth.us')
+POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
+TOS_URI = env('DJANGO_TOS_URI', 'https://abhealth.us')
+TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
+TAG_LINE_1 = env('DJANGO_TAG_LINE_1', 'Share your health data')
+TAG_LINE_2 = env('DJANGO_TAG_LINE_2',
+                 'with applications, organizations, and people you trust.')
+EXPLAINATION_LINE = 'This service allows Medicare beneficiaries to connect their health data to applications of their choosing.'
+EXPLAINATION_LINE = env('DJANGO_EXPLAINATION_LINE ', EXPLAINATION_LINE)
+USER_DOCS_URI ="https://abhealth.us"
+USER_DOCS_TITLE = "User Documentation"
+USER_DOCS = "USer Docs"
+# LINKS TO DOCS
+DEVELOPER_DOCS_URI = "https:/abhealth.us"
+DEVELOPER_DOCS_TITLE = "Developer Documentation"
+DEVELOPER_DOCS = "Developer Docs"
+DEFAULT_DISCLOSURE_TEXT = """
+    Unauthorized or improper use of this
+    system or its data may result in disciplinary action, as well as civil
+    and criminal penalties. This system may be monitored, recorded and
+    subject to audit.
+    """
+
+DISCLOSURE_TEXT = env('DJANGO_PRIVACY_POLICY_URI', DEFAULT_DISCLOSURE_TEXT)
+
+HOSTNAME_URL = env('HOSTNAME_URL', 'http://localhost:8000')
+
+
+
+
+
+SETTINGS_EXPORT = [
+    'DEBUG',
+    'ALLOWED_HOSTS',
+    'APPLICATION_TITLE',
+    'STATIC_URL',
+    'STATIC_ROOT',
+    'DEVELOPER_DOCS_URI',
+    'DEVELOPER_DOCS_TITLE',
+    'ORGANIZATION_TITLE',
+    'POLICY_URI',
+    'POLICY_TITLE',
+    'DISCLOSURE_TEXT',
+    'TOS_URI',
+    'TOS_TITLE',
+    'TAG_LINE_1',
+    'TAG_LINE_2',
+    'EXPLAINATION_LINE',
+    'USER_DOCS_URI',
+    'USER_DOCS',
+    'DEVELOPER_DOCS',
+    'USER_DOCS_TITLE',
+]
+
