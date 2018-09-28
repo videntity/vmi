@@ -21,6 +21,7 @@ from django.urls import (
 from django.conf.urls import url
 from oauth2_provider import views as oauth2_views
 from apps.oidc import views as oidc_views
+from apps.home.views import authenticated_home
 
 oauth2_base_urlpatterns = [
     url(r"^authorize/$", oidc_views.AuthorizationView.as_view(), name="authorize"),
@@ -43,10 +44,13 @@ oauth2_management_urlpatterns = [
         name="authorized-token-delete"),
 ]
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('o/', include((oauth2_management_urlpatterns + oauth2_base_urlpatterns, 'oauth2_provider'))),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('auth/', include('django.contrib.auth.urls')),
+    path('accounts/', include('apps.accounts.urls')),
     path('.well-known/', include('apps.oidc.wellknown_urls')),
-    path('o/', include(('apps.oidc.urls', 'oidc'), namespace='oidc')),
+    url(r'', authenticated_home, name='home'),
+   path('o/', include(('apps.oidc.urls', 'oidc'), namespace='oidc')),
 ]

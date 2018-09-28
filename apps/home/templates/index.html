@@ -20,15 +20,13 @@
                 <div class="col-lg-12 well">
 
                     <h2>Welcome</h2>
-                    <p>Welcome to the {{ settings.APPLICATION_TITLE }}</p>
-     
-    
-       
-                    <a href="{{settings.USER_DOCS}}">
-                                    <button type="button" class="btn btn-primary"> <i class="fa fa-map"></i> {{settings.USER_DOCS_TITLE}} </button></a>
+                    <p>Welcome to {{ settings.APPLICATION_TITLE }}</p>
+        
+                    <a href="{% url 'create_account_enduser' %}">
+                                    <button type="button" class="btn btn-primary"> <i class="fa fa-plus"></i> Signup </button></a>
                     
-                      <a {{settings.DEVELOPER_DOCS}}">
-                    <button type="button" class="btn btn-primary"> <i class="fa fa-gears"></i> {{settings.DEVELOPER_DOCS_TITLE}}</button></a>
+                      <a href="{% url 'mfa_login' %}">
+                    <button type="button" class="btn btn-primary"> <i class="fa fa-sign-in"></i> Login </button></a>
                 
                 </div>
                 

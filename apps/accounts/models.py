@@ -20,49 +20,6 @@ from .emails import (send_password_reset_url_via_email,
 __author__ = "Alan Viars"
 
 
-USER_CHOICES = (
-    ('BEN', 'Beneficiary'),
-    ('DEV', 'Developer'),
-)
-
-AAL_CHOICES = (
-    ('1', 'ALA-1'),
-    ('2', 'AAL-2'),
-    ('3', 'AAL-3'),
-)
-
-
-IAL_CHOICES = (
-    ('1', 'ILA-1'),
-    ('2', 'IAL-2'),
-    ('3', 'IAL-3'),
-)
-
-QUESTION_1_CHOICES = (
-    ('1', 'What is your favorite color?'),
-    ('2', 'What is your favorite vegetable?'),
-    ('3', 'What is your favorite movie?'),
-)
-
-QUESTION_2_CHOICES = (
-    ('1', 'What was the name of your best friend from childhood?'),
-    ('2', 'What was the name of your elementary school?'),
-    ('3', 'What was the name of your favorite pet?'),
-)
-
-QUESTION_3_CHOICES = (
-    ('1', 'What was the make of your first automobile?'),
-    ('2', "What was your maternal grandmother's maiden name?"),
-    ('3', "What was your paternal grandmother's maiden name?"),
-)
-
-MFA_CHOICES = (
-    ('', 'None'),
-    ('EMAIL', "Email"),
-    ('FIDO', "FIDO U2F"),
-    ('SMS', "Text Message (SMS)"),
-)
-
 
 @python_2_unicode_compatible
 class UserProfile(models.Model):
@@ -70,65 +27,11 @@ class UserProfile(models.Model):
     organization_name = models.CharField(max_length=255,
                                          blank=True,
                                          default='')
-    aal = models.CharField(default='0',
-                           choices=AAL_CHOICES,
-                           max_length=1)
-    ial = models.CharField(default='0',
-                           choices=IAL_CHOICES,
-                           max_length=1)
-    user_type = models.CharField(default='DEV',
-                                 choices=USER_CHOICES,
-                                 max_length=5)
-
-    
-    # May not be needed.
-    create_applications = models.BooleanField(
-        blank=True,
-        default=True,
-        help_text=_(
-            'Check this to allow the account to register applications.'),
-    )
-    
-    
-    # liekly needed/
-    authorize_applications = models.BooleanField(
-        blank=True,
-        default=True,
-        help_text=_(
-            'Check this to allow the account to authorize applications.'),
-    )
-
-    mfa_login_mode = models.CharField(
-        blank=True,
-        default="",
-        max_length=5,
-        choices=MFA_CHOICES,
-    )
-
     mobile_phone_number = models.CharField(
         max_length=12,
-        blank=True,
         help_text=_('US numbers only.'),
     )
 
-    password_reset_question_1 = models.CharField(default='1',
-                                                 choices=QUESTION_1_CHOICES,
-                                                 max_length=1)
-    password_reset_answer_1 = models.CharField(default='',
-                                               blank=True,
-                                               max_length=50)
-    password_reset_question_2 = models.CharField(default='1',
-                                                 choices=QUESTION_2_CHOICES,
-                                                 max_length=1)
-    password_reset_answer_2 = models.CharField(default='',
-                                               blank=True,
-                                               max_length=50)
-    password_reset_question_3 = models.CharField(default='1',
-                                                 choices=QUESTION_3_CHOICES,
-                                                 max_length=1)
-    password_reset_answer_3 = models.CharField(default='',
-                                               blank=True,
-                                               max_length=50)
 
     def __str__(self):
         name = '%s %s (%s)' % (self.user.first_name,
@@ -143,13 +46,12 @@ class UserProfile(models.Model):
             name = '%s %s' % (self.user.first_name, self.user.last_name)
         return name
 
-    def save(self, **kwargs):
-        if not self.access_key_id or self.access_key_reset:
-            self.access_key_id = random_key_id()
-            self.access_key_secret = random_secret()
-        self.access_key_reset = False
-        super(UserProfile, self).save(**kwargs)
-
+MFA_CHOICES = (
+    ('', 'None'),
+    ('EMAIL', "Email"),
+    ('FIDO', "FIDO U2F"),
+    ('SMS', "Text Message (SMS)"),
+)
 
 @python_2_unicode_compatible
 class MFACode(models.Model):

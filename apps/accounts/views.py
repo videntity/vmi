@@ -8,8 +8,7 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-from .forms import (ChangeSecretQuestionsForm, PasswordResetForm,
-                     PasswordResetRequestForm, SecretQuestionForm)
+from .forms import (PasswordResetForm, PasswordResetRequestForm)
 from .models import UserProfile, ValidPasswordResetKey
 
 from .forms import (AccountSettingsForm,
@@ -98,7 +97,7 @@ def create_account(request):
                              _("Your account was created. Please "
                                "check your email to verify your account "
                                "before logging in."))
-            return pick_reverse_login()
+            return HttpResponseRedirect(reverse('mfa_login'))
         else:
             # return the bound form with errors
             return render(request,
@@ -140,6 +139,17 @@ def password_reset_email_verify(request, reset_password_key=None):
                   {'form': PasswordResetForm(),
                    'reset_password_key': reset_password_key})
 
+
+
+
+def activation_verify(request, activation_key):
+    if validate_activation_key(activation_key):
+        messages.success(request,
+                         'Your email has been verified.')
+    else:
+        messages.error(request,
+                       'This key does not exist or has already been used.')
+    return HttpResponseRedirect(reverse('mfa_login'))
 
 def forgot_password(request):
     name = _('Forgot Password')

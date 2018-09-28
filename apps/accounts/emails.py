@@ -14,44 +14,9 @@ def random_secret(y=40):
                                  '0123456789') for x in range(y))
 
 
-def send_invite_to_create_account(invitation):
-    plaintext = get_template('email-invite.txt')
-    htmly = get_template('email-invite.html')
-    context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
-               "CODE": invitation.code,
-               "URL": invitation.url(),
-               }
-
-    subject = '[%s] Invitation Code: %s' % (settings.ORGANIZATION_NAME,
-                                            invitation.code)
-    from_email = settings.DEFAULT_FROM_EMAIL
-    to_email = invitation.email
-    text_content = plaintext.render(context)
-    html_content = htmly.render(context)
-    msg = EmailMultiAlternatives(
-        subject, text_content, from_email, [
-            to_email, ])
-    msg.attach_alternative(html_content, "text/html")
-    msg.send()
 
 
-def send_invitation_code_to_user(user_code_invitation):
-    plaintext = get_template('email-user-code-by-email.txt')
-    htmly = get_template('email-user-code-by-email.html')
-    context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
-               "CODE": user_code_invitation.code,
-               "URL": user_code_invitation.url()}
-    subject = '[%s] Invitation Code: %s' % (settings.ORGANIZATION_NAME,
-                                            user_code_invitation.code)
-    from_email = settings.DEFAULT_FROM_EMAIL
-    to_email = user_code_invitation.email
-    text_content = plaintext.render(context)
-    html_content = htmly.render(context)
-    msg = EmailMultiAlternatives(
-        subject, text_content, from_email, [
-            to_email, ])
-    msg.attach_alternative(html_content, "text/html")
-    msg.send()
+
 
 
 def mfa_via_email(user, code):
@@ -156,58 +121,10 @@ def send_activation_key_via_email(user, signup_key):
        The Team
 
        """ % (user.first_name, activation_link)
+    
+    print(from_email, to)
     msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
 
 
-def send_invite_request_notices(invite_request):
-    subject = '[%s] Invitation Request Received' % (settings.ORGANIZATION_NAME)
-    from_email = settings.DEFAULT_FROM_EMAIL
-    to = invite_request.email
-    if invite_request.user_type == "DEV":
-        u_type = "<p>Thank you for your application to join the %s " \
-                 "Developer Community.</p>" % settings.ORGANIZATION_NAME
-    else:
-        u_type = "<p>Welcome to the %s " \
-                 "Community. We are excited to help you connect " \
-                 "your Medicare information with a growing library of " \
-                 "health applications.</p>" % settings.ORGANIZATION_NAME
-
-    html_content = """
-    <p>
-    Hello: %s %s,
-    </p>
-    <p>
-    Your request for an invite to the %s (%s) has been received.
-    </p>
-    %s
-    <p>
-    Please be patient. We will email you  when your invitation coe is ready.  Please be patient.
-    </p>
-    <p>
-    Thank You,
-    </p>
-    <p>
-    The %s Team
-    </p>
-    """ % (invite_request.first_name,
-           invite_request.last_name,
-           settings.ORGANIZATION_NAME,
-           settings.HOSTNAME_URL,
-           u_type,
-           settings.ORGANIZATION_NAME)
-
-    text_content = """Hello: %s %s,
-    Your request for an invite to %s (%s) has been received.
-    """ % (invite_request.first_name,
-           invite_request.last_name,
-           settings.ORGANIZATION_NAME,
-           settings.HOSTNAME_URL)
-    msg = EmailMultiAlternatives(subject, text_content, from_email,
-                                 [to, settings.INVITE_REQUEST_ADMIN])
-    msg.attach_alternative(html_content, 'text/html')
-
-    # print("\n\nMESSAGE EMAIL - INVITE REQUEST: %s / %s" % (to, msg.to))
-
-    msg.send()

@@ -75,19 +75,19 @@ def mfa_login(request):
                     # Get User profile
                     up, g_o_c = UserProfile.objects.get_or_create(user=user)
                     # If MFA, send code and redirect
-                    if up.mfa_login_mode in ("SMS", "EMAIL") and settings.MFA:
-                        # Create an MFA message
-                        mfac = MFACode.objects.create(
-                            user=up.user, mode=up.mfa_login_mode)
-                        # Send code and redirect
-                        if up.mfa_login_mode == "SMS":
-                            messages.info(request,
-                                          _('An access code was sent to your mobile device. Please enter it here.'))
-                        if up.mfa_login_mode == "EMAIL":
-                            messages.info(request,
-                                          _('An access code was sent to your email. Please enter it here.'))
-                        return HttpResponseRedirect(reverse('mfa_code_confirm',
-                                                            args=(mfac.uid,)))
+                    # if up.mfa_login_mode in ("SMS", "EMAIL"):
+                    #     # Create an MFA message
+                    #     mfac = MFACode.objects.create(
+                    #         user=up.user, mode=up.mfa_login_mode)
+                    #     # Send code and redirect
+                    #     if up.mfa_login_mode == "SMS":
+                    #         messages.info(request,
+                    #                       _('An access code was sent to your mobile device. Please enter it here.'))
+                    #     if up.mfa_login_mode == "EMAIL":
+                    #         messages.info(request,
+                    #                       _('An access code was sent to your email. Please enter it here.'))
+                    #     return HttpResponseRedirect(reverse('mfa_code_confirm',
+                    #                                         args=(mfac.uid,)))
                     # Else, just login as normal without MFA
                     login(request, user)
                     next_param = request.GET.get('next', '')

@@ -196,9 +196,6 @@ DISCLOSURE_TEXT = env('DJANGO_PRIVACY_POLICY_URI', DEFAULT_DISCLOSURE_TEXT)
 HOSTNAME_URL = env('HOSTNAME_URL', 'http://localhost:8000')
 
 
-
-
-
 SETTINGS_EXPORT = [
     'DEBUG',
     'ALLOWED_HOSTS',
@@ -221,4 +218,34 @@ SETTINGS_EXPORT = [
     'DEVELOPER_DOCS',
     'USER_DOCS_TITLE',
 ]
+
+# emails
+DEFAULT_FROM_EMAIL = env('DJANGO_FROM_EMAIL', 'no-reply@verifymyidentity.com')
+DEFAULT_ADMIN_EMAIL = env('DJANGO_ADMIN_EMAIL', 'no-reply@verifymyidentity.com')
+
+# The console.EmailBackend backend prints to the console.
+# Redefine this for SES or other email delivery mechanism
+EMAIL_BACKEND_DEFAULT = 'django_ses.SESBackend'
+EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', EMAIL_BACKEND_DEFAULT)
+# EMAIL_HOST = env('DJANGO_EMAIL_HOST', 'email-smtp.us-east-1.amazonaws.com')
+# SES PORT options: 25, 465, 587, 2465 or 2587.
+# Port 25 is throttled
+# Use port 587 or 2587 for TLS connections
+# Use port 465 or 2465 for Native SSL support
+# EMAIL_PORT = int_env(env('DJANGO_EMAIL_PORT', 587))
+# EMAIL_USE_TLS = bool_env(env('DJANGO_EMAIL_USE_TLS', 'True'))
+# EMAIL_USE_SSL = bool_env(env('DJANGO_EMAIL_USE_SSL', 'False'))
+# EMAIL_TIMEOUT = env('DJANGO_EMAIL_TIMEOUT', None)
+# EMAIL_HOST_USER = env('DJANGO_EMAIL_HOST_USER', None)
+# EMAIL_HOST_PASSWORD = env('DJANGO_EMAIL_HOST_PASSWORD', None)
+# EMAIL_SSL_KEYFILE = env('DJANGO_EMAIL_SSL_KEYFILE', None)
+# EMAIL_SSL_CERTFILE = env('DJANGO_EMAIL_SSL_CERTFILE', None)
+
+MFA = True
+
+# AWS Credentials need to support SES, SQS and SNS
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', '')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', '')
+SIGNUP_TIMEOUT_DAYS = 3
+ORGANIZATION_NAME = "Verify My Identity"
 
