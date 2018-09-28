@@ -14,11 +14,6 @@ def random_secret(y=40):
                                  '0123456789') for x in range(y))
 
 
-
-
-
-
-
 def mfa_via_email(user, code):
 
     subject = '[%s] Your code for access to' % (settings.APPLICATION_TITLE)
@@ -48,7 +43,7 @@ def mfa_via_email(user, code):
     The Team
 
     """ % (code)
-    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to,])
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
 
@@ -86,7 +81,7 @@ def send_password_reset_url_via_email(user, reset_key):
         The Team
 
         """ % (link)
-        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to,])
         msg.attach_alternative(html_content, 'text/html')
         msg.send()
 
@@ -122,8 +117,7 @@ def send_activation_key_via_email(user, signup_key):
 
        """ % (user.first_name, activation_link)
     
-    print(from_email, to)
-    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to,])
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
 

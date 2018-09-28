@@ -5,36 +5,9 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
-
 from .models import UserProfile, create_activation_key
-from .models import QUESTION_1_CHOICES, QUESTION_2_CHOICES, QUESTION_3_CHOICES, MFA_CHOICES
-
-
 
 # Copyright Videntity Systems Inc.
-
-
-class SecretQuestionForm(forms.Form):
-    answer = forms.CharField(max_length=50)
-    required_css_class = 'required'
-
-
-class ChangeSecretQuestionsForm(forms.ModelForm):
-
-    class Meta:
-        model = UserProfile
-        fields = ('password_reset_question_1',
-                  'password_reset_answer_1',
-                  'password_reset_question_2',
-                  'password_reset_answer_2',
-                  'password_reset_question_3',
-                  'password_reset_answer_3')
-
-    def __init__(self, *args, **kwargs):
-        super(ChangeSecretQuestionsForm, self).__init__(*args, **kwargs)
-
-        for key in self.fields:
-            self.fields[key].required = True
 
 
 class PasswordResetRequestForm(forms.Form):
@@ -85,17 +58,12 @@ class CodeLoginForm(forms.Form):
 
 
 class SignupForm(forms.Form):
-    username = forms.CharField(max_length=30, label=_("User"))
+    username = forms.CharField(max_length=30, label=_("Desired Username"))
     email = forms.EmailField(max_length=75, label=_("Email"))
     first_name = forms.CharField(max_length=100, label=_("First Name"))
     last_name = forms.CharField(max_length=100, label=_("Last Name"))
     mobile_phone_number = forms.CharField(required=False,
-                                             label=_("Mobile Phone Number "
-                                                     "(Optional)"),
-                                             help_text=_("We use this for "
-                                                         "multi-factor "
-                                                         "authentication. "
-                                                         "US numbers only."),
+                                             label=_("Mobile Phone Number"),
                                              max_length = 10)
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password"))
@@ -144,11 +112,10 @@ class SignupForm(forms.Form):
             last_name=self.cleaned_data['last_name'],
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'],
-            is_active=False)
+            is_active=True)
 
         UserProfile.objects.create(user=new_user,
-                                   user_type="BEN",
-                                   create_applications=True,
+                                   mobile_phone_number=self.cleaned_data['mobile_phone_number'],
                                    )
         
         # Need to add user groups here.
@@ -165,11 +132,6 @@ class AccountSettingsForm(forms.Form):
     email = forms.CharField(max_length=30, label=_('Email'))
     first_name = forms.CharField(max_length=100, label=_('First Name'))
     last_name = forms.CharField(max_length=100, label=_('Last Name'))
-    mfa_login_mode = forms.ChoiceField(required=False,
-                                       choices=MFA_CHOICES,
-                                       help_text=_("Change this to turn on "
-                                                   "multi-factor "
-                                                   "authentication (MFA)."))
     mobile_phone_number = forms.CharField(max_length=10, required=False,
                                              help_text=_("US numbers only. "
                                                          "We use this for "
@@ -178,8 +140,6 @@ class AccountSettingsForm(forms.Form):
     organization_name = forms.CharField(max_length=100,
                                         label=_('Organization Name'),
                                         required=False)
-    create_applications = forms.BooleanField(initial=False,
-                                             required=False)
     required_css_class = 'required'
 
     def clean_email(self):
