@@ -52,5 +52,5 @@ urlpatterns = [
     path('accounts/', include('apps.accounts.urls')),
     path('.well-known/', include('apps.oidc.wellknown_urls')),
     url(r'', authenticated_home, name='home'),
-   path('o/', include(('apps.oidc.urls', 'oidc'), namespace='oidc')),
+    path('o/', include((oauth2_management_urlpatterns + oauth2_base_urlpatterns, 'oauth2_provider')))
 ]

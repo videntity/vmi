@@ -11,7 +11,7 @@ from .sms_mfa_views import mfa_login, mfa_code_confirm
 urlpatterns = [
     url(r'^logout', mylogout, name='mylogout'),
     url(r'^settings', account_settings, name='account_settings'),
-    url(r'^mfa-login', mfa_login, name='mfa_login'),
+    url(r'^login', mfa_login, name='mfa_login'),
     url(r'^create-account', create_account, name='create_account_enduser'),
     url(r'^activation-verify/(?P<activation_key>[^/]+)/$',
         activation_verify, name='activation_verify'),
