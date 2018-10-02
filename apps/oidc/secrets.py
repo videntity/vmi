@@ -61,3 +61,4 @@ class RSA256Keys(object):
             return get_key_storage().private
         except FileNotFoundError:
             self.generate_keys()
+            return get_key_storage().private

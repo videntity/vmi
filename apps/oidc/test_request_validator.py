@@ -23,7 +23,8 @@ JWTBuilder = get_jwt_builder()
 
 def get_basic_auth_header(user, password):
     """
-    Return a dict containg the correct headers to set to make HTTP Basic Auth request
+    Return a dict containg the correct headers
+    to set to make HTTP Basic Auth request
     """
     user_pass = "{0}:{1}".format(user, password)
     auth_string = base64.b64encode(user_pass.encode("utf-8"))
@@ -37,8 +38,14 @@ def get_basic_auth_header(user, password):
 class RequestValidatorTests(TestCase):
 
     def setUp(self):
-        self.test_user = UserModel.objects.create_user("test_user", "test@example.com", "123456")
-        self.dev_user = UserModel.objects.create_user("dev_user", "dev@example.com", "123456")
+        self.test_user = UserModel.objects.create_user(
+            "test_user",
+            "test@example.com",
+            "123456")
+        self.dev_user = UserModel.objects.create_user(
+            "dev_user",
+            "dev@example.com",
+            "123456")
 
         self.application = Application(
             name="Test Application",
@@ -64,7 +71,8 @@ class RequestValidatorTests(TestCase):
 
     def test_standard_oauth_authorization_code_works(self):
         """
-        If application.skip_authorization = True, should skip the authorization page.
+        If application.skip_authorization = True,
+        should skip the authorization page.
         """
         self.client.login(username="test_user", password="123456")
         self.application.skip_authorization = True
@@ -76,7 +84,8 @@ class RequestValidatorTests(TestCase):
             "redirect_uri": "http://example.org",
             "response_type": "code",
         })
-        url = "{url}?{qs}".format(url=reverse("oauth2_provider:authorize"), qs=query_string)
+        url = "{url}?{qs}".format(url=reverse("oauth2_provider:authorize"),
+                                  qs=query_string)
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
@@ -89,22 +98,31 @@ class RequestValidatorTests(TestCase):
             "code": authorization_code,
             "redirect_uri": "http://example.org",
         }
-        auth_headers = get_basic_auth_header(self.application.client_id, self.application.client_secret)
+        auth_headers = get_basic_auth_header(self.application.client_id,
+                                             self.application.client_secret)
 
-        response = self.client.post(reverse("oauth2_provider:token"), data=token_request_data, **auth_headers)
+        response = self.client.post(
+            reverse("oauth2_provider:token"),
+            data=token_request_data,
+            **auth_headers)
         self.assertEqual(response.status_code, 200)
 
         content = json.loads(response.content.decode("utf-8"))
         self.assertEqual(content["token_type"], "Bearer")
-        self.assertEqual(content["expires_in"], oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS)
+        self.assertEqual(
+            content["expires_in"],
+            oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS)
         id_token = content.get("id_token")
         self.assertIsNotNone(id_token)
-        claims = JWTBuilder().decode(id_token, audience=self.application.client_id)
+        claims = JWTBuilder().decode(
+            id_token,
+            audience=self.application.client_id)
         self.assertEqual(claims['sub'], self.test_user.id)
 
     def test_standard_oauth_implicit_works(self):
         """
-        If application.skip_authorization = True, should skip the authorization page.
+        If application.skip_authorization = True,
+        should skip the authorization page.
         """
         self.client.login(username="test_user", password="123456")
         self.web_application.skip_authorization = True
@@ -118,7 +136,8 @@ class RequestValidatorTests(TestCase):
             "nonce": "bad-nonce",
             "scope": "openid",
         })
-        url = "{url}?{qs}".format(url=reverse("oauth2_provider:authorize"), qs=query_string)
+        url = "{url}?{qs}".format(url=reverse("oauth2_provider:authorize"),
+                                  qs=query_string)
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
@@ -126,7 +145,8 @@ class RequestValidatorTests(TestCase):
 
     def test_id_token_only_implicit_works(self):
         """
-        If application.skip_authorization = True, should skip the authorization page.
+        If application.skip_authorization = True,
+        should skip the authorization page.
         """
         self.client.login(username="test_user", password="123456")
         self.web_application.skip_authorization = True
@@ -139,7 +159,8 @@ class RequestValidatorTests(TestCase):
             "response_type": "id_token",
             "nonce": "bad-nonce",
         })
-        url = "{url}?{qs}".format(url=reverse("oauth2_provider:authorize"), qs=query_string)
+        url = "{url}?{qs}".format(url=reverse("oauth2_provider:authorize"),
+                                  qs=query_string)
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)

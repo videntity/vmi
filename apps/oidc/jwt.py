@@ -1,5 +1,4 @@
 import jwt
-from django.conf import settings
 from .settings import oidc_settings
 from .secrets import RSA256Keys
 
