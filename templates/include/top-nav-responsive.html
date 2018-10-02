@@ -1,0 +1,72 @@
+{% load i18n %}
+{% load static %}
+{% load has_group %}
+<!-- &copy; 2015-2018 Videntity Systems, Inc.  --> 
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="{% url 'home' %}" contenteditable="false"
+            class="navbar-brand"
+            style="vertical-align:top;max-height:100%;max-width:100%">
+            <img src="{% static 'img/layout/bluebuttonapiv1.png' %}"
+                 style="vertical-align:text-top;max-height:100%;max-width:100%"></a>
+        <a href="{% url 'home' %}" contenteditable="false"
+           class="navbar-brand"
+           alt="{{ settings.APPLICATION_TITLE }}">
+                <strong>{{ settings.APPLICATION_TITLE }}</strong>
+        </a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+          <li class="inactive"><a href="/"><i class="fa fa-home"></i> Home</a></li>
+          <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-question"></i>  Help <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+						<li><a href="{{settings.POLICY_URI}}"><i class="fa fa-user-secret"></i> {{settings.POLICY_TITLE}}</a></li>
+            <li><a href="{{settings.USER_DOCS_URI}}"><i class="fa fa-map"></i> {{settings.USER_DOCS_TITLE}}</a></li>
+            <li><a href="{{settings.DEVELOPER_DOCS_URI}}"><i class="fa fa-gears"></i> {{settings.DEVELOPER_DOCS_TITLE}}</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+
+
+		{% if user.is_authenticated %}
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tasks"></i> Applications <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'oauth2_provider:authorized-token-list' %}"> <i class="fa fa-legal"></i> Applications You Have Granted Access</a>
+		    <li><a href="{% url 'oauth2_provider:list' %}">  <i class="fa fa-key"></i> Applications You Created</a>
+
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-user"></i> [{{ user.first_name }}]<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+						<li><a href="{% url 'account_settings' %}"> <i class="fa fa-gears"></i> Settings</a></li>
+            <li><a href="{% url 'mylogout' %}"><i class="fa fa-sign-out"></i> Logout </a></li>
+          </ul>
+        </li>
+
+        {% else %}
+            <li><a href="{% url 'create_account_enduser' %}"> <i class="fa fa-plus"></i> Signup</a></li>
+
+        {% endif %}
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'mylogout' %}">Logout <i class="fa fa-sign-out"></i></a></li>
+        {% endif %}
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</nav>

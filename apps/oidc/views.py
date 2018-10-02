@@ -9,7 +9,9 @@ from oauth2_provider import scopes
 from oauth2_provider.exceptions import OAuthToolkitError
 from oauth2_provider.models import get_application_model
 from oauth2_provider.settings import oauth2_settings
-from oauth2_provider.views.base import AuthorizationView as OAuth2AuthorizationView
+from oauth2_provider.views.base import (
+    AuthorizationView as OAuth2AuthorizationView
+)
 from .settings import oidc_settings
 from .claims import get_claims_provider
 from .jwt import get_jwt_builder
@@ -33,11 +35,18 @@ class Wellknown(APIView):
                 "refresh_token",
             ],
             "issuer": oidc_settings.OIDC_ISSUER,
-            "userinfo_endpoint": oidc_settings.OIDC_ISSUER + reverse("oidc:userinfo"),
-            "authorization_endpoint": oidc_settings.OIDC_ISSUER + reverse("oauth2_provider:authorize"),
-            "token_endpoint": oidc_settings.OIDC_ISSUER + reverse("oauth2_provider:token"),
-            "revocation_endpoint": oidc_settings.OIDC_ISSUER + reverse("oauth2_provider:revoke-token"),
-            "response_types_supported": oauth2_settings.OAUTH2_SERVER_CLASS.get_all_response_types(),
+            "userinfo_endpoint":
+                oidc_settings.OIDC_ISSUER + reverse("oidc:userinfo"),
+            "authorization_endpoint":
+                oidc_settings.OIDC_ISSUER +
+                reverse("oauth2_provider:authorize"),
+            "token_endpoint":
+                oidc_settings.OIDC_ISSUER + reverse("oauth2_provider:token"),
+            "revocation_endpoint":
+                oidc_settings.OIDC_ISSUER +
+                reverse("oauth2_provider:revoke-token"),
+            "response_types_supported":
+                oauth2_settings.OAUTH2_SERVER_CLASS.get_all_response_types(),
             "scopes_supported": Scopes.get_all_scopes().keys(),
             "claims_supported": ClaimsProvider.get_supported_claims(),
             "jwks_uri": oidc_settings.OIDC_ISSUER + reverse("jwks_uri"),
@@ -53,6 +62,8 @@ class JWKSURI(APIView):
 
 
 ClaimsProvider = get_claims_provider()
+
+
 class UserInfo(APIView):
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [JSONRenderer]
@@ -96,7 +107,10 @@ class AuthorizationView(OAuth2AuthorizationView):
 
         try:
             uri, headers, body, status = self.create_authorization_response(
-                request=self.request, scopes=scopes, credentials=credentials, allow=allow
+                request=self.request,
+                scopes=scopes,
+                credentials=credentials,
+                allow=allow
             )
         except OAuthToolkitError as error:
             return self.error_response(error, application)

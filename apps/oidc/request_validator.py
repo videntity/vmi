@@ -15,13 +15,23 @@ ClaimsProvider = get_claims_provider()
 JWTBuilder = get_jwt_builder()
 Grant = get_grant_model()
 
+
 class RequestValidator(OAuth2Validator):
 
-    def validate_response_type(self, client_id, response_type, client, request, *args, **kwargs):
+    def validate_response_type(self,
+                               client_id,
+                               response_type,
+                               client,
+                               request,
+                               *args,
+                               **kwargs):
+
         # https://github.com/jazzband/django-oauth-toolkit/blob/master/oauth2_provider/oauth2_validators.py#L404
         # TODO restrict response_types to a set defined in `settings`
         if "code" in response_type:
-            return client.allows_grant_type(AbstractApplication.GRANT_AUTHORIZATION_CODE)
+            return client.allows_grant_type(
+                AbstractApplication.GRANT_AUTHORIZATION_CODE
+            )
         elif "token" in response_type:
             return client.allows_grant_type(AbstractApplication.GRANT_IMPLICIT)
         else:
@@ -56,7 +66,13 @@ class RequestValidator(OAuth2Validator):
         except Grant.DoesNotExist:
             return False
 
-    def save_authorization_code(self, client_id, code, request, *args, **kwargs):
+    def save_authorization_code(self,
+                                client_id,
+                                code,
+                                request,
+                                *args,
+                                **kwargs):
+
         expires = timezone.now() + timedelta(
             seconds=oauth2_settings.AUTHORIZATION_CODE_EXPIRE_SECONDS)
         g = Grant(

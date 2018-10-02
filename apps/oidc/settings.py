@@ -17,4 +17,7 @@ IMPORT_STRINGS = (
     "OIDC_KEY_STORAGE",
 )
 
-oidc_settings = OAuth2ProviderSettings(user_settings=USER_SETTINGS, import_strings=IMPORT_STRINGS, defaults=DEFAULTS)
+oidc_settings = OAuth2ProviderSettings(
+    user_settings=USER_SETTINGS,
+    import_strings=IMPORT_STRINGS,
+    defaults=DEFAULTS)

@@ -5,6 +5,7 @@ from .settings import oidc_settings
 def get_claims_provider():
     return oidc_settings.OIDC_CLAIM_PROVIDER
 
+
 class BaseProvider(object):
 
     def __init__(self, user=None, token=None, request=None):
