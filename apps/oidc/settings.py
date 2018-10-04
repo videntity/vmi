@@ -2,7 +2,7 @@ import os
 from django.conf import settings
 from oauth2_provider.settings import OAuth2ProviderSettings
 
-USER_SETTINGS = getattr(settings, "OIDC_PROVIDER", None)
+USER_SETTINGS = getattr(settings, "OIDC_PROVIDER", {})
 
 DEFAULTS = {
     "OIDC_CLAIM_PROVIDER": 'apps.oidc.claims.DefaultProvider',

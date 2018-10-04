@@ -78,7 +78,6 @@ urlpatterns = [
          include('apps.accounts.urls')),
     path('.well-known/',
          include('apps.oidc.wellknown_urls')),
-    url(r'',
-        authenticated_home, name='home'),
     path('o/', include(('apps.oidc.urls', 'oidc'), namespace='oidc')),
+    path('', authenticated_home, name='home'),
 ]
