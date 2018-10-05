@@ -27,7 +27,7 @@ SECRET_KEY = '@+ttixefm9-bu1eknb4k^5dj(f1z0^97b$zan9akdr^4s8cc54'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = ['*', ]  # os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # Application definition
 
@@ -61,7 +61,7 @@ ROOT_URLCONF = 'vmi.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS':  [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -185,7 +185,7 @@ EXPLAINATION_LINE = ('This service allows Medicare beneficiaries'
 EXPLAINATION_LINE = env('DJANGO_EXPLAINATION_LINE ', EXPLAINATION_LINE)
 USER_DOCS_URI = "https://abhealth.us"
 USER_DOCS_TITLE = "User Documentation"
-USER_DOCS = "USer Docs"
+USER_DOCS = "User Docs"
 # LINKS TO DOCS
 DEVELOPER_DOCS_URI = "https:/abhealth.us"
 DEVELOPER_DOCS_TITLE = "Developer Documentation"
@@ -234,19 +234,9 @@ DEFAULT_ADMIN_EMAIL = env('DJANGO_ADMIN_EMAIL',
 # Redefine this for SES or other email delivery mechanism
 EMAIL_BACKEND_DEFAULT = 'django_ses.SESBackend'
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', EMAIL_BACKEND_DEFAULT)
-# EMAIL_HOST = env('DJANGO_EMAIL_HOST', 'email-smtp.us-east-1.amazonaws.com')
-# SES PORT options: 25, 465, 587, 2465 or 2587.
-# Port 25 is throttled
-# Use port 587 or 2587 for TLS connections
-# Use port 465 or 2465 for Native SSL support
-# EMAIL_PORT = int_env(env('DJANGO_EMAIL_PORT', 587))
-# EMAIL_USE_TLS = bool_env(env('DJANGO_EMAIL_USE_TLS', 'True'))
-# EMAIL_USE_SSL = bool_env(env('DJANGO_EMAIL_USE_SSL', 'False'))
-# EMAIL_TIMEOUT = env('DJANGO_EMAIL_TIMEOUT', None)
-# EMAIL_HOST_USER = env('DJANGO_EMAIL_HOST_USER', None)
-# EMAIL_HOST_PASSWORD = env('DJANGO_EMAIL_HOST_PASSWORD', None)
-# EMAIL_SSL_KEYFILE = env('DJANGO_EMAIL_SSL_KEYFILE', None)
-# EMAIL_SSL_CERTFILE = env('DJANGO_EMAIL_SSL_CERTFILE', None)
+
+# Un-comment the next line to print emails to the console instead of using SES.
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MFA = True
 

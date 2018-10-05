@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -83,19 +83,25 @@ def account_settings(request):
                   {'name': name, 'form': form})
 
 
-def create_account(request):
+def create_account(request, service_title=settings.APPLICATION_TITLE):
 
-    name = "Create your %s Account" % settings.APPLICATION_TITLE
+    name = "Signup for %s" % (service_title)
 
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            form.save()
+            u = form.save()
             messages.success(request,
                              _("Your account was created. Please "
-                               "check your email to verify your account "
-                               "before logging in."))
-            return HttpResponseRedirect(reverse('mfa_login'))
+                               "check your email to confirm your email "
+                               "address."))
+            #get the username and password
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            #authenticate user then login
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return HttpResponseRedirect(reverse('home'))
         else:
             # return the bound form with errors
             return render(request,
