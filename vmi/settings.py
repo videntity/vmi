@@ -225,7 +225,7 @@ SETTINGS_EXPORT = [
     'USER_DOCS_TITLE',
 ]
 
-# emails
+# Emails
 DEFAULT_FROM_EMAIL = env('DJANGO_FROM_EMAIL', 'no-reply@verifymyidentity.com')
 DEFAULT_ADMIN_EMAIL = env('DJANGO_ADMIN_EMAIL',
                           'no-reply@verifymyidentity.com')
