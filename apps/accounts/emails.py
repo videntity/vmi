@@ -1,7 +1,7 @@
 import random
 from django.conf import settings
 from django.urls import reverse
-from django.core.mail import EmailMultiAlternatives, send_mail, EmailMessage
+from django.core.mail import EmailMultiAlternatives
 
 # Copyright Videntity Systems Inc.
 
@@ -92,8 +92,7 @@ def send_activation_key_via_email(user, signup_key):
     activation_link = '%s%s' % (settings.HOSTNAME_URL,
                                 reverse('activation_verify',
                                         args=(signup_key,)))
-   
-    send_mail("subject", "body", from_email, to)
+
     html_content = """
        <p>
        Hello %s. Please click the link to activate your account.<br>
@@ -116,6 +115,7 @@ def send_activation_key_via_email(user, signup_key):
 
        """ % (user.first_name, activation_link)
 
-    msg = EmailMultiAlternatives(subject="subject", body=text_content, to=to, from_email=from_email)
+    msg = EmailMultiAlternatives(subject=subject, body=text_content,
+                                 to=to, from_email=from_email)
     msg.attach_alternative(html_content, 'text/html')
     msg.send()

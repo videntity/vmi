@@ -90,15 +90,15 @@ def create_account(request, service_title=settings.APPLICATION_TITLE):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            u = form.save()
+            form.save()
             messages.success(request,
                              _("Your account was created. Please "
                                "check your email to confirm your email "
                                "address."))
-            #get the username and password
+            # get the username and password
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
-            #authenticate user then login
+            # authenticate user then login
             user = authenticate(username=username, password=password)
             login(request, user)
             return HttpResponseRedirect(reverse('home'))
