@@ -9,7 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from .forms import (PasswordResetForm, PasswordResetRequestForm)
 from .models import UserProfile, ValidPasswordResetKey
-
 from .forms import (AccountSettingsForm,
                     SignupForm)
 
@@ -19,7 +18,33 @@ from django.conf import settings
 
 # Copyright Videntity Systems Inc.
 
-logger = logging.getLogger('veriofymyidentity_.%s' % __name__)
+logger = logging.getLogger('verifymyidentity_.%s' % __name__)
+
+
+def reset_password(request):
+
+    name = _('Reset Password')
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            form = PasswordResetForm(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                request.user.set_password(data['password1'])
+                request.user.save()
+                user = authenticate(request=request,
+                                    username=request.user.username,
+                                    password=data['password1'])
+                login(request, user)
+                messages.success(request, 'Your password was updated.')
+                return HttpResponseRedirect(reverse('account_settings'))
+            else:
+                return render(request, 'generic/bootstrapform.html',
+                              {'form': form, 'name': name})
+        # this is a GET
+        return render(request, 'generic/bootstrapform.html',
+                      {'form': PasswordResetForm(), 'name': name})
+    else:
+        return HttpResponseRedirect(reverse('home'))
 
 
 def mylogout(request):
@@ -49,9 +74,7 @@ def account_settings(request):
             request.user.save()
             # update the user profile
             up.organization_name = data['organization_name']
-            up.create_applications = data['create_applications']
             up.mobile_phone_number = data['mobile_phone_number']
-            up.create_applications = data['create_applications']
             up.save()
             messages.success(request,
                              'Your account settings have been updated.')
@@ -70,12 +93,9 @@ def account_settings(request):
             'username': request.user.username,
             'email': request.user.email,
             'organization_name': up.organization_name,
-            'mfa_login_mode': up.mfa_login_mode,
             'mobile_phone_number': up.mobile_phone_number,
-            'create_applications': up.create_applications,
             'last_name': request.user.last_name,
             'first_name': request.user.first_name,
-            'access_key_reset': up.access_key_reset,
         }
     )
     return render(request,
@@ -86,7 +106,7 @@ def account_settings(request):
 def create_account(request, service_title=settings.APPLICATION_TITLE):
 
     name = "Signup for %s" % (service_title)
-
+    print("hello", service_title)
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
@@ -106,7 +126,8 @@ def create_account(request, service_title=settings.APPLICATION_TITLE):
             # return the bound form with errors
             return render(request,
                           'generic/bootstrapform.html',
-                          {'name': name, 'form': form})
+                          {'name': name, 'form': form,
+                           'service_title': service_title})
     else:
         # this is an HTTP  GET
         # Adding ability to pre-fill invitation_code and email
@@ -115,7 +136,8 @@ def create_account(request, service_title=settings.APPLICATION_TITLE):
                      'email': request.GET.get('email', '')}
         return render(request,
                       'generic/bootstrapform.html',
-                      {'name': name, 'form': SignupForm(initial=form_data)})
+                      {'name': name, 'form': SignupForm(initial=form_data),
+                       'service_title': service_title})
 
 
 def password_reset_email_verify(request, reset_password_key=None):
