@@ -138,9 +138,7 @@ MESSAGE_TAGS = {
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'sitestatic'),
-]
+STATIC_ROOT = 'sitestatic'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -241,7 +239,5 @@ EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', EMAIL_BACKEND_DEFAULT)
 MFA = True
 
 # AWS Credentials need to support SES, SQS and SNS
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', 'use-your-own')
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', 'change-me-please')
 SIGNUP_TIMEOUT_DAYS = 3
 ORGANIZATION_NAME = "Verify My Identity"

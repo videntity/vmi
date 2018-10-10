@@ -87,7 +87,7 @@ module "db" {
   identifier = "${var.dbname}"
 
   engine            = "postgres"
-  engine_version    = "9.6.3"
+  engine_version    = "9.6.6"
   instance_class    = "${var.db_size}"
   allocated_storage = 5
   storage_encrypted = false
@@ -156,6 +156,9 @@ resource "aws_s3_bucket_object" "default" {
   bucket  = "${aws_s3_bucket.default.id}"
   key     = "${var.version}/Dockerrun.aws.json"
   content = "${data.template_file.Dockerrun.rendered}"
+  lifecycle = {
+    create_before_destroy = true
+  }
 }
 
 #
@@ -242,6 +245,11 @@ resource "aws_iam_role_policy_attachment" "ecr-readonly" {
 resource "aws_iam_role_policy_attachment" "ssm-readonly" {
   role       = "${aws_iam_role.ec2.name}"
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "ses-all" {
+  role       = "${aws_iam_role.ec2.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSESFullAccess"
 }
 
 data "aws_iam_policy_document" "default" {
@@ -376,21 +384,6 @@ data "aws_iam_policy_document" "default" {
   }
 
   statement {
-    sid = "AllowReadSSMParameters"
-
-    actions = [
-      "ssm:DescribeParameters",
-      "ssm:GetParameters",
-    ]
-
-    resources = [
-      "arn:aws:ssm:us-west-1:075999491860:parameter/${var.environment}/*",
-    ]
-
-    effect = "Allow"
-  }
-
-  statement {
     sid = "AllowDeleteCloudwatchLogGroups"
 
     actions = [
@@ -436,6 +429,9 @@ resource "aws_elastic_beanstalk_application_version" "default" {
   description = "VMI application version created by terraform"
   bucket      = "${aws_s3_bucket.default.id}"
   key         = "${aws_s3_bucket_object.default.id}"
+  lifecycle   = {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_elastic_beanstalk_environment" "default" {
