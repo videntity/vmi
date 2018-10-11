@@ -1,4 +1,4 @@
-GIT_HASH := $(shell git rev-parse --short HEAD)
+GIT_HASH := v$(shell git rev-parse --short HEAD)
 
 develop:
 	docker-compose -f .development/docker-compose.yml up -d 
