@@ -3,7 +3,7 @@
 VerifyMyIdentity.com - An OpenID Connect Provider supporting 
 identity assurance escelation and FIDO.
 
-This project is based on Python 3.5 and Django 2.1.x.
+This project is based on Python 3.6 and Django 2.1.x.
 
 Install supporting libraries with
 
