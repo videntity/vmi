@@ -16,23 +16,33 @@ def authenticated_home(request):
         # this is a GET
         context = {'name': name}
         template = 'authenticated-home.html'
-        if not getattr(profile, 'email_verified', False):
+        if not getattr(request.user, 'email', ''):
+            messages.warning(
+                request,
+                """Please consider adding an email to your account.
+                <a href="">Add it Now</a>""")
+
+        if not getattr(
+            profile,
+            'email_verified',
+                False) and request.user.email:
+
             messages.warning(
                 request,
                 """Your email has not been verified.
-                <a href="">Verify it Now</a>""")
+                    <a href="">Verify it Now</a>""")
 
-        if not getattr(profile, 'mobile_phone_verified', False):
+        if not getattr(profile, 'phone_verified', False):
             messages.warning(
                 request,
                 """Your mobile phone number has not been verified.
-                <a href="">Verify it Now</a>""")
+                <a href="">Verify your mobile phone number now</a>""")
 
         if not getattr(profile, 'ial_2', False):
             messages.warning(
                 request,
                 """Your identity has not been verified.
-                <a href="">Verify it Now</a>""")
+                <a href="">Verify your identity Now</a>""")
 
     else:
         name = _('Anon Home')

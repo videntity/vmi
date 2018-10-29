@@ -34,3 +34,4 @@ pyjwkest==1.4.0
 djangorestframework==3.8.2
 cryptography==2.3.1 
 psycopg2==2.7.5
+luhn==0.2.0

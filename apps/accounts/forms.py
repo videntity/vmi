@@ -39,32 +39,19 @@ class PasswordResetForm(forms.Form):
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=30, label=_('User'))
-    password = forms.CharField(widget=forms.PasswordInput, max_length=30,
+    password = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                label=_('Password'))
     required_css_class = 'required'
 
 
-class CodeLoginForm(forms.Form):
-    username = forms.CharField(max_length=30, label=_('Username'),
-                               help_text="MyMedicare.gov user name")
-    password = forms.CharField(widget=forms.PasswordInput, max_length=30,
-                               label=_('Password'),
-                               help_text="MyMedicare.gov password")
-    code = forms.CharField(
-        max_length=30,
-        label=_('Code'),
-        help_text="The code provided by your accountable care organization")
-    required_css_class = 'required'
-
-
 class SignupForm(forms.Form):
-    username = forms.CharField(max_length=30, label=_("Desired Username"))
-    email = forms.EmailField(max_length=75, label=_("Email"))
     first_name = forms.CharField(max_length=100, label=_("First Name"))
     last_name = forms.CharField(max_length=100, label=_("Last Name"))
+    username = forms.CharField(max_length=30, label=_("User name"))
     mobile_phone_number = forms.CharField(required=False,
                                           label=_("Mobile Phone Number"),
                                           max_length=10)
+    email = forms.EmailField(max_length=75, label=_("Email"), required=False)
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password"))
     password2 = forms.CharField(widget=forms.PasswordInput, max_length=128,
@@ -127,18 +114,12 @@ class SignupForm(forms.Form):
 
 
 class AccountSettingsForm(forms.Form):
-    username = forms.CharField(max_length=30, label=_('User Name'))
-    email = forms.CharField(max_length=30, label=_('Email'))
     first_name = forms.CharField(max_length=100, label=_('First Name'))
     last_name = forms.CharField(max_length=100, label=_('Last Name'))
+    username = forms.CharField(max_length=30, label=_('User Name'))
+    email = forms.CharField(max_length=30, label=_('Email'), required=False,)
     mobile_phone_number = forms.CharField(max_length=10, required=False,
-                                          help_text=_("US numbers only. "
-                                                      "We use this for "
-                                                      "multi-factor "
-                                                      "authentication."))
-    organization_name = forms.CharField(max_length=100,
-                                        label=_('Organization Name'),
-                                        required=False)
+                                          help_text=_("US numbers only. "))
     required_css_class = 'required'
 
     def clean_email(self):
