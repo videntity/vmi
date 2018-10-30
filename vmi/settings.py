@@ -244,3 +244,23 @@ MFA = True
 # AWS Credentials need to support SES, SQS and SNS
 SIGNUP_TIMEOUT_DAYS = 3
 ORGANIZATION_NAME = "Verify My Identity"
+
+
+INDIVIDUAL_ID_TYPE_CHOICES = (
+    ('PATIENT_ID_FHIR', 'Patient ID FHIR'),
+    ('MPI', 'Master Patient Index (Not FHIR Patient id)'),
+    ('SSN', 'Social Security Number'),
+    ('MEDICIAD_ID', 'Medicaid ID Number'),
+    ('MEDICICARE_HICN', 'Medicare HICN (Legacy)'),
+    ('MEDICIARE_ID', 'Medicare ID Number'),
+    ('INDURANCE_ID', 'Insurance ID Number'),
+    ('IHE_ID', 'Health Information Exchange ID'),
+    ('UHI', 'Universal Health Identifier'),
+)
+
+ORGANIZATION_ID_TYPE_CHOICES = (
+    ('FEIN', 'Federal Employer ID Number (Tax ID)'),
+    ('NPI', 'National Provider Identifier'),
+    ('OEID', 'Other Entity Identifier'),
+    ('PECOS', 'PECOS Medicare ID')
+)

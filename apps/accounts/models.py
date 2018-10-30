@@ -13,34 +13,11 @@ import boto3
 from .emails import (send_password_reset_url_via_email,
                      send_activation_key_via_email,
                      mfa_via_email)
-from luhn import generate
+
 # Copyright Videntity Systems Inc.
 
 __author__ = "Alan Viars"
 
-
-# Todo make a setting
-LUHN_PREFIX = "85721"
-
-
-INDIVIDUAL_ID_TYPE_CHOICES = (
-    ('PATIENT_ID_FHIR', 'Patient ID FHIR'),
-    ('MPI', 'Master Patient Index (Not FHIR Patient id)'),
-    ('SSN', 'Social Security Number'),
-    ('MEDICIAD_ID', 'Medicaid ID Number'),
-    ('MEDICICARE_HICN', 'Medicare HICN (Legacy)'),
-    ('MEDICIARE_ID', 'Medicare ID Number'),
-    ('INDURANCE_ID', 'Insurance ID Number'),
-    ('IHE_ID', 'Health Information Exchange ID'),
-    ('UHI', 'Universal Health Identifier'),
-                              )
-
-ORGANIZATION_ID_TYPE_CHOICES = (
-    ('FEIN', 'Federal Employer ID Number (Tax ID)'),
-    ('NPI', 'National Provider Identifier'),
-    ('OEID', 'Other Entity Identifier'),
-    ('PECOS', 'PECOS Medicare ID')
-)
 
 SEX_CHOICES = (('M', 'Male'), ('F', 'Female'), ('U', 'Unknown'))
 
@@ -53,32 +30,29 @@ GENDER_CHOICES = (('M', 'Male'),
 
 @python_2_unicode_compatible
 class IndividualIdentifier(models.Model):
-    name = models.CharField(max_length=255, default='')
-    slug = models.SlugField(max_length=32, blank=True, default='')
-    value = models.CharField(max_length=1024, default='')
-    issuer = models.CharField(max_length=255, blank=True, default='')
-    state = models.CharField(max_length=2, blank=True, default='')
-    uri = models.CharField(max_length=1024, blank=True, default='')
-    id_type = models.CharField(max_length=16, blank=True, default='',
-                               choices=INDIVIDUAL_ID_TYPE_CHOICES)
+    name = models.SlugField(max_length=32, blank=True, default='')
+    value = models.TextField(
+        max_length=1024,
+        blank=True,
+        default='',
+        help_text="JSON Object")
+    type = models.CharField(max_length=16, blank=True, default='')
 
     def __str__(self):
-        return self.value
+        return self.name
 
 
 @python_2_unicode_compatible
 class OrganizationIdentifier(models.Model):
-    name = models.CharField(max_length=255, default='')
-    slug = models.SlugField(max_length=32, blank=True, default='')
-    value = models.CharField(max_length=1024, default='')
-    issuer = models.CharField(max_length=255, blank=True, default='')
-    state = models.CharField(max_length=2, blank=True, default='')
-    uri = models.CharField(max_length=1024, blank=True, default='')
-    id_type = models.CharField(max_length=16, blank=True, default='',
-                               choices=ORGANIZATION_ID_TYPE_CHOICES)
+    name = models.SlugField(max_length=255, default='', blank=True)
+    value = models.TextField(
+        max_length=1024,
+        default='{}',
+        help_text="JSON Object")
+    type = models.CharField(max_length=16, blank=True, default='', )
 
     def __str__(self):
-        return self.value
+        return self.name
 
 
 @python_2_unicode_compatible
@@ -88,7 +62,9 @@ class Address(models.Model):
     city = models.CharField(max_length=255, blank=True, default='')
     state = models.CharField(max_length=2, blank=True, default='')
     zipcode = models.CharField(max_length=10, blank=True, default='')
-    identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True)
+    org_identifiers = models.ManyToManyField(
+        OrganizationIdentifier, blank=True)
+    ind_identifiers = models.ManyToManyField(IndividualIdentifier, blank=True)
     subject = models.CharField(max_length=255, default='', blank=True)
 
     def __str__(self):
@@ -99,21 +75,13 @@ class Address(models.Model):
 
 @python_2_unicode_compatible
 class Organization(models.Model):
-    subject = models.CharField(max_length=255, default='', blank=True)
-    title = models.CharField(max_length=255, default='', blank=True)
+    name = models.CharField(max_length=255, default='', blank=True)
     slug = models.SlugField(max_length=32, blank=True, default='')
     addresses = models.ManyToManyField(Address, blank=True)
     identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True)
 
     def __str__(self):
-        return self.subject
-
-    def name(self):
-        if self.organization_name:
-            return self.organization_name
-        else:
-            name = '%s %s' % (self.user.first_name, self.user.last_name)
-        return name
+        return self.name
 
 
 @python_2_unicode_compatible
@@ -128,23 +96,13 @@ class UserProfile(models.Model):
     phone_verified = models.BooleanField(default=False, blank=True)
     organizations = models.ManyToManyField(Organization, blank=True)
     addresses = models.ManyToManyField(Address, blank=True)
-    identifiers = models.ManyToManyField(IndividualIdentifier, blank=True)
+    ind_identifiers = models.ManyToManyField(IndividualIdentifier, blank=True)
+    org_identifiers = models.ManyToManyField(
+        OrganizationIdentifier, blank=True)
     mobile_phone_number = models.CharField(
         max_length=10, blank=True, default="",
         help_text=_('US numbers only.'),
     )
-    uhi = models.CharField(
-        max_length=15, blank=True, default="",
-        help_text=_('Universal Health ID'),
-        # editable=False,
-    )
-    subject = models.CharField(
-        max_length=40,
-        default='',
-        blank=True,
-        editable=False,
-        help_text='Auto-generated subject identifier.')
-
     sex = models.CharField(choices=SEX_CHOICES,
                            max_length=1, default="U",
                            help_text=_('Sex'),
@@ -177,28 +135,6 @@ class UserProfile(models.Model):
     def name(self):
         name = '%s %s' % (self.user.first_name, self.user.last_name)
         return name
-
-    def save(self, commit=True, **kwargs):
-        if not self.uhi:
-            if not self.mobile_phone_number:
-                self.uhi = random_number(14)
-            else:
-                self.uhi = "%s%s" % (self.mobile_phone_number,
-                                     random_number(4))
-            # print("Add Luhn checkdigit")
-
-            # Prefix Luhn so we can later identify as UHI
-            prefixed_number = "%s%s" % (LUHN_PREFIX, self.uhi)
-            # print("Prefixed", prefixed_number)
-            result = generate(prefixed_number)
-            # print("Result:", result)
-            self.uhi = "%s%s" % (self.uhi, result)
-
-        if not self.subject:
-            self.subject = random_number(25)
-            self.subject = "%s%s" % (self.subject, generate(self.subject))
-
-        super(UserProfile, self).save(**kwargs)
 
 
 MFA_CHOICES = (

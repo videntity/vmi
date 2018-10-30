@@ -9,16 +9,17 @@ __author__ = "Alan Viars"
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('name', 'user', 'uhi', 'birth_date', 'mobile_phone_number')
+    list_display = ('name', 'user', 'birth_date', 'mobile_phone_number')
     search_fields = [
         'user__first_name',
         'user__last_name',
         'birth_date',
         'sex',
-        'uhi',
-        'identifiers__value',
+        'org_identifiers__name',
+        'ind_identifiers__name',
         'addresses.zipcode']
-    raw_id_fields = ("user", "addresses", "organizations", "identifiers")
+    raw_id_fields = ("user", "addresses", "organizations", "org_identifiers",
+                     "ind_identifiers")
 
 
 admin.site.register(UserProfile, UserProfileAdmin)
@@ -26,23 +27,23 @@ admin.site.register(UserProfile, UserProfileAdmin)
 
 class OrganizationAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
-    search_fields = ['name', 'slug', 'identifiers__value']
+    search_fields = ['name', 'slug', 'org_identifiers__name']
 
 
 admin.site.register(Organization, OrganizationAdmin)
 
 
 class OrganizationIdentifierAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'value')
-    search_fields = ['name', 'slug', 'value']
+    list_display = ('name', 'value', 'type')
+    search_fields = ['name', 'value', 'type']
 
 
 admin.site.register(OrganizationIdentifier, OrganizationIdentifierAdmin)
 
 
 class IndividualIdentifierAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'value')
-    search_fields = ['name', 'slug', 'value']
+    list_display = ('name', 'value', 'type')
+    search_fields = ['name', 'value', 'type']
 
 
 admin.site.register(IndividualIdentifier, IndividualIdentifierAdmin)
