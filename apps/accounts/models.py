@@ -31,7 +31,11 @@ GENDER_CHOICES = (('M', 'Male'),
 @python_2_unicode_compatible
 class IndividualIdentifier(models.Model):
     name = models.SlugField(max_length=32, blank=True, default='')
-    value = models.TextField(
+    value = models.CharField(
+        max_length=255,
+        blank=True,
+        default='')
+    metadata = models.TextField(
         max_length=1024,
         blank=True,
         default='',
@@ -39,20 +43,25 @@ class IndividualIdentifier(models.Model):
     type = models.CharField(max_length=16, blank=True, default='')
 
     def __str__(self):
-        return self.name
+        return self.value
 
 
 @python_2_unicode_compatible
 class OrganizationIdentifier(models.Model):
     name = models.SlugField(max_length=255, default='', blank=True)
-    value = models.TextField(
+    value = models.CharField(
+        max_length=255,
+        blank=True,
+        default='')
+    metadata = models.TextField(
         max_length=1024,
-        default='{}',
+        blank=True,
+        default='',
         help_text="JSON Object")
     type = models.CharField(max_length=16, blank=True, default='', )
 
     def __str__(self):
-        return self.name
+        return self.value
 
 
 @python_2_unicode_compatible
