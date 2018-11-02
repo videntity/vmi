@@ -89,10 +89,11 @@ class Organization(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Organization, self).save(*args, **kwargs)
+
 
 @python_2_unicode_compatible
 class UserProfile(models.Model):
@@ -106,7 +107,11 @@ class UserProfile(models.Model):
     phone_verified = models.BooleanField(default=False, blank=True)
     organizations = models.ManyToManyField(Organization, blank=True)
     addresses = models.ManyToManyField(Address, blank=True)
-    ind_identifiers = models.ManyToManyField(IndividualIdentifier, blank=True)
+    ind_identifiers = models.ForeignKey(IndividualIdentifier, blank=True,
+                                        on_delete=models.CASCADE,
+                                        default=None)
+    org_identifiers = models.ManyToManyField(OrganizationIdentifier,
+                                             blank=True)
     mobile_phone_number = models.CharField(
         max_length=10, blank=True, default="",
         help_text=_('US numbers only.'),

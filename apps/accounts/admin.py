@@ -15,7 +15,6 @@ class UserProfileAdmin(admin.ModelAdmin):
         'user__last_name',
         'birth_date',
         'sex',
-        'org_identifiers__name',
         'ind_identifiers__name',
         'addresses.zipcode']
     raw_id_fields = ("user", "addresses", "organizations", "org_identifiers",
