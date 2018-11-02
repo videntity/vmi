@@ -1,7 +1,7 @@
 import pytz
 import random
 import uuid
-
+from django.template.defaultfilters import slugify
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db import models
@@ -83,13 +83,16 @@ class Address(models.Model):
 @python_2_unicode_compatible
 class Organization(models.Model):
     name = models.CharField(max_length=255, default='', blank=True)
-    slug = models.SlugField(max_length=32, blank=True, default='')
+    slug = models.SlugField(max_length=255, blank=True, default='')
     addresses = models.ManyToManyField(Address, blank=True)
     identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True)
 
     def __str__(self):
         return self.name
-
+    
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Organization, self).save(*args, **kwargs)
 
 @python_2_unicode_compatible
 class UserProfile(models.Model):
@@ -104,8 +107,6 @@ class UserProfile(models.Model):
     organizations = models.ManyToManyField(Organization, blank=True)
     addresses = models.ManyToManyField(Address, blank=True)
     ind_identifiers = models.ManyToManyField(IndividualIdentifier, blank=True)
-    org_identifiers = models.ManyToManyField(
-        OrganizationIdentifier, blank=True)
     mobile_phone_number = models.CharField(
         max_length=10, blank=True, default="",
         help_text=_('US numbers only.'),
