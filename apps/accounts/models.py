@@ -8,7 +8,6 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
 import boto3
 from .emails import (send_password_reset_url_via_email,
                      send_activation_key_via_email,
@@ -28,7 +27,6 @@ GENDER_CHOICES = (('M', 'Male'),
                   ('U', 'Unknown'))
 
 
-@python_2_unicode_compatible
 class IndividualIdentifier(models.Model):
     name = models.SlugField(max_length=255, blank=True, default='')
     value = models.CharField(
@@ -45,7 +43,6 @@ class IndividualIdentifier(models.Model):
         return self.value
 
 
-@python_2_unicode_compatible
 class OrganizationIdentifier(models.Model):
     name = models.SlugField(max_length=255, default='', blank=True)
     value = models.CharField(
@@ -62,7 +59,6 @@ class OrganizationIdentifier(models.Model):
         return self.value
 
 
-@python_2_unicode_compatible
 class Address(models.Model):
     street_1 = models.CharField(max_length=255, blank=True, default='')
     street_2 = models.CharField(max_length=255, blank=True, default='')
@@ -80,7 +76,6 @@ class Address(models.Model):
         return address
 
 
-@python_2_unicode_compatible
 class Organization(models.Model):
     name = models.CharField(max_length=255, default='', blank=True)
     slug = models.SlugField(max_length=255, blank=True, default='')
@@ -90,12 +85,12 @@ class Organization(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
+    def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
-        super(Organization, self).save(*args, **kwargs)
+        if commit:
+            super(Organization, self).save(*args, **kwargs)
 
 
-@python_2_unicode_compatible
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nickname = models.CharField(
@@ -133,18 +128,23 @@ class UserProfile(models.Model):
                                   self.user.username)
         return display
 
+    @property
     def given_name(self):
         return self.user.first_name
 
+    @property
     def family_name(self):
         return self.user.family_name
 
+    @property
     def phone(self):
         return self.mobile_phone_number
 
+    @property
     def preferred_username(self):
         return self.user.username
 
+    @property
     def name(self):
         name = '%s %s' % (self.user.first_name, self.user.last_name)
         return name
@@ -158,7 +158,6 @@ MFA_CHOICES = (
 )
 
 
-@python_2_unicode_compatible
 class MFACode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     uid = models.CharField(blank=True,
@@ -177,6 +176,7 @@ class MFACode(models.Model):
                                  self.mode)
         return name
 
+    @property
     def endpoint(self):
         e = ""
         up = UserProfile.objects.get(user=self.user)
@@ -186,7 +186,7 @@ class MFACode(models.Model):
             e = self.user.email
         return e
 
-    def save(self, **kwargs):
+    def save(self, commit=True, **kwargs):
         if not self.id:
             now = pytz.utc.localize(datetime.utcnow())
             expires = now + timedelta(days=1)
@@ -223,10 +223,10 @@ class MFACode(models.Model):
             else:
                 """No MFA code sent"""
                 pass
-        super(MFACode, self).save(**kwargs)
+        if commit:
+            super(MFACode, self).save(**kwargs)
 
 
-@python_2_unicode_compatible
 class ActivationKey(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     key = models.CharField(default=uuid.uuid4, max_length=40)
@@ -236,7 +236,7 @@ class ActivationKey(models.Model):
         return 'Key for %s expires at %s' % (self.user.username,
                                              self.expires)
 
-    def save(self, **kwargs):
+    def save(self, commit=True, **kwargs):
         self.signup_key = str(uuid.uuid4())
 
         now = pytz.utc.localize(datetime.utcnow())
@@ -245,10 +245,10 @@ class ActivationKey(models.Model):
 
         # send an email with reset url
         send_activation_key_via_email(self.user, self.key)
-        super(ActivationKey, self).save(**kwargs)
+        if commit:
+            super(ActivationKey, self).save(**kwargs)
 
 
-@python_2_unicode_compatible
 class ValidPasswordResetKey(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     reset_password_key = models.CharField(max_length=50, blank=True)
@@ -260,7 +260,7 @@ class ValidPasswordResetKey(models.Model):
                                                  self.user.username,
                                                  self.expires)
 
-    def save(self, **kwargs):
+    def save(self, commit=True, **kwargs):
         self.reset_password_key = str(uuid.uuid4())
         # use timezone.now() instead of datetime.now()
         now = timezone.now()
@@ -269,7 +269,8 @@ class ValidPasswordResetKey(models.Model):
 
         # send an email with reset url
         send_password_reset_url_via_email(self.user, self.reset_password_key)
-        super(ValidPasswordResetKey, self).save(**kwargs)
+        if commit:
+            super(ValidPasswordResetKey, self).save(**kwargs)
 
 
 def random_key_id(y=20):
