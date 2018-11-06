@@ -78,7 +78,19 @@ class Address(models.Model):
 
 class Organization(models.Model):
     name = models.CharField(max_length=255, default='', blank=True)
-    slug = models.SlugField(max_length=255, blank=True, default='')
+    slug = models.SlugField(max_length=255, blank=True, default='',
+                            db_index=True, unique=True)
+    registration_code = models.CharField(max_length=100,
+                                         default='',
+                                         blank=True)
+    domain = models.CharField(
+        max_length=512,
+        blank=True,
+        default='',
+        help_text="If populated, restrict email registration to this address.")
+    website = models.CharField(max_length=512, blank=True, default='')
+    phone_number = models.CharField(max_length=15, blank=True, default='')
+    point_of_contact = models.CharField(max_length=512, blank=True, default='')
     addresses = models.ManyToManyField(Address, blank=True)
     identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True)
 
@@ -104,7 +116,7 @@ class UserProfile(models.Model):
     addresses = models.ManyToManyField(Address, blank=True)
     ind_identifiers = models.ForeignKey(IndividualIdentifier, blank=True,
                                         on_delete=models.CASCADE,
-                                        default=None)
+                                        default=None, null=True)
     org_identifiers = models.ManyToManyField(OrganizationIdentifier,
                                              blank=True)
     mobile_phone_number = models.CharField(
