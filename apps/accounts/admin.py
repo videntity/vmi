@@ -25,8 +25,9 @@ admin.site.register(UserProfile, UserProfileAdmin)
 
 
 class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug')
+    list_display = ('name', 'slug', 'signnup_url')
     search_fields = ['name', 'slug', 'org_identifiers__name']
+    raw_id_fields = ("point_of_contact", )
 
 
 admin.site.register(Organization, OrganizationAdmin)

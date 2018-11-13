@@ -119,3 +119,42 @@ def send_activation_key_via_email(user, signup_key):
                                  to=to, from_email=from_email)
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
+
+
+def send_new_org_account_approval_email(to_user, about_user):
+    subject = """[%s]A New user account has been created for your organization that requires your approval.""" % \
+              (settings.ORGANIZATION_NAME)
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to = [to_user.email, ]
+
+    html_content = """
+       <p>
+       Hello %s. A new user %s %s registered for your organization
+       and needs your approval.  Please log in to you account to
+       approve or delete the new account. The new user may not log
+       in until this step is completed.<br>
+
+       Thank you,<br>
+
+       The Team
+       </p>
+       """ % (to_user.first_name, about_user.first_name,
+              about_user.last_name)
+
+    text_content = """
+       Hello %s. A new user %s %s registered for your organization
+       and needs your approval.  Please log in to you account to
+       approve or delete the new account. The new user may not log in
+       until this step is completed.
+
+       Thank you,
+
+       The Team
+
+       """ % (to_user.first_name, about_user.first_name,
+              about_user.last_name)
+
+    msg = EmailMultiAlternatives(subject=subject, body=text_content,
+                                 to=to, from_email=from_email)
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send()

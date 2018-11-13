@@ -4,11 +4,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import login, authenticate
 from .models import Organization
 from .staff_forms import StaffSignupForm
 from django.conf import settings
-
+from .emails import send_new_org_account_approval_email
 
 # Copyright Videntity Systems Inc.
 
@@ -22,19 +21,20 @@ def create_staff_account(request, organization_slug,
     if request.method == 'POST':
         form = StaffSignupForm(request.POST)
         if form.is_valid():
-            form.save()
-            # get the username and password
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            # authenticate user then login
-            user = authenticate(username=username, password=password)
-            login(request, user)
-
+            user = form.save()
             if user.email:
                 messages.success(request,
                                  _("Please "
                                    "check your email to confirm your email "
                                    "address."))
+
+            messages.warning(request,
+                             _("Your account must be approved "
+                               "prior to logging in. A message has "
+                               "been sent to your organization's "
+                               "point of contact."))
+            send_new_org_account_approval_email(to_user=org.point_of_contact,
+                                                about_user=user)
             return HttpResponseRedirect(reverse('home'))
         else:
             # return the bound form with errors

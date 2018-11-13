@@ -17,7 +17,7 @@ urlpatterns = [
         name='create_account_enduser_affilate'),
     url(r'^create-account', create_account, name='create_account_enduser'),
     url(r'^create-staff-account/(?P<organization_slug>[^/]+)/',
-        create_staff_account, name='create_account_staff'),
+        create_staff_account, name='create_staff_account'),
     url(r'^activation-verify/(?P<activation_key>[^/]+)/$',
         activation_verify, name='activation_verify'),
     url(r'^forgot-password', forgot_password, name='forgot_password'),

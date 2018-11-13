@@ -2,6 +2,7 @@ import pytz
 import random
 import uuid
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db import models
@@ -90,12 +91,15 @@ class Organization(models.Model):
         help_text="If populated, restrict email registration to this address.")
     website = models.CharField(max_length=512, blank=True, default='')
     phone_number = models.CharField(max_length=15, blank=True, default='')
-    point_of_contact = models.CharField(max_length=512, blank=True, default='')
+    point_of_contact = models.ForeignKey(User, on_delete='PROTECT')
     addresses = models.ManyToManyField(Address, blank=True)
     identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True)
 
     def __str__(self):
         return self.name
+
+    def signnup_url(self):
+        return "%s%s" % (settings.HOSTNAME_URL, reverse('create_staff_account', args=(self.slug,)))
 
     def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
