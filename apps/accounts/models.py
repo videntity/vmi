@@ -1,14 +1,13 @@
 import pytz
 import random
 import uuid
-
+from django.template.defaultfilters import slugify
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
 import boto3
 from .emails import (send_password_reset_url_via_email,
                      send_activation_key_via_email,
@@ -19,28 +18,147 @@ from .emails import (send_password_reset_url_via_email,
 __author__ = "Alan Viars"
 
 
-@python_2_unicode_compatible
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    organization_name = models.CharField(max_length=255,
-                                         blank=True,
-                                         default='')
-    mobile_phone_number = models.CharField(
-        max_length=12,
-        help_text=_('US numbers only.'),
-    )
+SEX_CHOICES = (('M', 'Male'), ('F', 'Female'), ('U', 'Unknown'))
+
+GENDER_CHOICES = (('M', 'Male'),
+                  ('F', 'Female'),
+                  ('TMF', 'Transgender Male to Female'),
+                  ('TFM', 'Transgender Female to Male'),
+                  ('U', 'Unknown'))
+
+
+class IndividualIdentifier(models.Model):
+    name = models.SlugField(max_length=255, blank=True, default='')
+    value = models.CharField(
+        max_length=255,
+        blank=True,
+        default='')
+    metadata = models.TextField(
+        blank=True,
+        default='',
+        help_text="JSON Object")
+    type = models.CharField(max_length=16, blank=True, default='')
 
     def __str__(self):
-        name = '%s %s (%s)' % (self.user.first_name,
-                               self.user.last_name,
-                               self.user.username)
-        return name
+        return self.value
 
+
+class OrganizationIdentifier(models.Model):
+    name = models.SlugField(max_length=255, default='', blank=True)
+    value = models.CharField(
+        max_length=255,
+        blank=True,
+        default='')
+    metadata = models.TextField(
+        blank=True,
+        default='',
+        help_text="JSON Object")
+    type = models.CharField(max_length=16, blank=True, default='', )
+
+    def __str__(self):
+        return self.value
+
+
+class Address(models.Model):
+    street_1 = models.CharField(max_length=255, blank=True, default='')
+    street_2 = models.CharField(max_length=255, blank=True, default='')
+    city = models.CharField(max_length=255, blank=True, default='')
+    state = models.CharField(max_length=2, blank=True, default='')
+    zipcode = models.CharField(max_length=10, blank=True, default='')
+    org_identifiers = models.ManyToManyField(
+        OrganizationIdentifier, blank=True)
+    ind_identifiers = models.ManyToManyField(IndividualIdentifier, blank=True)
+    subject = models.CharField(max_length=255, default='', blank=True)
+
+    def __str__(self):
+        address = '%s %s %s %s %s' % (self.street_1, self.street_2,
+                                      self.city, self.state, self.zipcode)
+        return address
+
+
+class Organization(models.Model):
+    name = models.CharField(max_length=255, default='', blank=True)
+    slug = models.SlugField(max_length=255, blank=True, default='',
+                            db_index=True, unique=True)
+    registration_code = models.CharField(max_length=100,
+                                         default='',
+                                         blank=True)
+    domain = models.CharField(
+        max_length=512,
+        blank=True,
+        default='',
+        help_text="If populated, restrict email registration to this address.")
+    website = models.CharField(max_length=512, blank=True, default='')
+    phone_number = models.CharField(max_length=15, blank=True, default='')
+    point_of_contact = models.CharField(max_length=512, blank=True, default='')
+    addresses = models.ManyToManyField(Address, blank=True)
+    identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, commit=True, *args, **kwargs):
+        self.slug = slugify(self.name)
+        if commit:
+            super(Organization, self).save(*args, **kwargs)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nickname = models.CharField(
+        max_length=255,
+        default='',
+        blank=True,
+        help_text='Nickname, alias, or other names used.')
+    email_verified = models.BooleanField(default=False, blank=True)
+    phone_verified = models.BooleanField(default=False, blank=True)
+    organizations = models.ManyToManyField(Organization, blank=True)
+    addresses = models.ManyToManyField(Address, blank=True)
+    ind_identifiers = models.ForeignKey(IndividualIdentifier, blank=True,
+                                        on_delete=models.CASCADE,
+                                        default=None, null=True)
+    org_identifiers = models.ManyToManyField(OrganizationIdentifier,
+                                             blank=True)
+    mobile_phone_number = models.CharField(
+        max_length=10, blank=True, default="",
+        help_text=_('US numbers only.'),
+    )
+    sex = models.CharField(choices=SEX_CHOICES,
+                           max_length=1, default="U",
+                           help_text=_('Sex'),
+                           )
+    gender = models.CharField(choices=GENDER_CHOICES,
+                              max_length=3, default="U",
+                              help_text=_('Gender / Gender Identity'),
+                              )
+    birth_date = models.DateField(blank=True, null=True,
+                                  )
+
+    def __str__(self):
+        display = '%s %s (%s)' % (self.user.first_name,
+                                  self.user.last_name,
+                                  self.user.username)
+        return display
+
+    @property
+    def given_name(self):
+        return self.user.first_name
+
+    @property
+    def family_name(self):
+        return self.user.family_name
+
+    @property
+    def phone(self):
+        return self.mobile_phone_number
+
+    @property
+    def preferred_username(self):
+        return self.user.username
+
+    @property
     def name(self):
-        if self.organization_name:
-            return self.organization_name
-        else:
-            name = '%s %s' % (self.user.first_name, self.user.last_name)
+        name = '%s %s' % (self.user.first_name, self.user.last_name)
         return name
 
 
@@ -52,7 +170,6 @@ MFA_CHOICES = (
 )
 
 
-@python_2_unicode_compatible
 class MFACode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     uid = models.CharField(blank=True,
@@ -71,6 +188,7 @@ class MFACode(models.Model):
                                  self.mode)
         return name
 
+    @property
     def endpoint(self):
         e = ""
         up = UserProfile.objects.get(user=self.user)
@@ -80,7 +198,7 @@ class MFACode(models.Model):
             e = self.user.email
         return e
 
-    def save(self, **kwargs):
+    def save(self, commit=True, **kwargs):
         if not self.id:
             now = pytz.utc.localize(datetime.utcnow())
             expires = now + timedelta(days=1)
@@ -117,10 +235,10 @@ class MFACode(models.Model):
             else:
                 """No MFA code sent"""
                 pass
-        super(MFACode, self).save(**kwargs)
+        if commit:
+            super(MFACode, self).save(**kwargs)
 
 
-@python_2_unicode_compatible
 class ActivationKey(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     key = models.CharField(default=uuid.uuid4, max_length=40)
@@ -130,7 +248,7 @@ class ActivationKey(models.Model):
         return 'Key for %s expires at %s' % (self.user.username,
                                              self.expires)
 
-    def save(self, **kwargs):
+    def save(self, commit=True, **kwargs):
         self.signup_key = str(uuid.uuid4())
 
         now = pytz.utc.localize(datetime.utcnow())
@@ -139,10 +257,10 @@ class ActivationKey(models.Model):
 
         # send an email with reset url
         send_activation_key_via_email(self.user, self.key)
-        super(ActivationKey, self).save(**kwargs)
+        if commit:
+            super(ActivationKey, self).save(**kwargs)
 
 
-@python_2_unicode_compatible
 class ValidPasswordResetKey(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     reset_password_key = models.CharField(max_length=50, blank=True)
@@ -154,7 +272,7 @@ class ValidPasswordResetKey(models.Model):
                                                  self.user.username,
                                                  self.expires)
 
-    def save(self, **kwargs):
+    def save(self, commit=True, **kwargs):
         self.reset_password_key = str(uuid.uuid4())
         # use timezone.now() instead of datetime.now()
         now = timezone.now()
@@ -163,7 +281,8 @@ class ValidPasswordResetKey(models.Model):
 
         # send an email with reset url
         send_password_reset_url_via_email(self.user, self.reset_password_key)
-        super(ValidPasswordResetKey, self).save(**kwargs)
+        if commit:
+            super(ValidPasswordResetKey, self).save(**kwargs)
 
 
 def random_key_id(y=20):
@@ -181,6 +300,10 @@ def random_code(y=10):
     return ''.join(random.choice('ABCDEFGHIJKLM'
                                  'NOPQRSTUVWXYZ'
                                  '234679') for x in range(y))
+
+
+def random_number(y=10):
+    return ''.join(random.choice('123456789') for x in range(y))
 
 
 def create_activation_key(user):

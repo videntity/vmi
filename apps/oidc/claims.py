@@ -58,3 +58,9 @@ class DefaultProvider(BaseProvider):
     def claim_nonce(self):
         # TODO need to add nonce to auth form
         return getattr(self.request, 'nonce', None)
+
+    def claim_auth_time(self):
+        last_login = getattr(self.user, 'last_login', None)
+        if last_login is not None:
+            return last_login.timestamp()
+        return None

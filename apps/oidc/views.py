@@ -29,10 +29,16 @@ class Wellknown(APIView):
     def get(self, request, format=None):
 
         return Response({
+            # TODO get this from oauth server config
             "grant_types_supported": [
                 "authorization_code",
                 "implicit",
                 "refresh_token",
+            ],
+            # TODO get this from settings or other
+            "token_endpoint_auth_methods_supported": [
+                "client_secret_basic",
+                "client_secret_post",
             ],
             "issuer": oidc_settings.OIDC_ISSUER,
             "userinfo_endpoint":
