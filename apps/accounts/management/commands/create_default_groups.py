@@ -6,7 +6,7 @@ __author__ = "Alan Viars"
 
 def create_groups():
     groups = ["ChangeIdentityAssuranceLevel",
-              "ApproveOrganizationalUserAccount",
+              "ApproveOrganizationalAffiliation",
               "RegisterOAuth2ClientApps"]
     created_groups = []
     for group in groups:

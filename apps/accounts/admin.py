@@ -1,11 +1,27 @@
 from django.contrib import admin
 from .models import (UserProfile, Organization,
                      Address, OrganizationIdentifier,
-                     IndividualIdentifier)
+                     IndividualIdentifier,
+                     OrganizationAffiliationRequest)
 
 # Copyright Videntity Systems Inc.
 
 __author__ = "Alan Viars"
+
+
+class OrganizationAffiliationRequestAdmin(admin.ModelAdmin):
+    list_display = ('user', 'organization', 'created_at')
+    search_fields = [
+        'user__first_name',
+        'user__last_name',
+        'organization__name',
+        'organization__slug']
+    raw_id_fields = ("user", )
+
+
+admin.site.register(
+    OrganizationAffiliationRequest,
+    OrganizationAffiliationRequestAdmin)
 
 
 class UserProfileAdmin(admin.ModelAdmin):
