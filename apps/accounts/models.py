@@ -30,11 +30,11 @@ GENDER_CHOICES = (('M', 'Male'),
 
 
 class IndividualIdentifier(models.Model):
-    name = models.SlugField(max_length=255, blank=True, default='')
+    name = models.SlugField(max_length=255, blank=True, default='', db_index=True)
     value = models.CharField(
         max_length=255,
         blank=True,
-        default='')
+        default='', db_index=True)
     metadata = models.TextField(
         blank=True,
         default='',
@@ -46,11 +46,11 @@ class IndividualIdentifier(models.Model):
 
 
 class OrganizationIdentifier(models.Model):
-    name = models.SlugField(max_length=255, default='', blank=True)
+    name = models.SlugField(max_length=255, default='', blank=True, db_index=True)
     value = models.CharField(
         max_length=255,
         blank=True,
-        default='')
+        default='', db_index=True)
     metadata = models.TextField(
         blank=True,
         default='',
@@ -130,9 +130,11 @@ class OrganizationAffiliationRequest(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
+                                primary_key=True, null=False)
     subject = models.CharField(max_length=64, default='', blank=True,
-                               help_text='Subject for identity token')
+                               help_text='Subject for identity token',
+                               db_index=True)
     nickname = models.CharField(
         max_length=255,
         default='',

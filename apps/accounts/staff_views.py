@@ -9,8 +9,8 @@ from .staff_forms import StaffSignupForm
 from django.conf import settings
 # from .emails import send_new_org_account_approval_email
 from django.contrib.auth.decorators import login_required
-from .decorators import group_required
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import permission_required
 
 # Copyright Videntity Systems Inc.
 
@@ -18,7 +18,7 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
 
 @login_required
-@group_required('ApproveOrganizationalAffiliation')
+@permission_required('organization_affiliation_request.can_delete_organization_affiliation_request')
 def approve_org_affiliation(request, organization_slug, username):
 
     org = get_object_or_404(Organization, slug=organization_slug)
@@ -41,7 +41,7 @@ def approve_org_affiliation(request, organization_slug, username):
 
 
 @login_required
-@group_required('ApproveOrganizationalAffiliation')
+@permission_required('organization_affiliation_request.can_delete_organization_affiliation_request')
 def deny_org_affiliation(request, organization_slug, username):
     org = get_object_or_404(Organization, slug=organization_slug)
     user = get_object_or_404(get_user_model(), username=username)
