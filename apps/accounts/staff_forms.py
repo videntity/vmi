@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from .models import UserProfile, create_activation_key, Organization
+from .models import UserProfile, create_activation_key, Organization, OrganizationAffiliationRequest
 
 # Copyright Videntity Systems Inc.
 
@@ -42,7 +42,6 @@ class StaffSignupForm(forms.Form):
 
         domain_to_match = org.domain
         if domain_to_match:
-            print("ORG DOMAIN", email, email.split())
             user, supplied_domain = email.split("@")
             if supplied_domain != domain_to_match:
                 raise forms.ValidationError(
@@ -69,8 +68,7 @@ class StaffSignupForm(forms.Form):
                 raise forms.ValidationError(
                     _('This email address is already registered.'))
             return email
-        else:
-            return email
+        return email
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -92,15 +90,12 @@ class StaffSignupForm(forms.Form):
             user=new_user,
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
         )
-
+        up.save()
         organization_slug = self.cleaned_data['org_slug']
         org = Organization.objects.get(slug=organization_slug)
-        up.organizations.add(org)
-        up.save()
-        # Need to add user groups here.
-        # group = Group.objects.get(name='BlueButton')
-        # new_user.groups.add(group)
 
+        OrganizationAffiliationRequest.objects.create(
+            organization=org, user=new_user)
         # Send a verification email
         create_activation_key(new_user)
         return new_user

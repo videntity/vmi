@@ -2,16 +2,18 @@ import pytz
 import random
 import uuid
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db import models
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 import boto3
 from .emails import (send_password_reset_url_via_email,
                      send_activation_key_via_email,
-                     mfa_via_email)
+                     mfa_via_email,
+                     send_new_org_account_approval_email)
 
 # Copyright Videntity Systems Inc.
 
@@ -28,11 +30,11 @@ GENDER_CHOICES = (('M', 'Male'),
 
 
 class IndividualIdentifier(models.Model):
-    name = models.SlugField(max_length=255, blank=True, default='')
+    name = models.SlugField(max_length=255, blank=True, default='', db_index=True)
     value = models.CharField(
         max_length=255,
         blank=True,
-        default='')
+        default='', db_index=True)
     metadata = models.TextField(
         blank=True,
         default='',
@@ -44,11 +46,11 @@ class IndividualIdentifier(models.Model):
 
 
 class OrganizationIdentifier(models.Model):
-    name = models.SlugField(max_length=255, default='', blank=True)
+    name = models.SlugField(max_length=255, default='', blank=True, db_index=True)
     value = models.CharField(
         max_length=255,
         blank=True,
-        default='')
+        default='', db_index=True)
     metadata = models.TextField(
         blank=True,
         default='',
@@ -90,12 +92,16 @@ class Organization(models.Model):
         help_text="If populated, restrict email registration to this address.")
     website = models.CharField(max_length=512, blank=True, default='')
     phone_number = models.CharField(max_length=15, blank=True, default='')
-    point_of_contact = models.CharField(max_length=512, blank=True, default='')
+    point_of_contact = models.ForeignKey(get_user_model(), on_delete='PROTECT')
     addresses = models.ManyToManyField(Address, blank=True)
     identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True)
 
     def __str__(self):
         return self.name
+
+    def signnup_url(self):
+        return "%s%s" % (settings.HOSTNAME_URL, reverse(
+            'create_org_account', args=(self.slug,)))
 
     def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -103,8 +109,33 @@ class Organization(models.Model):
             super(Organization, self).save(*args, **kwargs)
 
 
+class OrganizationAffiliationRequest(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete='PROTECT')
+    organization = models.ForeignKey(Organization, on_delete='PROTECT')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (("user", "organization"),)
+        permissions = (("can_approve_affiliation", "Can approve affiliation"),)
+
+    def __str__(self):
+        return "%s %s seeks affiliation approval for %s" % (
+            self.user.first_name, self.user.last_name, self.organization.name)
+
+    def save(self, commit=True, **kwargs):
+        if commit:
+            send_new_org_account_approval_email(
+                to_user=self.organization.point_of_contact,
+                about_user=self.user)
+            super(OrganizationAffiliationRequest, self).save(**kwargs)
+
+
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
+                                db_index=True, null=False)
+    subject = models.CharField(max_length=64, default='', blank=True,
+                               help_text='Subject for identity token',
+                               db_index=True)
     nickname = models.CharField(
         max_length=255,
         default='',
@@ -171,7 +202,7 @@ MFA_CHOICES = (
 
 
 class MFACode(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     uid = models.CharField(blank=True,
                            default=uuid.uuid4,
                            max_length=36, editable=False)
@@ -240,7 +271,7 @@ class MFACode(models.Model):
 
 
 class ActivationKey(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     key = models.CharField(default=uuid.uuid4, max_length=40)
     expires = models.DateTimeField(blank=True)
 
@@ -262,7 +293,7 @@ class ActivationKey(models.Model):
 
 
 class ValidPasswordResetKey(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     reset_password_key = models.CharField(max_length=50, blank=True)
     # switch from datetime.now to timezone.now
     expires = models.DateTimeField(default=timezone.now)

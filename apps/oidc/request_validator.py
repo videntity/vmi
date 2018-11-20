@@ -38,6 +38,12 @@ class RequestValidator(OAuth2Validator):
         else:
             return False
 
+    def validate_silent_login(self, request):
+        return False
+
+    def validate_silent_authorization(self, request):
+        return False
+
     def validate_user_match(self, id_token_hint, scopes, claims, request):
         if id_token_hint is None:
             return True
