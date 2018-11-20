@@ -116,6 +116,7 @@ class OrganizationAffiliationRequest(models.Model):
 
     class Meta:
         unique_together = (("user", "organization"),)
+        permissions = (("can_approve_affiliation", "Can approve affiliation"),)
 
     def __str__(self):
         return "%s %s seeks affiliation approval for %s" % (
@@ -131,7 +132,7 @@ class OrganizationAffiliationRequest(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
-                                primary_key=True, null=False)
+                                db_index=True, null=False)
     subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject for identity token',
                                db_index=True)
