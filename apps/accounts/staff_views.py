@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import permission_required
+from django.http import HttpResponseForbidden
 
 # Copyright Videntity Systems Inc.
 
@@ -18,7 +19,7 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
 
 @login_required
-@permission_required('organization_affiliation_request.can_delete_organization_affiliation_request')
+@permission_required('organization_affiliation_request.can_approve_affiliation')
 def approve_org_affiliation(request, organization_slug, username):
 
     org = get_object_or_404(Organization, slug=organization_slug)
@@ -27,7 +28,8 @@ def approve_org_affiliation(request, organization_slug, username):
         OrganizationAffiliationRequest,
         organization=org,
         user=user)
-
+    if request.user != org.point_of_contact:
+        return HttpResponseForbidden()
     up = UserProfile.objects.get(user=user)
     up.organizations.add(org)
     up.save()
@@ -41,7 +43,7 @@ def approve_org_affiliation(request, organization_slug, username):
 
 
 @login_required
-@permission_required('organization_affiliation_request.can_delete_organization_affiliation_request')
+@permission_required('organization_affiliation_request.can_approve_affiliation')
 def deny_org_affiliation(request, organization_slug, username):
     org = get_object_or_404(Organization, slug=organization_slug)
     user = get_object_or_404(get_user_model(), username=username)
@@ -49,6 +51,8 @@ def deny_org_affiliation(request, organization_slug, username):
         OrganizationAffiliationRequest,
         organization=org,
         user=user)
+    if request.user != org.point_of_contact:
+        return HttpResponseForbidden()
     oar.delete()
     msg = _("""You have canceled %s %s's affiliation request with %s.""") % (
         user.first_name, user.last_name, org.name)
