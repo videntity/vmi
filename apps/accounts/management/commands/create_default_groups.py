@@ -18,10 +18,10 @@ def create_groups():
             # Add permissions to group
             content_type = ContentType.objects.get(
                 app_label='accounts', model='organizationaffiliationrequest')
-            permission_delete = Permission.objects.create(codename='can_delete_organization_affiliation_request',
-                                                          content_type=content_type)
-            g.permissions.add(permission_delete)
-
+            can_approve_permission = Permission.objects.get(codename='can_approve_affiliation',
+                                                            content_type=content_type)
+            g.permissions.add(can_approve_permission)
+            g.save()
     return dict(zip(groups, created_groups))
 
 
