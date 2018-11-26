@@ -113,12 +113,6 @@ def create_account(request, service_title=settings.APPLICATION_TITLE):
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            if request.request.email:
-                messages.success(request,
-                                 _("Please "
-                                   "check your email to confirm your email "
-                                   "address."))
-
             # get the username and password
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']

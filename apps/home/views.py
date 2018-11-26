@@ -83,6 +83,7 @@ def authenticated_home(request):
                 request,
                 """Your identity has not been verified.
                 <a href="">Verify your identity Now</a>""")
+        context = {'name': name, 'profile': profile}
 
     else:
         name = _('Anon Home')

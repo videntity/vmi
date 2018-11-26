@@ -167,6 +167,9 @@ OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'oauth2_provider.RefreshToken'
 # }
 
 
+# Add a prefix to the lugh checkdigit calculation.
+# This can help identify genuine subject ids and indicate provenance.
+SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
 APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE',
                         'Verify My Identity')
 ORGANIZATION_TITLE = env(
