@@ -162,11 +162,19 @@ OAUTH2_PROVIDER_GRANT_MODEL = 'oidc.Grant'
 OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'oauth2_provider.AccessToken'
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
 OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'oauth2_provider.RefreshToken'
-# OIDC_PROVIDER = {
-#     'OIDC_ISSUER': 'http://localhost:8000',
-# }
+OIDC_PROVIDER = {
+    # 'OIDC_ISSUER': 'http://localhost:8000',
+    'OIDC_BASE_CLAIM_PROVIDER_CLASS': 'apps.oidc.claims.ClaimProvider',
+    'OIDC_CLAIM_PROVIDERS': [
+        'apps.oidc.claims.UserClaimProvider',
+        'apps.accounts.claims.UserProfileClaimProvider',
+    ],
+}
 
 
+# Add a prefix to the lugh checkdigit calculation.
+# This can help identify genuine subject ids and indicate provenance.
+SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
 APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE',
                         'Verify My Identity')
 ORGANIZATION_TITLE = env(
