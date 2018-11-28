@@ -83,6 +83,8 @@ class RequestValidatorTests(TestCase):
             "state": "random_state_string",
             "redirect_uri": "http://example.org",
             "response_type": "code",
+            "ui_locales": "se",
+            "scope": "openid",
         })
         url = "{url}?{qs}".format(url=reverse("oauth2_provider:authorize"),
                                   qs=query_string)

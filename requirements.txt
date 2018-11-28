@@ -15,7 +15,7 @@ flake8==3.5.0
 future==0.16.0
 idna==2.7
 mccabe==0.6.1
-oauthlib==2.1.0
+git+https://github.com/TransparentHealth/oauthlib.git@patch-ui_locales#egg=oauthlib-v2.1.1
 pluggy==0.7.1
 py==1.6.0
 pycodestyle==2.3.1
