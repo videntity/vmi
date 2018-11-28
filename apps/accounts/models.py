@@ -14,6 +14,7 @@ from .emails import (send_password_reset_url_via_email,
                      send_activation_key_via_email,
                      mfa_via_email,
                      send_new_org_account_approval_email)
+from .subject_generator import generate_subject_id
 
 # Copyright Videntity Systems Inc.
 
@@ -30,7 +31,8 @@ GENDER_CHOICES = (('M', 'Male'),
 
 
 class IndividualIdentifier(models.Model):
-    name = models.SlugField(max_length=255, blank=True, default='', db_index=True)
+    name = models.SlugField(max_length=255, blank=True,
+                            default='', db_index=True)
     value = models.CharField(
         max_length=255,
         blank=True,
@@ -46,7 +48,8 @@ class IndividualIdentifier(models.Model):
 
 
 class OrganizationIdentifier(models.Model):
-    name = models.SlugField(max_length=255, default='', blank=True, db_index=True)
+    name = models.SlugField(max_length=255, default='',
+                            blank=True, db_index=True)
     value = models.CharField(
         max_length=255,
         blank=True,
@@ -92,7 +95,8 @@ class Organization(models.Model):
         help_text="If populated, restrict email registration to this address.")
     website = models.CharField(max_length=512, blank=True, default='')
     phone_number = models.CharField(max_length=15, blank=True, default='')
-    point_of_contact = models.ForeignKey(get_user_model(), on_delete='PROTECT')
+    point_of_contact = models.ForeignKey(
+        get_user_model(), on_delete='PROTECT', null=True)
     addresses = models.ManyToManyField(Address, blank=True)
     identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True)
 
@@ -152,8 +156,10 @@ class UserProfile(models.Model):
                                              blank=True)
     mobile_phone_number = models.CharField(
         max_length=10, blank=True, default="",
-        help_text=_('US numbers only.'),
-    )
+        help_text=_('US numbers only.'),)
+    four_digit_suffix = models.CharField(
+        max_length=4, blank=True, default="",
+        help_text=_('If populated, this field must contain exactly four numbers.'),)
     sex = models.CharField(choices=SEX_CHOICES,
                            max_length=1, default="U",
                            help_text=_('Sex'),
@@ -164,6 +170,15 @@ class UserProfile(models.Model):
                               )
     birth_date = models.DateField(blank=True, null=True,
                                   )
+
+    def save(self, commit=True, **kwargs):
+        if not self.subject:
+            self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
+                                               number_1=self.mobile_phone_number,
+                                               number_2=self.four_digit_suffix)
+
+        if commit:
+            super(UserProfile, self).save(**kwargs)
 
     def __str__(self):
         display = '%s %s (%s)' % (self.user.first_name,

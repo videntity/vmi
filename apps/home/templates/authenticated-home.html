@@ -25,14 +25,16 @@
         <div class="col-lg-12">
 
     
-    <h3>Example heading <span class="label label-default">New</span></h3>
+    <h3>Hello {{request.user.username}}. Your account number is <span class="label label-default">{{profile.subject}}</span></h3>
+    <h4>Your identity has been verified to level <span class="label label-warning">1</span>, but many services will require a <span class="label label-info">2</span>.
+    You can <a href="">verify your identity now</a>
+    
+    </4>
     
     
 
-				<div class="btn-group-justified">
-					<a href="{% url 'oauth2_provider:authorized-token-list' %}" >
-					  <button type="button" class="btn btn-default"> <i class="fa fa-gears"></i>  Show Applications You Have Granted Access</button></a>
-				</div>
+    
+    
 	    </div>
 		
     </div> <!-- /.row -->
