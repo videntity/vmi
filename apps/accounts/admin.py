@@ -30,11 +30,8 @@ class UserProfileAdmin(admin.ModelAdmin):
         'user__first_name',
         'user__last_name',
         'birth_date',
-        'sex',
-        'ind_identifiers__name',
-        'addresses.zipcode']
-    raw_id_fields = ("user", "addresses", "organizations", "org_identifiers",
-                     "ind_identifiers")
+        'sex', ]
+    raw_id_fields = ("user", )
 
 
 admin.site.register(UserProfile, UserProfileAdmin)

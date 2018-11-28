@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework import permissions
 from django.urls import reverse
+from oauthlib.oauth2.rfc6749.grant_types import OIDCNoPrompt
 from oauth2_provider import scopes
 from oauth2_provider.exceptions import OAuthToolkitError
 from oauth2_provider.models import get_application_model
@@ -91,6 +92,11 @@ class AuthorizationView(OAuth2AuthorizationView):
 
     form_class = NonceAllowForm
 
+    def handle_no_permission(self):
+        if self.request.GET.get('prompt') == 'none':
+            raise OIDCNoPrompt()
+        return super().handle_no_permission()
+
     def get_initial(self):
         initial_data = super().get_initial()
         initial_data["nonce"] = self.oauth2_data.get("nonce", None)
@@ -108,6 +114,12 @@ class AuthorizationView(OAuth2AuthorizationView):
             q.pop('prompt')
             nxt = "%s?%s" % (request.path, q.urlencode())
             raise AuthenticationRequired(nxt)
+
+        if getattr(request.user, 'is_authenticated', False):
+            # override "prompt=none" out to allow process to proceed as normal
+            if request.GET.get('prompt') == 'none':
+                request.POST = request.POST.copy()
+                request.POST['prompt'] = False
 
     def validate_max_age(self, request):
         max_age = request.GET.get('max_age', None)

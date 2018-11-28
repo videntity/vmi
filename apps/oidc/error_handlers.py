@@ -20,7 +20,7 @@ class OIDCNoPromptMiddleware(MiddlewareMixin):
         if isinstance(exception, OIDCNoPrompt):
             scheme, netloc, path, query, fragment = urlsplit(request.GET.get("redirect_uri", None))  # noqa
             q = QueryDict(query, mutable=True)
-            q.update({"error": "login_required,interaction_required"})
+            q.update({"error": "interaction_required"})
             redirect_uri = urlunsplit((scheme,
                                        netloc,
                                        path,

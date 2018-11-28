@@ -157,6 +157,7 @@ OAUTH2_PROVIDER = {
     'DEFAULT_SCOPES': ['openid'],
     'OAUTH2_VALIDATOR_CLASS': 'apps.oidc.request_validator.RequestValidator',
     'OAUTH2_SERVER_CLASS': 'apps.oidc.server.Server',
+    'REQUEST_APPROVAL_PROMPT': 'auto',
 }
 OAUTH2_PROVIDER_GRANT_MODEL = 'oidc.Grant'
 OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'oauth2_provider.AccessToken'
