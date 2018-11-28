@@ -12,7 +12,7 @@ from django.urls import reverse
 def authenticated_organization_home(request):
 
     orgs_for_poc = Organization.objects.filter(point_of_contact=request.user)
-
+    print("here")
     for o in orgs_for_poc:
         affiliation_requests = OrganizationAffiliationRequest.objects.filter(
             organization=o)
@@ -41,52 +41,42 @@ def authenticated_organization_home(request):
 
 
 def authenticated_home(request):
+    """Switch between annon, end user and organizational staff member."""
+    name = _('Home')
     if request.user.is_authenticated:
-        name = _('Authenticated Home')
-        try:
-            profile = request.user.userprofile
-        except Exception:
-            profile = UserProfile.objects.create(user=request.user)
+        # Create user profile if one does not exist,
+        UserProfile.objects.get_or_create(user=request.user)
 
-        org_count = profile.organizations.all().count()
+        # exists = Organization.users.all().exists()
+        # check is the user is a member of any organization
+        for o in Organization.objects.all():
+            for u in o.users.all():
+                if u == request.user:
+                    return authenticated_organization_home(request)
 
-        if org_count > 0:
-            return authenticated_organization_home(request)
+        # If not in an org, then display end_user home.
+        return authenticated_enduser_home(request)
 
-        # this is a GET
-        context = {'name': name}
-        template = 'authenticated-home.html'
-        if not getattr(request.user, 'email', ''):
-            messages.warning(
-                request,
-                """Please consider adding an email to your account.
-                <a href="">Add it Now</a>""")
+    # User is not logged in.
+    context = {'name': name}
+    template = 'index.html'
+    return render(request, template, context)
 
-        if not getattr(
-            profile,
-            'email_verified',
-                False) and request.user.email:
 
-            messages.warning(
-                request,
-                """Your email has not been verified.
-                    <a href="">Verify it Now</a>""")
+def authenticated_enduser_home(request):
 
-        if not getattr(profile, 'phone_verified', False):
-            messages.warning(
-                request,
-                """Your mobile phone number has not been verified.
-                <a href="">Verify your mobile phone number now</a>""")
+    name = _('End User Home')
+    try:
+        profile = request.user.userprofile
+    except Exception:
+        profile = UserProfile.objects.create(user=request.user)
 
-        if not getattr(profile, 'ial_2', False):
-            messages.warning(
-                request,
-                """Your identity has not been verified.
+    if not getattr(profile, 'ial_2', False):
+        messages.warning(
+            request,
+            """Your identity has not been verified.
                 <a href="">Verify your identity Now</a>""")
-        context = {'name': name, 'profile': profile}
 
-    else:
-        name = _('Anon Home')
-        context = {'name': name}
-        template = 'index.html'
+    context = {'name': name, 'profile': profile}
+    template = 'authenticated-home.html'
     return render(request, template, context)
