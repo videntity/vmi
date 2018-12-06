@@ -4,6 +4,8 @@ from django.contrib import messages
 from ..accounts.models import UserProfile, Organization, OrganizationAffiliationRequest
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+# from django.contrib.auth.decorators import permission_required
+from .forms import UserSearchForm
 
 # Copyright Videntity Systems, Inc.
 
@@ -12,7 +14,6 @@ from django.urls import reverse
 def authenticated_organization_home(request):
 
     orgs_for_poc = Organization.objects.filter(point_of_contact=request.user)
-    print("here")
     for o in orgs_for_poc:
         affiliation_requests = OrganizationAffiliationRequest.objects.filter(
             organization=o)
@@ -36,7 +37,7 @@ def authenticated_organization_home(request):
             messages.info(request, msg)
 
     context = {}
-    template = 'authenticated-home.html'
+    template = 'organization-user-dashboard.html'
     return render(request, template, context)
 
 
@@ -79,4 +80,28 @@ def authenticated_enduser_home(request):
 
     context = {'name': name, 'profile': profile}
     template = 'authenticated-home.html'
+    return render(request, template, context)
+
+
+@login_required
+def user_search(request):
+
+    name = _('People Search')
+    context = {'name': name}
+
+    if request.method == 'POST':
+        form = UserSearchForm(request.POST)
+        if form.is_valid():
+            search_results = form.save()
+            context['search_results'] = search_results
+            return render(request, 'user-search-results.html', context)
+
+        else:
+            # return the bound form with errors
+            return render(request,
+                          'generic/bootstrapform.html',
+                          {'name': name, 'form': form})
+
+    context['form'] = UserSearchForm
+    template = 'generic/bootstrapform.html'
     return render(request, template, context)

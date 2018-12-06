@@ -16,6 +16,7 @@ from .emails import (send_password_reset_url_via_email,
                      send_new_org_account_approval_email)
 from .subject_generator import generate_subject_id
 from collections import OrderedDict
+from ..ial.models import IdentityAssuranceLevelDocumentation
 
 # Copyright Videntity Systems Inc.
 
@@ -29,33 +30,6 @@ GENDER_CHOICES = (('M', 'Male'),
                   ('TMF', 'Transgender Male to Female'),
                   ('TFM', 'Transgender Female to Male'),
                   ('U', 'Unknown'))
-
-
-# Please leave for now....adding this next.
-# class IdentityAssuranceLevel(models.Model):
-#
-#     subject_user = models.ForeignKey(get_user_model(), on_delete=models.PROTECT,
-#                                 db_index=True, null=True)
-#
-#     verifing_user = models.ForeignKey(get_user_model(), on_delete=models.PROTECT,
-#                                 db_index=True, null=True)
-#
-#     name = models.SlugField(max_length=250, blank=True,
-#                             default='', db_index=True)
-#     value = models.CharField(max_length=1, default='', db_index=True)
-#     metadata = models.TextField(
-#         blank=True,
-#         default='',
-#         help_text="JSON Object")
-#     source_of_claim = models.CharField(max_length=250, blank=True, default='', db_index=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     # type will be some enumerated\codified list.
-#     type = models.CharField(max_length=16, blank=True, default='')
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-#
-#     def __str__(self):
-#         return "%=%s" % (self.subject_user, self.verifing_user)
 
 
 class IndividualIdentifier(models.Model):
@@ -274,6 +248,12 @@ class UserProfile(models.Model):
     def name(self):
         name = '%s %s' % (self.user.first_name, self.user.last_name)
         return name
+
+    @property
+    def ial(self):
+        o, created = IdentityAssuranceLevelDocumentation.objects.get_or_create(
+            subject_user=self.user)
+        return o.level
 
 
 MFA_CHOICES = (

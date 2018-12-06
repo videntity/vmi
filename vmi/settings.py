@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.oidc',
     'apps.home',
     'apps.accounts',
+    'apps.ial',
 ]
 
 MIDDLEWARE = [
