@@ -17,7 +17,8 @@ RUN apk add bash \
 	libxslt-dev \
 	nginx \
 	curl \
-	supervisor && \
+	supervisor \
+	git && \
 	python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip3 install --upgrade pip setuptools && \
