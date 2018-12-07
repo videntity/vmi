@@ -15,6 +15,8 @@ from .emails import (send_password_reset_url_via_email,
                      mfa_via_email,
                      send_new_org_account_approval_email)
 from .subject_generator import generate_subject_id
+from collections import OrderedDict
+from ..ial.models import IdentityAssuranceLevelDocumentation
 
 # Copyright Videntity Systems Inc.
 
@@ -31,10 +33,11 @@ GENDER_CHOICES = (('M', 'Male'),
 
 
 class IndividualIdentifier(models.Model):
-    name = models.SlugField(max_length=255, blank=True,
+    user = models.ForeignKey(get_user_model(), on_delete='PROTECT', null=True)
+    name = models.SlugField(max_length=250, blank=True,
                             default='', db_index=True)
     value = models.CharField(
-        max_length=255,
+        max_length=250,
         blank=True,
         default='', db_index=True)
     metadata = models.TextField(
@@ -48,10 +51,10 @@ class IndividualIdentifier(models.Model):
 
 
 class OrganizationIdentifier(models.Model):
-    name = models.SlugField(max_length=255, default='',
+    name = models.SlugField(max_length=250, default='',
                             blank=True, db_index=True)
     value = models.CharField(
-        max_length=255,
+        max_length=250,
         blank=True,
         default='', db_index=True)
     metadata = models.TextField(
@@ -65,25 +68,50 @@ class OrganizationIdentifier(models.Model):
 
 
 class Address(models.Model):
-    street_1 = models.CharField(max_length=255, blank=True, default='')
-    street_2 = models.CharField(max_length=255, blank=True, default='')
-    city = models.CharField(max_length=255, blank=True, default='')
+    user = models.ForeignKey(get_user_model(), on_delete='PROTECT', null=True)
+    street_1 = models.CharField(max_length=250, blank=True, default='')
+    street_2 = models.CharField(max_length=250, blank=True, default='')
+    city = models.CharField(max_length=250, blank=True, default='')
     state = models.CharField(max_length=2, blank=True, default='')
     zipcode = models.CharField(max_length=10, blank=True, default='')
+    country = models.CharField(max_length=2, blank=True, default='')
     org_identifiers = models.ManyToManyField(
         OrganizationIdentifier, blank=True)
     ind_identifiers = models.ManyToManyField(IndividualIdentifier, blank=True)
-    subject = models.CharField(max_length=255, default='', blank=True)
+    subject = models.CharField(max_length=250, default='', blank=True)
 
     def __str__(self):
         address = '%s %s %s %s %s' % (self.street_1, self.street_2,
                                       self.city, self.state, self.zipcode)
         return address
 
+    @property
+    def locality(self):
+        return self.city
+
+    @property
+    def region(self):
+        return self.state
+
+    @property
+    def street_address(self):
+        return '%s %s' % (self.street_1, self.street_2)
+
+    def formatted_address(self):
+        od = OrderedDict()
+        od['formatted'] = '%s %s\n%s %s %s' % (self.street_1, self.street_2,
+                                               self.city, self.state, self.zipcode)
+        od['street_address'] = self.street_address
+        od['locality'] = self.locaclity
+        od['region'] = self.region
+        od['postal_code'] = self.zipcode
+        od['country'] = self.country
+        return od
+
 
 class Organization(models.Model):
-    name = models.CharField(max_length=255, default='', blank=True)
-    slug = models.SlugField(max_length=255, blank=True, default='',
+    name = models.CharField(max_length=250, default='', blank=True)
+    slug = models.SlugField(max_length=250, blank=True, default='',
                             db_index=True, unique=True)
     registration_code = models.CharField(max_length=100,
                                          default='',
@@ -96,8 +124,11 @@ class Organization(models.Model):
     website = models.CharField(max_length=512, blank=True, default='')
     phone_number = models.CharField(max_length=15, blank=True, default='')
     point_of_contact = models.ForeignKey(
-        get_user_model(), on_delete='PROTECT', null=True)
+        get_user_model(), on_delete='PROTECT', null=True,
+        related_name="organization_point_of_contact")
     addresses = models.ManyToManyField(Address, blank=True)
+    users = models.ManyToManyField(
+        get_user_model(), blank=True, related_name='org_staff')
     identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True)
 
     def __str__(self):
@@ -147,16 +178,13 @@ class UserProfile(models.Model):
         help_text='Nickname, alias, or other names used.')
     email_verified = models.BooleanField(default=False, blank=True)
     phone_verified = models.BooleanField(default=False, blank=True)
-    organizations = models.ManyToManyField(Organization, blank=True)
-    addresses = models.ManyToManyField(Address, blank=True)
-    ind_identifiers = models.ForeignKey(IndividualIdentifier, blank=True,
-                                        on_delete=models.CASCADE,
-                                        default=None, null=True)
-    org_identifiers = models.ManyToManyField(OrganizationIdentifier,
-                                             blank=True)
     mobile_phone_number = models.CharField(
         max_length=10, blank=True, default="",
         help_text=_('US numbers only.'),)
+
+    mobile_phone_number_verified = models.BooleanField(
+        blank=True, default=False)
+
     four_digit_suffix = models.CharField(
         max_length=4, blank=True, default="",
         help_text=_('If populated, this field must contain exactly four numbers.'),)
@@ -164,12 +192,14 @@ class UserProfile(models.Model):
                            max_length=1, default="U",
                            help_text=_('Sex'),
                            )
-    gender = models.CharField(choices=GENDER_CHOICES,
-                              max_length=3, default="U",
-                              help_text=_('Gender / Gender Identity'),
-                              )
-    birth_date = models.DateField(blank=True, null=True,
-                                  )
+    gender_identity = models.CharField(choices=GENDER_CHOICES,
+                                       max_length=3, default="U",
+                                       help_text=_('Gender / Gender Identity'),
+                                       )
+    birth_date = models.DateField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def save(self, commit=True, **kwargs):
         if not self.subject:
@@ -192,10 +222,10 @@ class UserProfile(models.Model):
 
     @property
     def family_name(self):
-        return self.user.family_name
+        return self.user.last_name
 
     @property
-    def phone(self):
+    def phone_number(self):
         return self.mobile_phone_number
 
     @property
@@ -203,9 +233,27 @@ class UserProfile(models.Model):
         return self.user.username
 
     @property
+    def sub(self):
+        return self.subject
+
+    @property
+    def gender(self):
+        return self.sex
+
+    @property
+    def birthdate(self):
+        return self.birth_date
+
+    @property
     def name(self):
         name = '%s %s' % (self.user.first_name, self.user.last_name)
         return name
+
+    @property
+    def ial(self):
+        o, created = IdentityAssuranceLevelDocumentation.objects.get_or_create(
+            subject_user=self.user)
+        return o.level
 
 
 MFA_CHOICES = (

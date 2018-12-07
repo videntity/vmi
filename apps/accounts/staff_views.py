@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
-from .models import Organization, OrganizationAffiliationRequest, UserProfile
+from .models import Organization, OrganizationAffiliationRequest
 from .staff_forms import StaffSignupForm
 from django.conf import settings
 # from .emails import send_new_org_account_approval_email
@@ -30,10 +30,9 @@ def approve_org_affiliation(request, organization_slug, username):
         user=user)
     if request.user != org.point_of_contact:
         return HttpResponseForbidden()
-    up = UserProfile.objects.get(user=user)
-    up.organizations.add(org)
-    up.save()
 
+    org.users.add(user)
+    org.save()
     oar.delete()
     msg = _("""%s %s is now affiliated with %s.""") % (user.first_name,
                                                        user.last_name,
