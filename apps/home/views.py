@@ -33,10 +33,15 @@ def authenticated_organization_home(request):
                                             args=(
                                                 oar.organization.slug,
                                                 oar.user.username)))
-
             messages.info(request, msg)
+    # Get the organizations for this user.
+    organizations = []
+    for o in Organization.objects.all():
+        for u in o.users.all():
+            if u == request.user:
+                organizations.append(o)
 
-    context = {}
+    context = {'organizations': organizations}
     template = 'organization-user-dashboard.html'
     return render(request, template, context)
 
