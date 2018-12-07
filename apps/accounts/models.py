@@ -134,6 +134,7 @@ class Organization(models.Model):
     def __str__(self):
         return self.name
 
+    @property
     def signnup_url(self):
         return "%s%s" % (settings.HOSTNAME_URL, reverse(
             'create_org_account', args=(self.slug,)))
@@ -254,6 +255,27 @@ class UserProfile(models.Model):
         o, created = IdentityAssuranceLevelDocumentation.objects.get_or_create(
             subject_user=self.user)
         return o.level
+
+    @property
+    def aal(self):
+        return 1
+
+    @property
+    def vot(self):
+        """Vectors of Trust rfc8485"""
+
+        response = ""
+        ial = self.ial
+        aal = self.aal
+        if ial == 2:
+            response = "%sP2." % (response)
+        else:
+            response = "%sP0." % (response)
+        if aal == 1:
+            response = "%sCc" % (response)
+        else:
+            response = "%sCc" % (response)
+        return response
 
 
 MFA_CHOICES = (
