@@ -172,11 +172,15 @@ OIDC_PROVIDER = {
         'apps.oidc.claims.UserClaimProvider',
         'apps.accounts.claims.SubjectClaimProvider',
         # Optional
-        'apps.accounts.claims.EmailVerifiedClaimProvider',
-        'apps.accounts.claims.PhoneNumberClaimProvider',
-        'apps.accounts.claims.IdentityAssuranceLevelClaimProvider',
-        'apps.accounts.claims.AuthenticatorAssuranceLevelClaimProvider',
-        'apps.accounts.claims.VectorsOfTrustClaimProvider',
+        # This claim provider currently gets all claims fetch-able via the UserProfile.
+        'apps.accounts.claims.UserProfileClaimProvider',
+        'apps.accounts.claims.AddressClaimProvider',
+        'apps.accounts.claims.IdentifierClaimProvider',
+        # 'apps.accounts.claims.EmailVerifiedClaimProvider',
+        # 'apps.accounts.claims.PhoneNumberClaimProvider',
+        # 'apps.accounts.claims.IdentityAssuranceLevelClaimProvider',
+        # 'apps.accounts.claims.AuthenticatorAssuranceLevelClaimProvider',
+        # 'apps.accounts.claims.VectorsOfTrustClaimProvider',
     ],
 }
 
