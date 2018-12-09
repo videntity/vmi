@@ -35,7 +35,6 @@ def authenticated_organization_home(request):
                                                 oar.user.username)))
             messages.info(request, msg)
 
-    # context = {'organizations': organizations}
     context = {'organizations': request.user.userprofile.organizations}
     template = 'organization-user-dashboard.html'
     return render(request, template, context)
