@@ -321,6 +321,16 @@ class UserProfile(models.Model):
             formatted_identifiers.append(i.doc_oidc_format)
         return formatted_identifiers
 
+    @property
+    def organizations(self):
+        # Get the organizations for this user.
+        orgs = []
+        for o in Organization.objects.all():
+            for u in o.users.all():
+                if u == self.user:
+                    orgs.append(o)
+        return orgs
+
 
 MFA_CHOICES = (
     ('', 'None'),
