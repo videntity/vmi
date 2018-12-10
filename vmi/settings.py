@@ -168,8 +168,19 @@ OIDC_PROVIDER = {
     # 'OIDC_ISSUER': 'http://localhost:8000',
     'OIDC_BASE_CLAIM_PROVIDER_CLASS': 'apps.oidc.claims.ClaimProvider',
     'OIDC_CLAIM_PROVIDERS': [
+        # Mandatory
         'apps.oidc.claims.UserClaimProvider',
+        'apps.accounts.claims.SubjectClaimProvider',
+        # Optional
+        # This claim provider currently gets all claims fetch-able via the UserProfile.
         'apps.accounts.claims.UserProfileClaimProvider',
+        'apps.accounts.claims.AddressClaimProvider',
+        'apps.accounts.claims.IdentifierClaimProvider',
+        # 'apps.accounts.claims.EmailVerifiedClaimProvider',
+        # 'apps.accounts.claims.PhoneNumberClaimProvider',
+        # 'apps.accounts.claims.IdentityAssuranceLevelClaimProvider',
+        # 'apps.accounts.claims.AuthenticatorAssuranceLevelClaimProvider',
+        # 'apps.accounts.claims.VectorsOfTrustClaimProvider',
     ],
 }
 

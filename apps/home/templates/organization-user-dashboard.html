@@ -25,9 +25,10 @@
         <div class="col-lg-12">
 
     <a href="{% url 'user_search' %}"><button type="button" class="btn btn-default">People Search</button></a>
-     <a href=""> <button type="button" class="btn btn-default">Create End User Account</button></a>
-    <a href=""><button type="button" class="btn  btn-x-small btn-default">Signup Staff Information</button></a>
-    
+    <a href=""><button type="button" class="btn btn-default">Create Member Account</button></a>
+     {% for o in organizations %}
+        <a href="{{ o.signnup_url }}"><button type="button" class="btn  btn-x-small btn-default">Signup {{o}} Staff </button></a>
+    {% endfor %}
     </h4>
     
 	    </div>

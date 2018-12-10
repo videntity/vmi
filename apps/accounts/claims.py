@@ -1,7 +1,78 @@
 from apps.oidc.claims import BaseProvider
 
 
+class AddressClaimProvider(BaseProvider):
+
+    def claim_address(self):
+        try:
+            return self.user.userprofile.address
+        except Exception:
+            return None
+
+
+class IdentifierClaimProvider(BaseProvider):
+
+    def claim_doc(self):
+        try:
+            return self.user.userprofile.doc
+        except Exception:
+            return None
+
+
 class UserProfileClaimProvider(BaseProvider):
+    """"This claim is MANDATORY"""
+
+    def claim_sub(self):
+        try:
+            return self.user.userprofile.subject
+        except Exception:
+            return None
+
+    def claim_given_name(self):
+        try:
+            return self.user.userprofile.given_name
+        except Exception:
+            return None
+
+    def claim_family_name(self):
+        try:
+            return self.user.userprofile.family_name_name
+        except Exception:
+            return None
+
+    def claim_name(self):
+        try:
+            return self.user.userprofile.name
+        except Exception:
+            return None
+
+    def claim_preferred_username(self):
+        try:
+            return self.user.username
+        except Exception:
+            return None
+
+    def claim_nickname(self):
+        try:
+            return self.user.userprofile.nickname
+        except Exception:
+            return None
+
+    def claim_gender(self):
+        try:
+            gender = self.user.userprofile.gender
+            if gender == "M":
+                return "male"
+            if gender == "F":
+                return "female"
+        except Exception:
+            return None
+
+    def claim_birthdate(self):
+        try:
+            return str(self.user.userprofile.birthdate)
+        except Exception:
+            return None
 
     def claim_email_verified(self):
         try:
@@ -9,8 +80,111 @@ class UserProfileClaimProvider(BaseProvider):
         except Exception:
             return None
 
+    def claim_phone_number(self):
+        try:
+            return self.user.userprofile.phone_number
+        except Exception:
+            return None
+
+    def claim_phone_verified(self):
+        try:
+            return self.user.userprofile.phone_verified
+        except Exception:
+            return None
+
+    def claim_aal(self):
+        try:
+            return self.user.userprofile.aal
+        except Exception:
+            return None
+
+    def claim_ial(self):
+        try:
+            return self.user.userprofile.ial
+        except Exception:
+            return None
+
+    def claim_vot(self):
+        try:
+            return self.user.userprofile.vot
+        except Exception:
+            return None
+
+    def claim_profile(self):
+        try:
+            return self.user.userprofile.profile
+        except Exception:
+            return None
+
+    def claim_picture(self):
+        try:
+            return self.user.userprofile.picture
+        except Exception:
+            return None
+
+    def claim_website(self):
+        try:
+            return self.user.userprofile.website
+        except Exception:
+            return None
+
+
+class SubjectClaimProvider(BaseProvider):
+    """"This claim is MANDATORY"""
+
     def claim_sub(self):
         try:
             return self.user.userprofile.subject
+        except Exception:
+            return None
+
+
+class EmailVerifiedClaimProvider(BaseProvider):
+
+    def claim_email_verified(self):
+        try:
+            return self.user.userprofile.email_verified
+        except Exception:
+            return None
+
+
+class IdentityAssuranceLevelClaimProvider(BaseProvider):
+
+    def claim_ial(self):
+        try:
+            return self.user.userprofile.ial
+        except Exception:
+            return None
+
+
+class AuthenticatorAssuranceLevelClaimProvider(BaseProvider):
+
+    def claim_aal(self):
+        try:
+            return self.user.userprofile.aal
+        except Exception:
+            return None
+
+
+class VectorsOfTrustClaimProvider(BaseProvider):
+
+    def claim_vot(self):
+        try:
+            return self.user.userprofile.vot
+        except Exception:
+            return None
+
+
+class PhoneNumberClaimProvider(BaseProvider):
+
+    def claim_phone_number(self):
+        try:
+            return self.user.userprofile.phone_number
+        except Exception:
+            return None
+
+    def claim_phone_verified(self):
+        try:
+            return self.user.userprofile.phone_verified
         except Exception:
             return None

@@ -49,6 +49,13 @@ class IndividualIdentifier(models.Model):
     def __str__(self):
         return self.value
 
+    @property
+    def doc_oidc_format(self):
+        od = OrderedDict()
+        od['type'] = self.type
+        od['num'] = self.value
+        return od
+
 
 class OrganizationIdentifier(models.Model):
     name = models.SlugField(max_length=250, default='',
@@ -97,12 +104,13 @@ class Address(models.Model):
     def street_address(self):
         return '%s %s' % (self.street_1, self.street_2)
 
+    @property
     def formatted_address(self):
         od = OrderedDict()
-        od['formatted'] = '%s %s\n%s %s %s' % (self.street_1, self.street_2,
-                                               self.city, self.state, self.zipcode)
+        od['formatted'] = '%s %s\n%s %s %s' % (
+            self.street_1, self.street_2, self.city, self.state, self.zipcode)
         od['street_address'] = self.street_address
-        od['locality'] = self.locaclity
+        od['locality'] = self.locality
         od['region'] = self.region
         od['postal_code'] = self.zipcode
         od['country'] = self.country
@@ -134,6 +142,7 @@ class Organization(models.Model):
     def __str__(self):
         return self.name
 
+    @property
     def signnup_url(self):
         return "%s%s" % (settings.HOSTNAME_URL, reverse(
             'create_org_account', args=(self.slug,)))
@@ -233,6 +242,14 @@ class UserProfile(models.Model):
         return self.user.username
 
     @property
+    def preferred_gender(self):
+        return self.sex
+
+    @property
+    def preferred_birthdate(self):
+        return str(self.birth_date)
+
+    @property
     def sub(self):
         return self.subject
 
@@ -253,7 +270,66 @@ class UserProfile(models.Model):
     def ial(self):
         o, created = IdentityAssuranceLevelDocumentation.objects.get_or_create(
             subject_user=self.user)
-        return o.level
+        return str(o.level)
+
+    @property
+    def aal(self):
+        return "1"
+
+    @property
+    def profile_url(self):
+        return ""
+
+    @property
+    def website(self):
+        return ""
+
+    @property
+    def picture(self):
+        return ""
+
+    @property
+    def vot(self):
+        """Vectors of Trust rfc8485"""
+        # TODO Add MFA support
+        response = ""
+        ial = self.ial
+        aal = self.aal
+        if ial == "2":
+            response = "%sP2." % (response)
+        else:
+            response = "%sP0." % (response)
+        if aal == "1":
+            response = "%sCc" % (response)
+        else:
+            response = "%sCc" % (response)
+        return response
+
+    @property
+    def address(self):
+        formatted_addresses = []
+        addresses = Address.objects.filter(user=self.user)
+        for a in addresses:
+            formatted_addresses.append(a.formatted_address)
+        return formatted_addresses
+
+    @property
+    def doc(self):
+        formatted_identifiers = []
+        identifiers = IndividualIdentifier.objects.filter(user=self.user)
+        for i in identifiers:
+            formatted_identifiers.append(i.doc_oidc_format)
+        return formatted_identifiers
+
+    @property
+    def organizations(self):
+        # Get the organizations for this user.
+        orgs = []
+        for o in Organization.objects.all():
+            for u in o.users.all():
+                if u == self.user:
+                    orgs.append(o)
+        return orgs
 
 
 MFA_CHOICES = (
