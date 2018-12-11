@@ -1,7 +1,10 @@
+#!/bin/bash
+
+cat << EOF
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "${ecr_url}:${version}",
+    "Name": "567024208163.dkr.ecr.us-east-1.amazonaws.com/vmi:$GIT_SHA",
     "Update": "true"
   },
   "Ports": [
@@ -11,3 +14,4 @@
   ],
   "Logging": "/var/log/nginx"
 }
+EOF
