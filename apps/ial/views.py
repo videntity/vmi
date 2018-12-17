@@ -35,10 +35,10 @@ def inperson_id_verify(request, subject):
             ial_doc.save()
             messages.success(
                 request, _(
-                    "You have verified %s %s's (%s )identity." % (up.user.first_name,
-                                                                  up.user.last_name,
-                                                                  up.subject)))
-            return HttpResponseRedirect(reverse('home'))
+                    "You have verified %s %s's (%s ) identity." % (up.user.first_name,
+                                                                   up.user.last_name,
+                                                                   up.subject)))
+            return HttpResponseRedirect(reverse('user_profile_subject', args=(up.subject,)))
         else:
             # return the bound form with errors
             return render(request,
@@ -74,10 +74,10 @@ def two_to_one_downgrade(request, subject):
             ial_doc.save()
             messages.success(
                 request, _(
-                    "You downgraded the identity assurance level to 1 for %s %s's (%s )identity." % (up.user.first_name,
-                                                                                                     up.user.last_name,
-                                                                                                     up.subject)))
-            return HttpResponseRedirect(reverse('home'))
+                    "You downgraded the identity assurance level to 1 for %s %s's (%s)." % (up.user.first_name,
+                                                                                            up.user.last_name,
+                                                                                            up.subject)))
+            return HttpResponseRedirect(reverse('user_profile_subject', args=(up.subject,)))
         else:
             # return the bound form with errors
             return render(request,
