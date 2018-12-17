@@ -3,57 +3,34 @@
 {% block Content %}
 
     <div class="container">
-      <div class="row">
+        
+         <div class="row">
+         {% include "include/messages.html" %}
+         </div>
 
+      <div class="row">
         <div class="ds-col-lg-12">
           <h1 class="page-header">{{name}} <small>{{subname}}</small></h1>
         </div>
 
       </div>
 	  
-       <div class="row">
-
-        <div class="ds-col-lg-12">
-
-          <a href="{% url 'reset_password' %}">
-			    <button type="button" class="usa-button usa-button-primary"> <i class="fa fa-key"></i>  Change Your Password
-                </button>
-          </a>
-										
-      
-        </div>
-
-      </div>
-
-      
-	  <div class="row">
-
-        <div class="ds-col-lg-12">
-          * Required Fields
-        </div>
-
-      </div>
 
       <div class="hero-unit">
-
-        <div class="row">
-
-        
-             <div class="row">
-      
+              <div class="row">
                   <form class="well" method="post" action="" enctype="multipart/form-data">
                     {% csrf_token %}
 
                     {% load bootstrap %}
                     {{ form|bootstrap }}
 
-                    <input type="submit" class="usa-button usa-button usa-button-success btn-xlarge"  value="{% trans 'Continue' %}" /><br>
+                    <input type="submit" class="btn btn-primary"  value="{% trans 'Continue' %}" /><br>
                     <a href="javascript:history.go(-1)">{% trans "Go Back" %}</a>
-
                   </form>
              </div>
 
     </div>
+</div>
 
 {% endblock %}
 

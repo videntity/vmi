@@ -33,24 +33,13 @@
             
       <tr>
        <th scope="row">{{up}}<br>
-       Identity Level
-      
-      <a href=""> {{up.ial}}</a>
-      
-       <br>
-       Mobile Phone: <a href="">{{up.mobile_phone_number|default:"--"}}</a> <br>
-       Phone Verified: <a href="">{{up.phone_verified}}</a><br>
-       Email: <a href="">{{up.user.email|default:"--"}}</a> <br>
-       Email Verified: <a href="">{{up.email_verified}}</a> <br>
-       <a href="">Service Providers</a>  | <a href="">Identifiers</a> |  <a href="">Addresses</a> | <a href="">Signed Forms</a>  <br>
+       Phone: {{up.mobile_phone_number|default:"--"}}<br>
+       Identity Level: {{up.ial}}
        </th>
-       <td> <a href="{% url 'inperson_id_verify' up.subject|default:"None" %}">
-        <button type="button" class="btn btn-warning">Verify ID </button> 
+       <td> <a href="{% url 'user_profile_subject' up.subject|default:"None" %}">
+        <button type="button" class="btn btn-primary"> View Profile </button> 
        </a>
-       
-        <a href="{% url 'ial_two_to_one_downgrade' up.subject|default:"None" %}">
-        <button type="button" class="btn btn-error">Downgrade ID</button> 
-       </a>
+
        
        </td>
       </tr>     
