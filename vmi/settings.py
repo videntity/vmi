@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrapform',
+    'phonenumber_field',
     'oauth2_provider',
     'rest_framework',
     'apps.oidc',
@@ -172,7 +173,8 @@ OIDC_PROVIDER = {
         'apps.oidc.claims.UserClaimProvider',
         'apps.accounts.claims.SubjectClaimProvider',
         # Optional
-        # This claim provider currently gets all claims fetch-able via the UserProfile.
+        # This claim provider currently gets all claims fetch-able via the
+        # UserProfile.
         'apps.accounts.claims.UserProfileClaimProvider',
         'apps.accounts.claims.AddressClaimProvider',
         'apps.accounts.claims.IdentifierClaimProvider',
@@ -287,3 +289,5 @@ ORGANIZATION_ID_TYPE_CHOICES = (
     ('OEID', 'Other Entity Identifier'),
     ('PECOS', 'PECOS Medicare ID')
 )
+
+PHONENUMBER_DEFAULT_REGION = 'US'

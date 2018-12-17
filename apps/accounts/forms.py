@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
+from phonenumber_field.formfields import PhoneNumberField
 from .models import UserProfile, create_activation_key
 
 # Copyright Videntity Systems Inc.
@@ -49,18 +50,13 @@ class SignupForm(forms.Form):
     last_name = forms.CharField(max_length=100, label=_("Last Name"))
     username = forms.CharField(max_length=30, label=_("User Name"),
                                help_text="Your desired user name or handle.")
-    mobile_phone_number = forms.CharField(required=False,
-                                          label=_(
-                                              "Mobile Phone Number (Optional)"),
-                                          help_text=_("""We will use this in your
+    mobile_phone_number = PhoneNumberField(required=False,
+                                           label=_(
+                                               "Mobile Phone Number (Optional)"),
+                                           help_text=_("""We will use this in your
                                                          account number and to
-                                                         verify your device."""),
-                                          max_length=10)
-    four_digit_suffix = forms.CharField(required=False,
-                                        label=_(
-                                            "We will use this in your account number (Optional)"),
-                                        help_text="We will use this in your account number",
-                                        max_length=4)
+                                                         verify your device."""))
+
     email = forms.EmailField(max_length=75, label=_(
         "Email (Optional)"), required=False)
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
@@ -101,13 +97,13 @@ class SignupForm(forms.Form):
             raise forms.ValidationError(_('This username is already taken.'))
         return username
 
-    def clean_mobile_phone_number(self):
-        mobile_phone_number = self.cleaned_data.get('mobile_phone_number')
-        if mobile_phone_number:
-            if not RepresentsPositiveInt(mobile_phone_number):
-                raise forms.ValidationError(
-                    _('Your phone number must be exactly 10 digits'))
-        return mobile_phone_number
+    # def clean_mobile_phone_number(self):
+    #     mobile_phone_number = self.cleaned_data.get('mobile_phone_number')
+    #     if mobile_phone_number:
+    #         if not RepresentsPositiveInt(mobile_phone_number):
+    #             raise forms.ValidationError(
+    #                 _('Your phone number must be exactly 10 digits'))
+    #     return mobile_phone_number
 
     def clean_four_digit_suffix(self):
         four_digit_suffix = self.cleaned_data.get('four_digit_suffix')
@@ -129,7 +125,6 @@ class SignupForm(forms.Form):
 
         UserProfile.objects.create(
             user=new_user,
-            four_digit_suffix=self.cleaned_data['four_digit_suffix'],
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
         )
         # Need to add user groups here.

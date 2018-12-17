@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 import boto3
+from phonenumber_field.modelfields import PhoneNumberField
 from .emails import (send_password_reset_url_via_email,
                      send_activation_key_via_email,
                      mfa_via_email,
@@ -187,9 +188,8 @@ class UserProfile(models.Model):
         help_text='Nickname, alias, or other names used.')
     email_verified = models.BooleanField(default=False, blank=True)
     phone_verified = models.BooleanField(default=False, blank=True)
-    mobile_phone_number = models.CharField(
-        max_length=10, blank=True, default="",
-        help_text=_('US numbers only.'),)
+    mobile_phone_number = PhoneNumberField(blank=True, default="", unique=True,
+                                           help_text=_('US numbers only.'),)
 
     mobile_phone_number_verified = models.BooleanField(
         blank=True, default=False)
