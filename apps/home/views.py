@@ -22,7 +22,6 @@ def user_profile(request, subject=None):
         if not request.user.has_perm('can_view_profile_another_user'):
             raise Http404()
         user = up.user
-
     context = {'user': user}
     template = 'profile.html'
     return render(request, template, context)

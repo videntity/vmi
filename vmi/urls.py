@@ -83,9 +83,8 @@ urlpatterns = [
     path('o/', include(('apps.oidc.urls', 'oidc'), namespace='oidc')),
     path('', authenticated_home, name='home'),
     path('search', user_search, name='user_search'),
-    url(r"^profile/(?P<subject>[^/]+)$",
-        user_profile, name='user_profile_subject'),
-    url(r'^profile/', user_profile, name='user_profile'),
-
+    path('profile/', user_profile, name='user_profile'),
+    path('profile/(?P<subject>[^/]+)',
+         user_profile, name='user_profile_subject'),
 
 ]
