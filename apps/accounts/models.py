@@ -82,10 +82,6 @@ class IndividualIdentifier(models.Model):
         od['num'] = self.value
         return od
 
-    class Meta:
-        permissions = (
-            ("can_change_individual_identifier", "Can change individual identifier"),)
-
 
 class OrganizationIdentifier(models.Model):
     name = models.SlugField(max_length=250, default='',
@@ -102,10 +98,6 @@ class OrganizationIdentifier(models.Model):
 
     def __str__(self):
         return self.value
-
-    class Meta:
-        permissions = (
-            ("can_change_organization_identifier", "Can change organization identifier"),)
 
 
 class Address(models.Model):
@@ -149,10 +141,6 @@ class Address(models.Model):
         od['postal_code'] = self.zipcode
         od['country'] = self.country
         return od
-
-    class Meta:
-        permissions = (
-            ("can_change_address", "Can change address"),)
 
 
 class Organization(models.Model):
@@ -371,8 +359,7 @@ class UserProfile(models.Model):
     class Meta:
         permissions = (
             ("can_change_profile_another_user",
-             "Can change basic profile for another user."),
-            ("can_view_profile_another_user", "Can view basic profile for another user."),)
+             "Can change basic profile for another user."),)
 
 
 MFA_CHOICES = (
