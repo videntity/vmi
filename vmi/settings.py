@@ -249,6 +249,7 @@ SETTINGS_EXPORT = [
     'USER_DOCS',
     'DEVELOPER_DOCS',
     'USER_DOCS_TITLE',
+    'HOSTNAME_URL',
 ]
 
 # Emails
