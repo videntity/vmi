@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'apps.home',
     'apps.accounts',
     'apps.ial',
+    'apps.fido',
 ]
 
 MIDDLEWARE = [
