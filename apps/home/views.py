@@ -14,7 +14,7 @@ from .forms import UserSearchForm
 @login_required
 def user_profile(request, subject=None):
     if not subject:
-        #Looking at your own record.
+        # Looking at your own record.
         user = request.user
     else:
         up = get_object_or_404(UserProfile, subject=subject)
