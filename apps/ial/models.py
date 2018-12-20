@@ -32,7 +32,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
             ('1-TO-2',
              'Verify Identity: Change the Identity assurance Level from 1 to 2'),
             ('2-TO-1',
-             'Administrative downgrade: Change the Identity Assurance Level (IAL) from 2 to 1 from IAL 2 to 1.')),
+             'Administrative Downgrade: Change the Identity Assurance Level (IAL) from 2 to 1 from IAL 2 to 1.')),
         max_length=6,
         default='',
         blank=False)
