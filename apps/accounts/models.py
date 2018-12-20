@@ -33,6 +33,31 @@ GENDER_CHOICES = (('M', 'Male'),
                   ('U', 'Unknown'))
 
 
+# These are "mockups" for now.
+# class MemberOrganizationRelationship(models.Model):
+#     user = models.ForeignKey(get_user_model(), on_delete='PROTECT')
+#     organization = models.ForeignKey(Organization, on_delete='PROTECT', null=True)
+#     summary = models.TextField(blank=True, default='')
+#     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+#     created_date = models.DateField(auto_now_add=True, null=True, blank=True)
+#     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+#
+#     def __str__(self):
+#         return "%s relationship with %s since %s" % (self.user, sself.organization. self.created_at)
+#
+#
+# class MemberOrganizationNotes(models.Model):
+#     mor = models.ForeignKey(MemberOrganizationRelationship, on_delete='PROTECT')
+#     member_note =  models.TextField(blank=True, default='')
+#     organization_note =  models.TextField(blank=True, default='')
+#     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+#     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+#
+#     def __str__(self):
+# return "%s note on  %s on %s" % (self.organization, sself.organization.
+# self.created_at)
+
+
 class IndividualIdentifier(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete='PROTECT', null=True)
     name = models.SlugField(max_length=250, blank=True,
@@ -57,6 +82,10 @@ class IndividualIdentifier(models.Model):
         od['num'] = self.value
         return od
 
+    class Meta:
+        permissions = (
+            ("can_change_individual_identifier", "Can change individual identifier"),)
+
 
 class OrganizationIdentifier(models.Model):
     name = models.SlugField(max_length=250, default='',
@@ -73,6 +102,10 @@ class OrganizationIdentifier(models.Model):
 
     def __str__(self):
         return self.value
+
+    class Meta:
+        permissions = (
+            ("can_change_organization_identifier", "Can change organization identifier"),)
 
 
 class Address(models.Model):
@@ -116,6 +149,10 @@ class Address(models.Model):
         od['postal_code'] = self.zipcode
         od['country'] = self.country
         return od
+
+    class Meta:
+        permissions = (
+            ("can_change_address", "Can change address"),)
 
 
 class Organization(models.Model):
@@ -330,6 +367,12 @@ class UserProfile(models.Model):
                 if u == self.user:
                     orgs.append(o)
         return orgs
+
+    class Meta:
+        permissions = (
+            ("can_change_profile_another_user",
+             "Can change basic profile for another user."),
+            ("can_view_profile_another_user", "Can view basic profile for another user."),)
 
 
 MFA_CHOICES = (
