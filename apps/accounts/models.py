@@ -356,11 +356,6 @@ class UserProfile(models.Model):
                     orgs.append(o)
         return orgs
 
-    class Meta:
-        permissions = (
-            ("can_change_profile_another_user",
-             "Can change basic profile for another user."),)
-
 
 MFA_CHOICES = (
     ('', 'None'),
