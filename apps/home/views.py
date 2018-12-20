@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from ..accounts.models import UserProfile, Organization, OrganizationAffiliationRequest
@@ -13,10 +14,15 @@ from .forms import UserSearchForm
 @login_required
 def user_profile(request, subject=None):
     if not subject:
+        #Looking at your own record.
         user = request.user
     else:
         up = get_object_or_404(UserProfile, subject=subject)
+        # Check permission view other profiles.
+        if not request.user.has_perm('can_view_profile_another_user'):
+            raise Http404()
         user = up.user
+
     context = {'user': user}
     template = 'profile.html'
     return render(request, template, context)
