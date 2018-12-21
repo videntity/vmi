@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block Content %}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-lg-12">
+	      <ol class="breadcrumb">
+	        <li ><a href="/">Home</a></li>
+         <li class="active"><a href="{% url 'user_search' %}">Search</a></li>
+          <li ><a href="/">Subject</a></li>
+	      </ol>
+        </div>
+     </div>
+
+    <div class="row">
+      <div class="col-lg-10">
+        {% include "include/messages.html" %}
+      </div>
+    </div>
+
+
+
+      
+       <p>{{user.userprofile}}</p>
+       
+       <p>Phone: {{user.userprofile.mobile_phone_number|default:"--"}}</p>
+       <p>Identity Level: {{user.userprofile.ial}}
+       
+       
+       {% if user.userprofile.ial == '1' %}
+       (<a href="{% url 'inperson_id_verify' user.userprofile.subject|default:"None" %}">
+    Verify Identity 1-->2
+       </a>)
+       {% elif user.userprofile.ial == '2' %}
+        (<a href="{% url 'ial_two_to_one_downgrade' user.userprofile.subject|default:"None" %}">
+       Downgrade Identity Level 2-->1
+       </a>)
+        {% endif %}
+       </p>
+ 
+	   
+   
+    
+    
+</div><!-- /.container -->
+
+
+{% endblock %}
+

@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from django.contrib import admin
-from .views import authenticated_home, user_search
+from .views import authenticated_home
 
 
 __author__ = "Alan Viars"
@@ -11,9 +11,5 @@ urlpatterns = [
     url(r'',
         authenticated_home,
         name='auth_home'),
-
-    url(r'^search',
-        user_search,
-        name='user_search'),
 
 ]
