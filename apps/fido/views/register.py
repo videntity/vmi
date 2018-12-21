@@ -14,16 +14,17 @@ from rest_framework import renderers
 from rest_framework import parsers
 from fido2.client import ClientData
 from fido2.server import Fido2Server, RelyingParty
-from fido2.ctap2 import AttestationObject, AuthenticatorData
+from fido2.ctap2 import AttestationObject
 from fido2 import cbor
 
 from django.views.generic.base import TemplateView
-from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.mixins import LoginRequiredMixin
 from ..models import AttestedCredentialData
 
 
-class RegisterView(TemplateView):
+class RegisterView(LoginRequiredMixin, TemplateView):
     template_name = "register.html"
+
 
 class CBORRenderer(renderers.BaseRenderer):
     media_type = 'application/cbor'
@@ -34,11 +35,13 @@ class CBORRenderer(renderers.BaseRenderer):
     def render(self, data, media_type=None, renderer_context=None):
         return cbor.dumps(data)
 
+
 class CBORParser(parsers.BaseParser):
     media_type = 'application/cbor'
 
     def parse(self, stream, media_type=None, parser_context=None):
         return cbor.loads(stream.read())
+
 
 @api_view(['POST'])
 @authentication_classes([authentication.SessionAuthentication])
@@ -61,6 +64,7 @@ def begin(request):
         'user_verification': state['user_verification'].value,
     }
     return Response(registration_data, content_type="application/cbor")
+
 
 @api_view(['POST'])
 @authentication_classes([authentication.SessionAuthentication])
@@ -91,7 +95,7 @@ def complete(request):
     AttestedCredentialData.objects.create(
         aaguid=auth_data.credential_data.aaguid,
         credential_id=auth_data.credential_data.credential_id,
-        public_key=cbor.dump_dict(auth_data.credential_data.public_key), 
-        user = request.user,
+        public_key=cbor.dump_dict(auth_data.credential_data.public_key),
+        user=request.user,
     )
     return Response({'status': 'OK'})

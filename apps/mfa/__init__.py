@@ -1,12 +1,15 @@
 from django.conf import settings
 from django.utils.module_loading import import_string
+from django.core.exceptions import ImproperlyConfigured
 
 SESSION_KEY = '_mfa_device_id'
 BACKEND_SESSION_KEY = '_mfa_device_backend'
 REDIRECT_FIELD_NAME = 'next'
 
+
 def load_backend(path):
     return import_string(path)()
+
 
 def _get_backends(return_tuples=False):
     backends = []
@@ -19,7 +22,6 @@ def _get_backends(return_tuples=False):
             'VERIFICATION_BACKENDS contain anything?'
         )
     return backends
-
 
 
 def _get_device_session_key(request, backend):

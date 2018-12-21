@@ -5,7 +5,6 @@ from apps.mfa import (
     get_device,
     user_has_mfa,
 )
-from .exceptions import VerificationRequired
 
 
 class DeviceVerificationMiddleware(MiddlewareMixin):

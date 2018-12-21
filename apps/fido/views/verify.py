@@ -10,14 +10,10 @@ from rest_framework.decorators import (
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import authentication
-from rest_framework import renderers
-from rest_framework import parsers
 from fido2.client import ClientData
 from fido2.server import Fido2Server, RelyingParty
-from fido2.ctap2 import AttestationObject, AuthenticatorData
-from fido2 import cbor
+from fido2.ctap2 import AuthenticatorData
 
-from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from apps.mfa.decorators import mfa_exempt
@@ -48,6 +44,7 @@ def begin(request):
     }
     return Response(auth_data, content_type="application/cbor")
 
+
 @mfa_exempt
 @api_view(['POST'])
 @authentication_classes([authentication.SessionAuthentication])
@@ -59,6 +56,7 @@ def complete(request):
     # Store like request.user
     verify(request, cred)
     return Response("OK")
+
 
 def authenticate(request):
     rp_host = urlparse(request.build_absolute_uri()).hostname
