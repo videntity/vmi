@@ -13,10 +13,12 @@ User = get_user_model()
 class StaffSignupForm(forms.Form):
     registration_code = forms.CharField(max_length=100,
                                         label=_("Registration Phrase"))
-    email = forms.EmailField(max_length=75, label=_("Email"), required=True)
+    username = forms.CharField(max_length=30, label=_("User name"))
+    email = forms.EmailField(max_length=150, label=_("Email"), required=True)
     first_name = forms.CharField(max_length=100, label=_("First Name"))
     last_name = forms.CharField(max_length=100, label=_("Last Name"))
-    username = forms.CharField(max_length=30, label=_("User name"))
+    nickname = forms.CharField(max_length=100, label=_("Nickname"))
+
     mobile_phone_number = forms.CharField(required=True,
                                           label=_("Mobile Phone Number"),
                                           max_length=10)
@@ -60,7 +62,7 @@ class StaffSignupForm(forms.Form):
         return self.cleaned_data
 
     def clean_email(self):
-        email = self.cleaned_data.get('email', "")
+        email = self.cleaned_data.get('email', "").strip().lower()
         if email:
             username = self.cleaned_data.get('username')
             if email and User.objects.filter(email=email).exclude(
@@ -71,10 +73,19 @@ class StaffSignupForm(forms.Form):
         return email
 
     def clean_username(self):
-        username = self.cleaned_data.get('username')
+        username = self.cleaned_data.get('username').strip().lower()
         if User.objects.filter(username=username).count() > 0:
             raise forms.ValidationError(_('This username is already taken.'))
         return username
+
+    def clean_first_name(self):
+        return self.cleaned_data.get("first_name", "").strip().upper()
+
+    def clean_last_name(self):
+        return self.cleaned_data.get("last_name", "").strip().upper()
+
+    def clean_nickname(self):
+        return self.cleaned_data.get("nickname", "").strip().upper()
 
     def save(self):
 
@@ -89,6 +100,7 @@ class StaffSignupForm(forms.Form):
 
         up = UserProfile.objects.create(
             user=new_user,
+            nickname=self.cleaned_data.get('nickname', ''),
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
         )
         up.save()

@@ -24,7 +24,7 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 def reset_password(request):
 
     name = _('Reset Password')
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         if request.method == 'POST':
             form = PasswordResetForm(request.POST)
             if form.is_valid():
@@ -74,16 +74,12 @@ def account_settings(request):
             request.user.last_name = data['last_name']
             request.user.save()
             # update the user profile
-            up.sex = data['sex']
-            up.gender = data['gender']
-            up.birth_date = data['birth_date']
             up.mobile_phone_number = data['mobile_phone_number']
+            up.nickname = data['nickname']
             up.save()
             messages.success(request,
                              _('Your account settings have been updated.'))
-            return render(request,
-                          'account-settings.html',
-                          {'form': form, 'name': name})
+            return HttpResponseRedirect(reverse('account_settings'))
         else:
             # the form had errors
             return render(request,
@@ -95,8 +91,8 @@ def account_settings(request):
         initial={
             'username': request.user.username,
             'email': request.user.email,
-            'organization_name': up.organization_name,
             'mobile_phone_number': up.mobile_phone_number,
+            'nickname': up.nickname,
             'last_name': request.user.last_name,
             'first_name': request.user.first_name,
         }

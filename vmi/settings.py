@@ -40,12 +40,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrapform',
+    'phonenumber_field',
     'oauth2_provider',
     'rest_framework',
     'apps.oidc',
     'apps.home',
     'apps.accounts',
     'apps.ial',
+    'apps.fido',
+
+    # 'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -56,8 +60,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.mfa.middleware.DeviceVerificationMiddleware',
+    'apps.mfa.middleware.AssertDeviceVerificationMiddleware',
+
     'apps.oidc.error_handlers.AuthenticationRequiredExceptionMiddleware',
     'apps.oidc.error_handlers.OIDCNoPromptMiddleware',
+]
+
+VERIFICATION_BACKENDS = [
+    'apps.fido.auth.backends.FIDO2Backend',
 ]
 
 ROOT_URLCONF = 'vmi.urls'
@@ -172,7 +183,8 @@ OIDC_PROVIDER = {
         'apps.oidc.claims.UserClaimProvider',
         'apps.accounts.claims.SubjectClaimProvider',
         # Optional
-        # This claim provider currently gets all claims fetch-able via the UserProfile.
+        # This claim provider currently gets all claims fetch-able via the
+        # UserProfile.
         'apps.accounts.claims.UserProfileClaimProvider',
         'apps.accounts.claims.AddressClaimProvider',
         'apps.accounts.claims.IdentifierClaimProvider',
@@ -247,6 +259,7 @@ SETTINGS_EXPORT = [
     'USER_DOCS',
     'DEVELOPER_DOCS',
     'USER_DOCS_TITLE',
+    'HOSTNAME_URL',
 ]
 
 # Emails
@@ -287,3 +300,5 @@ ORGANIZATION_ID_TYPE_CHOICES = (
     ('OEID', 'Other Entity Identifier'),
     ('PECOS', 'PECOS Medicare ID')
 )
+
+PHONENUMBER_DEFAULT_REGION = 'US'
