@@ -1,5 +1,5 @@
 from urllib.parse import urlparse
-from base64 import b64encode
+from base64 import b64encode, b64decode
 from rest_framework.decorators import (
     api_view,
     permission_classes,
@@ -19,6 +19,7 @@ from fido2 import cbor
 
 from django.views.generic.base import TemplateView
 from django.views.decorators.csrf import csrf_exempt
+from ..models import AttestedCredentialData
 
 
 class RegisterView(TemplateView):
@@ -37,7 +38,7 @@ class CBORParser(parsers.BaseParser):
     media_type = 'application/cbor'
 
     def parse(self, stream, media_type=None, parser_context=None):
-        return cbor.loads(stream)
+        return cbor.loads(stream.read())
 
 @api_view(['POST'])
 @authentication_classes([authentication.SessionAuthentication])
@@ -48,11 +49,13 @@ def begin(request):
     rp = RelyingParty(rp_host, 'Demo server')
     server = Fido2Server(rp)
 
+    existing_credentials = AttestedCredentialData.objects.filter(user=request.user).all()
+
     registration_data, state = server.register_begin({
         'id': request.user.username.encode(),
         'name': request.user.username,
         'displayName': request.user.username,
-    }, [], resident_key=True)
+    }, existing_credentials, resident_key=True)
     request.session['state'] = {
         'challenge': b64encode(state['challenge']).decode('utf-8'),
         'user_verification': state['user_verification'].value,
@@ -65,19 +68,30 @@ def begin(request):
 @renderer_classes((CBORRenderer,))
 @parser_classes((CBORParser,))
 def complete(request):
-    irp = RelyingParty(request.get_host(), 'Demo server')
+    rp_host = urlparse(request.build_absolute_uri()).hostname
+    rp = RelyingParty(rp_host, 'Demo server')
     server = Fido2Server(rp)
 
-    data = cbor.loads(request.data)[0]
+    data = request.data[0]
     client_data = ClientData(data['clientDataJSON'])
     att_obj = AttestationObject(data['attestationObject'])
 
+    stored_state = request.session['state']
+    state = {
+        'challenge': b64decode(stored_state['challenge'].encode()),
+        'user_verification': stored_state['user_verification'],
+    }
+
     auth_data = server.register_complete(
-        request.session['state'],
+        state,
         client_data,
         att_obj
     )
 
-    raise Exception(auth_data)
-    # Credential.objects.create(auth_data.credential_data)
+    AttestedCredentialData.objects.create(
+        aaguid=auth_data.credential_data.aaguid,
+        credential_id=auth_data.credential_data.credential_id,
+        public_key=cbor.dump_dict(auth_data.credential_data.public_key), 
+        user = request.user,
+    )
     return Response({'status': 'OK'})

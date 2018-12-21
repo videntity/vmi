@@ -8,6 +8,7 @@ urlpatterns = [
     path('register', register.RegisterView.as_view()),
     path('register/begin', register.begin),
     path('register/complete', register.complete),
+    path('authenticate', authenticate.AuthenticateView.as_view()),
     path('authenticate/begin', authenticate.begin),
     path('authenticate/complete', authenticate.complete),
 ]
