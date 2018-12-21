@@ -1,5 +1,4 @@
 from urllib.parse import urlparse
-from base64 import b64encode, b64decode
 from rest_framework.decorators import (
     api_view,
     permission_classes,
