@@ -31,7 +31,7 @@
     }).then(CBOR.decode).then(function(options) {
       return navigator.credentials.create(options);
     }).then(function(attestation) {
-      return fetch('complete', {
+      return fetch('register/complete', {
         method: 'POST',
         headers: {'Content-Type': 'application/cbor'},
         body: CBOR.encode({
@@ -41,11 +41,11 @@
       });
     }).then(function(response) {
       var stat = response.ok ? 'successful' : 'unsuccessful';
-      alert('Registration ' + stat + ' More details in server log...');
+      console.debug('Registration ' + stat + ' More details in server log...');
     }, function(reason) {
-      alert(reason);
+      console.error(reason);
     }).then(function() {
-      window.location = '/index.html';
+      console.log('success')
     });
   </script>
 

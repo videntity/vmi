@@ -1,3 +1,4 @@
+from urllib.parse import urlparse
 from base64 import b64encode
 from rest_framework.decorators import (
     api_view,
@@ -43,7 +44,8 @@ class CBORParser(parsers.BaseParser):
 @permission_classes([permissions.IsAuthenticated])
 @renderer_classes((CBORRenderer,))
 def begin(request):
-    rp = RelyingParty(request.get_host(), 'Demo server')
+    rp_host = urlparse(request.build_absolute_uri()).hostname
+    rp = RelyingParty(rp_host, 'Demo server')
     server = Fido2Server(rp)
 
     registration_data, state = server.register_begin({
