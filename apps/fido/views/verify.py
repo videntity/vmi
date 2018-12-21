@@ -39,7 +39,7 @@ def begin(request):
     existing_credentials = AttestedCredentialData.objects.filter(user=request.user).all()
     auth_data, state = server.authenticate_begin(existing_credentials)
     request.session['state'] = {
-        'challenge': b64encode(state['challenge']).decode('utf-8'),
+        'challenge': state['challenge'],
         'user_verification': state['user_verification'].value,
     }
     return Response(auth_data, content_type="application/cbor")
@@ -72,11 +72,7 @@ def authenticate(request):
     auth_data = AuthenticatorData(data['authenticatorData'])
     signature = data['signature']
 
-    stored_state = request.session['state']
-    state = {
-        'challenge': b64decode(stored_state['challenge'].encode()),
-        'user_verification': stored_state['user_verification'],
-    }
+    state = request.session['state']
 
     cred = server.authenticate_complete(
         state,

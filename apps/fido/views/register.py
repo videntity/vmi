@@ -19,6 +19,7 @@ from fido2 import cbor
 
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from apps.mfa import verify
 from ..models import AttestedCredentialData
 
 
@@ -60,7 +61,7 @@ def begin(request):
         'displayName': request.user.username,
     }, existing_credentials)
     request.session['state'] = {
-        'challenge': b64encode(state['challenge']).decode('utf-8'),
+        'challenge': state['challenge'],
         'user_verification': state['user_verification'].value,
     }
     return Response(registration_data, content_type="application/cbor")
@@ -80,11 +81,7 @@ def complete(request):
     client_data = ClientData(data['clientDataJSON'])
     att_obj = AttestationObject(data['attestationObject'])
 
-    stored_state = request.session['state']
-    state = {
-        'challenge': b64decode(stored_state['challenge'].encode()),
-        'user_verification': stored_state['user_verification'],
-    }
+    state = request.session['state']
 
     auth_data = server.register_complete(
         state,
@@ -92,10 +89,12 @@ def complete(request):
         att_obj
     )
 
-    AttestedCredentialData.objects.create(
+    cred = AttestedCredentialData.objects.create(
         aaguid=auth_data.credential_data.aaguid,
         credential_id=auth_data.credential_data.credential_id,
         public_key=cbor.dump_dict(auth_data.credential_data.public_key),
         user=request.user,
     )
+
+    verify(request, cred, backend='apps.fido.auth.backends.FIDO2Backend')
     return Response({'status': 'OK'})

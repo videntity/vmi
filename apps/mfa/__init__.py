@@ -24,12 +24,14 @@ def _get_backends(return_tuples=False):
     return backends
 
 
-def _get_device_session_key(request, backend):
-    return backend.get_device_model()._meta.pk.to_python(request.session[SESSION_KEY])
+def _get_device_session_key(backend, device_pk):
+    return backend.get_device_model()._meta.pk.to_python(device_pk)
 
 
-def verify(request, device):
+def verify(request, device, backend=None):
     request.session[SESSION_KEY] = device._meta.pk.value_to_string(device)
+    if backend is not None:
+        request.session[BACKEND_SESSION_KEY] = backend
     request.mfa_device = device
 
 
@@ -44,12 +46,13 @@ def get_device(request):
     device = None
     try:
         backend_path = request.session[BACKEND_SESSION_KEY]
+        device_pk = request.session[SESSION_KEY]
     except KeyError:
         pass
     else:
         if backend_path in settings.VERIFICATION_BACKENDS:
             backend = load_backend(backend_path)
-            device_id = _get_device_session_key(request, backend)
+            device_id = _get_device_session_key(backend, device_pk)
             device = backend.get_device(device_id)
     return device
 
