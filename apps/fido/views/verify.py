@@ -18,17 +18,22 @@ from fido2.ctap2 import AttestationObject, AuthenticatorData
 from fido2 import cbor
 
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
-from django.views.decorators.csrf import csrf_exempt
+from apps.mfa.decorators import mfa_exempt
+from apps.mfa import verify
 from ..models import AttestedCredentialData
 from .register import CBORParser, CBORRenderer
 
 
-class AuthenticateView(TemplateView):
+class VerifyView(LoginRequiredMixin, TemplateView):
     template_name = "authenticate.html"
 
 
+@mfa_exempt
 @api_view(['POST'])
+@authentication_classes([authentication.SessionAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 @renderer_classes((CBORRenderer,))
 def begin(request):
     rp_host = urlparse(request.build_absolute_uri()).hostname
@@ -43,13 +48,16 @@ def begin(request):
     }
     return Response(auth_data, content_type="application/cbor")
 
+@mfa_exempt
 @api_view(['POST'])
+@authentication_classes([authentication.SessionAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 @renderer_classes((CBORRenderer,))
 @parser_classes((CBORParser,))
 def complete(request):
-    user = authenticate(request)
-    if user is not None:
-        login(request, user)
+    cred = authenticate(request)
+    # Store like request.user
+    verify(request, cred)
     return Response("OK")
 
 def authenticate(request):
@@ -59,10 +67,8 @@ def authenticate(request):
 
     data = request.data[0]
     credential_id = data['credentialId']
-    user_handle = data['userHandle'].decode()
     credentials = AttestedCredentialData.objects.filter(
-        # _credential_id=credential_id,
-        user__username=user_handle,
+        user=request.user,
     ).all()
     client_data = ClientData(data['clientDataJSON'])
     auth_data = AuthenticatorData(data['authenticatorData'])
@@ -82,4 +88,4 @@ def authenticate(request):
         auth_data,
         signature
     )
-    return cred.user
+    return cred

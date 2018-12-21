@@ -20,7 +20,7 @@
   <a href="/index.html">Cancel</a>
 
   <script>
-    fetch('register/begin', {
+    fetch('/device/register/begin', {
       method: 'POST',
       headers: {
        'X-CSRFToken': '{{ csrf_token }}',
@@ -31,7 +31,7 @@
     }).then(CBOR.decode).then(function(options) {
       return navigator.credentials.create(options);
     }).then(function(attestation) {
-      return fetch('register/complete', {
+      return fetch('/device/register/complete', {
         method: 'POST',
         headers: {
 	    'Content-Type': 'application/cbor',

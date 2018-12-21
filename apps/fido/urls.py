@@ -1,14 +1,14 @@
 from django.urls import path
 from .views import (
     register,
-    authenticate,
+    verify,
 )
 
 urlpatterns = [
     path('register', register.RegisterView.as_view()),
     path('register/begin', register.begin),
     path('register/complete', register.complete),
-    path('authenticate', authenticate.AuthenticateView.as_view()),
-    path('authenticate/begin', authenticate.begin),
-    path('authenticate/complete', authenticate.complete),
+    path('verify', verify.VerifyView.as_view()),
+    path('verify/begin', verify.begin),
+    path('verify/complete', verify.complete),
 ]
