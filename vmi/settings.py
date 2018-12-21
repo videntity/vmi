@@ -59,8 +59,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.mfa.middleware.DeviceVerificationMiddleware',
+    'apps.mfa.middleware.AssertDeviceVerificationMiddleware',
+
     'apps.oidc.error_handlers.AuthenticationRequiredExceptionMiddleware',
     'apps.oidc.error_handlers.OIDCNoPromptMiddleware',
+]
+
+VERIFICATION_BACKENDS = [
+    'apps.fido.auth.backends.FIDO2Backend',
 ]
 
 ROOT_URLCONF = 'vmi.urls'

@@ -55,7 +55,7 @@ def begin(request):
         'id': request.user.username.encode(),
         'name': request.user.username,
         'displayName': request.user.username,
-    }, existing_credentials, resident_key=True)
+    }, existing_credentials)
     request.session['state'] = {
         'challenge': b64encode(state['challenge']).decode('utf-8'),
         'user_verification': state['user_verification'].value,

@@ -84,5 +84,5 @@ urlpatterns = [
     path('', authenticated_home, name='home'),
     path('search', user_search, name='user_search'),
     path('device/',
-         include('apps.fido.urls'))
+         include(('apps.fido.urls', 'fido'), namespace='fido')),
 ]

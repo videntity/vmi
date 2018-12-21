@@ -40,7 +40,7 @@ def begin(request):
     rp = RelyingParty(rp_host, 'Demo server')
     server = Fido2Server(rp)
 
-    existing_credentials = AttestedCredentialData.objects.all()
+    existing_credentials = AttestedCredentialData.objects.filter(user=request.user).all()
     auth_data, state = server.authenticate_begin(existing_credentials)
     request.session['state'] = {
         'challenge': b64encode(state['challenge']).decode('utf-8'),
