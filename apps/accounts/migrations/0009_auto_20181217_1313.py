@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='userprofile',
             name='mobile_phone_number',
-            field=phonenumber_field.modelfields.PhoneNumberField(blank=True, default='', help_text='US numbers only.', max_length=128, unique=True),
+            field=phonenumber_field.modelfields.PhoneNumberField(blank=True, default='', help_text='US numbers only.', max_length=128),
         ),
     ]

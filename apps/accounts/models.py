@@ -213,7 +213,7 @@ class UserProfile(models.Model):
         help_text='Nickname, alias, or other names used.')
     email_verified = models.BooleanField(default=False, blank=True)
     phone_verified = models.BooleanField(default=False, blank=True)
-    mobile_phone_number = PhoneNumberField(blank=True, default="", unique=True,
+    mobile_phone_number = PhoneNumberField(blank=True, default="",
                                            help_text=_('US numbers only.'),)
 
     mobile_phone_number_verified = models.BooleanField(
