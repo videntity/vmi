@@ -28,13 +28,7 @@
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
           <li class="inactive"><a href="/"><i class="fa fa-home"></i> Home</a></li>
-          <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-question"></i>  Help <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-						<li><a href="{{settings.POLICY_URI}}"><i class="fa fa-user-secret"></i> {{settings.POLICY_TITLE}}</a></li>
-            <li><a href="{{settings.USER_DOCS_URI}}"><i class="fa fa-map"></i> {{settings.USER_DOCS_TITLE}}</a></li>
-            <li><a href="{{settings.DEVELOPER_DOCS_URI}}"><i class="fa fa-gears"></i> {{settings.DEVELOPER_DOCS_TITLE}}</a></li>
-          </ul>
+         
         </li>
       </ul>
 
@@ -44,18 +38,14 @@
 		{% if user.is_authenticated %}
 
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tasks"></i> Applications <b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-user"></i> Settings<b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li><a href="{% url 'oauth2_provider:authorized-token-list' %}"> <i class="fa fa-legal"></i> Applications You Have Granted Access</a>
-		    <li><a href="{% url 'oauth2_provider:list' %}">  <i class="fa fa-key"></i> Applications You Created</a>
-
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-user"></i> {{ request.user.username }}<b class="caret"></b></a>
-          <ul class="dropdown-menu">
-						<li><a href="{% url 'account_settings' %}"> <i class="fa fa-gears"></i> Settings</a></li>
-            <li><a href="{% url 'reset_password' %}"><i class="fa fa-key"></i> Change Password</a></li>
+						<li><a href="{% url 'account_settings' %}"> <i class="fa fa-user"></i> Basic Information</a></li>
+            <li><a href="{% url 'account_settings' %}"> <i class="fa fa-mobile"></i> Mobile Phone</a></li>
+            <li><a href="{% url 'fido:register' %}"> <i class="fa fa-key"></i> Security Devices</a></li>
+            <li><a href="{% url 'oauth2_provider:authorized-token-list' %}"> <i class="fa fa-legal"></i> Authorized Applications</a>
+		        <li><a href="{% url 'oauth2_provider:list' %}">  <i class="fa fa-key"></i> Developer Application Registration</a>
+            <li><a href="{% url 'reset_password' %}"><i class="fa fa-sync"></i> Change Password</a></li>
           </ul>
         </li>
 
