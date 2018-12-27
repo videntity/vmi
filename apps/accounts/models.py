@@ -405,8 +405,8 @@ class MFACode(models.Model):
                 # Send SMS to up.mobile_phone_number
                 sns = boto3.client(
                     'sns',
-                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                    # aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                    # aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                     region_name='us-east-1')
                 number = "%s" % (up.mobile_phone_number)
                 sns.publish(
@@ -460,8 +460,8 @@ class PhoneVerifyCode(models.Model):
                 # Send SMS to up.mobile_phone_number
                 sns = boto3.client(
                     'sns',
-                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                    # aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                    # aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                     region_name='us-east-1')
                 number = "%s" % (up.mobile_phone_number)
                 sns.publish(
