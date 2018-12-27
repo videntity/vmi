@@ -55,7 +55,7 @@ def mylogout(request):
 
 @login_required
 def account_settings(request):
-    name = _('Account Settings')
+    name = _('Basic Information')
     up = get_object_or_404(UserProfile, user=request.user)
 
     groups = request.user.groups.values_list('name', flat=True)
@@ -74,7 +74,6 @@ def account_settings(request):
             request.user.last_name = data['last_name']
             request.user.save()
             # update the user profile
-            up.mobile_phone_number = data['mobile_phone_number']
             up.nickname = data['nickname']
             up.save()
             messages.success(request,

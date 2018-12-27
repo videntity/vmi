@@ -141,8 +141,6 @@ class AccountSettingsForm(forms.Form):
     nickname = forms.CharField(max_length=100)
     username = forms.CharField(max_length=30)
     email = forms.EmailField(label=_('Email'), required=False)
-    mobile_phone_number = PhoneNumberField(required=False,
-                                           help_text=_("US numbers only."))
     required_css_class = 'required'
 
     def clean_first_name(self):
@@ -179,8 +177,6 @@ class AccountSettingsForm(forms.Form):
         user.save()
 
         up, created = UserProfile.objects.get_or_create(user=user)
-        up.mobile_phone_number = self.cleaned_data.get(
-            'mobile_phone_number', '')
         up.nickname = self.cleaned_data.get('nickname', "")
         up.save()
         return user
