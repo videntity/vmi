@@ -9,11 +9,15 @@ from .staff_views import (create_org_account,
                           deny_org_affiliation,
                           request_org_affiliation)
 from .sms_mfa_views import mfa_login, mfa_code_confirm
+from .phone_views import mobile_phone, verify_mobile_phone_number
 
 # Copyright Videntity Systems Inc.
 
 urlpatterns = [
     url(r'^logout', mylogout, name='mylogout'),
+    url(r'^mobile-phone', mobile_phone, name='mobile_phone'),
+    url(r'^verify-mobile-phone-number/(?P<uid>[^/]+)/', verify_mobile_phone_number,
+        name='verify_mobile_phone_number'),
     url(r'^settings', account_settings, name='account_settings'),
     url(r'^login', mfa_login, name='mfa_login'),
     url(r'^create-account/(?P<service_title>[^/]+)/', create_account,

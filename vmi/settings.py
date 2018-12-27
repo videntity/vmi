@@ -277,7 +277,6 @@ EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', EMAIL_BACKEND_DEFAULT)
 
 MFA = True
 
-# AWS Credentials need to support SES, SQS and SNS
 SIGNUP_TIMEOUT_DAYS = 3
 ORGANIZATION_NAME = "Verify My Identity"
 
