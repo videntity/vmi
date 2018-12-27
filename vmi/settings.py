@@ -278,6 +278,9 @@ EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', EMAIL_BACKEND_DEFAULT)
 MFA = True
 
 # AWS Credentials need to support SES, SQS and SNS
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', 'change-to-your-key-id')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', 'change-to-your-access-key')
+
 SIGNUP_TIMEOUT_DAYS = 3
 ORGANIZATION_NAME = "Verify My Identity"
 
