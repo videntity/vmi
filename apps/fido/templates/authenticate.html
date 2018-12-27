@@ -1,7 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
 {% load static %}
-<html>
-<head>
-  <title>Fido 2.0 webauthn demo</title>
+
+
+{% block extra_head %}
+      
+        <title>Fido 2.0 Authentication</title>
   <script src="{% static 'cbor.js' %}"></script>
   <style>
     body { font-family: sans-serif; line-height: 1.5em; padding: 2em 10em; }
@@ -9,15 +13,21 @@
     a { color: #0080ac; font-weight: bold; text-decoration: none;}
     a:hover { text-decoration: underline; }
   </style>
-</head>
-<body>
-  <h1>WebAuthn demo using python-fido2</h1>
-  <p>This demo requires a browser supporting the WebAuthn API!</p>
+  
+      
+    {% endblock %}
+
+
+{% block Content %}
+
+
+  <h1>Authenticate with yout device</h1>
+  <p>Touch your authenticator device now...</p>
   <hr>
 
   <h2>Authenticate using a credential</h2>
   <p>Touch your authenticator device now...</p>
-  <a href="/index.html">Cancel</a>
+  <a href="{% url 'mylogout' %}">Cancel</a>
 
   <script>
     fetch('/device/verify/begin', {
@@ -58,5 +68,4 @@
     });
   </script>
 
-</body>
-</html>
+    {% endblock %}
