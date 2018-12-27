@@ -2,11 +2,22 @@ from django.contrib import admin
 from .models import (UserProfile, Organization,
                      Address, OrganizationIdentifier,
                      IndividualIdentifier,
-                     OrganizationAffiliationRequest)
+                     OrganizationAffiliationRequest, PhoneVerifyCode)
 
 # Copyright Videntity Systems Inc.
 
 __author__ = "Alan Viars"
+
+
+class PhoneVerifyCodeAdmin(admin.ModelAdmin):
+    list_display = ('user', 'code', 'expires')
+    search_fields = [
+        'user__first_name',
+        'user__last_name', ]
+    raw_id_fields = ("user", )
+
+
+admin.site.register(PhoneVerifyCode, PhoneVerifyCodeAdmin)
 
 
 class OrganizationAffiliationRequestAdmin(admin.ModelAdmin):

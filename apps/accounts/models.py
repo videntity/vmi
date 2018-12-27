@@ -401,15 +401,14 @@ class MFACode(models.Model):
             self.code = str(random.randint(1000, 9999))
             up = UserProfile.objects.get(user=self.user)
             if self.mode == "SMS" and \
-               up.mobile_phone_number and \
-               settings.SEND_SMS:
+               up.mobile_phone_number:
                 # Send SMS to up.mobile_phone_number
                 sns = boto3.client(
                     'sns',
                     aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                     aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                     region_name='us-east-1')
-                number = "+1%s" % (up.mobile_phone_number)
+                number = "%s" % (up.mobile_phone_number)
                 sns.publish(
                     PhoneNumber=number,
                     Message="Your code is : %s" % (self.code),
@@ -432,6 +431,51 @@ class MFACode(models.Model):
                 pass
         if commit:
             super(MFACode, self).save(**kwargs)
+
+
+class PhoneVerifyCode(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.PROTECT)
+    uid = models.CharField(blank=True,
+                           default=uuid.uuid4,
+                           max_length=36, editable=False)
+    tries_counter = models.IntegerField(default=0, editable=False)
+    code = models.CharField(blank=True, max_length=4, editable=False)
+    valid = models.BooleanField(default=True)
+    expires = models.DateTimeField(blank=True)
+    added = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        name = 'To %s via %s' % (self.user,
+                                 self.mode)
+        return name
+
+    def save(self, commit=True, **kwargs):
+        if not self.id:
+            now = pytz.utc.localize(datetime.utcnow())
+            expires = now + timedelta(days=1)
+            self.expires = expires
+            self.code = str(random.randint(1000, 9999))
+            up = UserProfile.objects.get(user=self.user)
+            if up.mobile_phone_number:
+                # Send SMS to up.mobile_phone_number
+                sns = boto3.client(
+                    'sns',
+                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                    region_name='us-east-1')
+                number = "%s" % (up.mobile_phone_number)
+                sns.publish(
+                    PhoneNumber=number,
+                    Message="Your code is : %s" % (self.code),
+                    MessageAttributes={
+                        'AWS.SNS.SMS.SenderID': {
+                            'DataType': 'String',
+                            'StringValue': 'MySenderID'
+                        }
+                    }
+                )
+        if commit:
+            super(PhoneVerifyCode, self).save(**kwargs)
 
 
 class ActivationKey(models.Model):
