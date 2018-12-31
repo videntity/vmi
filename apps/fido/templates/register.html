@@ -56,10 +56,11 @@
     }).then(function(response) {
       var stat = response.ok ? 'successful' : 'unsuccessful';
       console.debug('Registration ' + stat + ' More details in server log...');
+      if (response.ok) {
+        location.replace("{% url 'fido:fido-list' %}")
+      }
     }, function(reason) {
       console.error(reason);
-    }).then(function() {
-      console.log('success')
     });
   </script>
   
