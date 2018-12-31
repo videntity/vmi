@@ -7,7 +7,11 @@ from .views import (
 )
 
 router = routers.SimpleRouter()
-router.register(r'devices', manage.ManageViewSet),
+# Post Edit route.
+router.routes[2].mapping['post'] = 'partial_update'
+router.register(r'devices', manage.ManageViewSet, base_name='fido'),
+router.register(r'devices', manage.DetailViewSet, base_name='fido'),
+
 
 urlpatterns = [
     path('register', register.RegisterView.as_view(), name="register"),

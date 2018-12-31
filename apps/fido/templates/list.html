@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block Content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Registered</th>
+    </thead>
+    <tbody>
+        {% for device in results %}
+        <tr>
+            <td>{{ device.name }}</td>
+            <td>{{ device.created_at }}</td>
+            <td>
+                <a class="btn" href="{{device.id}}">
+                    Edit
+                </a>
+            </td>
+            <td>
+                <button class="btn btn-danger" onclick="remove({{ device.id }})">
+                    Remove
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    <script>
+        function remove(id) {
+            fetch(id, {
+                method: "DELETE",
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            }).then(function(){
+                location.reload()
+            })
+        }
+    </script>
+{% endblock %}
