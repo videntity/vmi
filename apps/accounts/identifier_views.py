@@ -17,7 +17,7 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 @login_required
 def display_individual_identifiers(request, subject=None):
     name = _('Identifiers')
-
+    print("Subject", subject)
     if not subject:
         # Looking at your own record.
         user = request.user
@@ -25,7 +25,7 @@ def display_individual_identifiers(request, subject=None):
     else:
         up = get_object_or_404(UserProfile, subject=subject)
         # Check permission that the user can view other profiles.
-        if not request.user.has_perm('accounts.view_identifier'):
+        if not request.user.has_perm('accounts.view_individualidentifier'):
             raise Http404()
         user = up.user
     identifiers = IndividualIdentifier.objects.filter(user=user)
@@ -38,7 +38,7 @@ def add_new_individual_identifier(request, subject):
     name = _('Add a New Identifier')
     up = get_object_or_404(UserProfile, subject=subject)
     # Check permission that the user can view other profiles.
-    if not request.user.has_perm('accounts.view_identifier'):
+    if not request.user.has_perm('accounts.add_individualidentifier'):
         raise Http404()
     user = up.user
     if request.method == 'POST':
@@ -48,7 +48,7 @@ def add_new_individual_identifier(request, subject):
             ii.user = user
             ii.save()
             messages.success(request, 'Identifier added.')
-            return HttpResponseRedirect(reverse('display_individual_identifers_subject', args=(up.subject,)))
+            return HttpResponseRedirect(reverse('display_individual_identifiers_subject', args=(up.subject,)))
         else:
             return render(request, 'generic/bootstrapform.html', {'form': form, 'name': name})
 
@@ -61,7 +61,7 @@ def add_new_individual_identifier(request, subject):
 def edit_individual_identifier(request, id):
     name = _('Edit Identifier')
     # Check permission that the user can view other profiles.
-    if not request.user.has_perm('accounts.view_identifier'):
+    if not request.user.has_perm('accounts.change_individualidentifier'):
         raise Http404()
 
     identifier = get_object_or_404(IndividualIdentifier, id=id)
@@ -71,7 +71,7 @@ def edit_individual_identifier(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Identifier edited.')
-            return HttpResponseRedirect(reverse('display_individual_identifers_subject', args=(up.subject,)))
+            return HttpResponseRedirect(reverse('display_individual_identifiers_subject', args=(up.subject,)))
         else:
             return render(request, 'generic/bootstrapform.html', {'form': form, 'name': name})
 
@@ -83,11 +83,11 @@ def edit_individual_identifier(request, id):
 @login_required
 def delete_individual_identifier(request, id):
     # Check permission that the user can view other profiles.
-    if not request.user.has_perm('accounts.view_identifier'):
+    if not request.user.has_perm('accounts.delete_individualidentifier'):
         raise Http404()
     identifier = IndividualIdentifier.objects.get(id=id)
     up = get_object_or_404(UserProfile, user=identifier.user)
     identifier.delete()
 
     messages.success(request, 'Identifier deleted.')
-    return HttpResponseRedirect(reverse('display_individual_identifers_subject', args=(up.subject,)))
+    return HttpResponseRedirect(reverse('display_individual_identifiers_subject', args=(up.subject,)))
