@@ -10,6 +10,8 @@ from .staff_views import (create_org_account,
                           request_org_affiliation)
 from .sms_mfa_views import mfa_login, mfa_code_confirm
 from .phone_views import mobile_phone, verify_mobile_phone_number
+from .identifier_views import (display_individual_identifiers, add_new_individual_identifier,
+                               delete_individual_identifier, edit_individual_identifier)
 
 # Copyright Videntity Systems Inc.
 
@@ -43,5 +45,20 @@ urlpatterns = [
 
     url(r'^request-org-affiliation/(?P<organization_slug>[^/]+)',
         request_org_affiliation, name='request_org_afiliation'),
+
+    url("^individual-identifiers/(?P<subject>[^/]+)$",
+        display_individual_identifiers, name='display_individual_identifers_subject'),
+    url(r"^individual-identifiers/", display_individual_identifiers,
+        name='display_individual_identifiers'),
+
+
+    url("^add-new-individual-identifier/(?P<subject>[^/]+)$",
+        add_new_individual_identifier, name='add_new_individual_identifier'),
+
+    url("^delete-individual-identifier/(?P<id>[^/]+)$",
+        delete_individual_identifier, name='delete_individual_identifier'),
+
+    url("^edit-individual-identifier/(?P<id>[^/]+)$",
+        edit_individual_identifier, name='edit_individual_identifier'),
 
 ]

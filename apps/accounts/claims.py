@@ -12,7 +12,7 @@ class AddressClaimProvider(BaseProvider):
 
 class IdentifierClaimProvider(BaseProvider):
 
-    def claim_doc(self):
+    def claim_document(self):
         try:
             return self.user.userprofile.doc
         except Exception:
