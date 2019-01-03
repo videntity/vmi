@@ -261,7 +261,7 @@ class UserProfile(models.Model):
 
     @property
     def phone_number(self):
-        return self.mobile_phone_number
+        return str(self.mobile_phone_number)
 
     @property
     def preferred_username(self):
