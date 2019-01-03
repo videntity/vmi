@@ -40,7 +40,18 @@
        </a>)
         {% endif %}
        </p>
+       
+       <p>
+        <a href="{% url 'display_addresses_subject' user.userprofile.subject|default:"None" %}">
+    Addresses
+       </a>
+        </p>
  
+        <p>
+        <a href="{% url 'display_individual_identifiers_subject' user.userprofile.subject|default:"None" %}">
+    Identifiers
+       </a>
+        </p>
 	   
    
     

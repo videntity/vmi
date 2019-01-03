@@ -57,7 +57,6 @@ GENDER_CHOICES = (('M', 'Male'),
 # return "%s note on  %s on %s" % (self.organization, sself.organization.
 # self.created_at)
 
-
 class IndividualIdentifier(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete='PROTECT', null=True)
     name = models.SlugField(max_length=250, blank=True,
@@ -108,9 +107,9 @@ class Address(models.Model):
     state = models.CharField(max_length=2, blank=True, default='')
     zipcode = models.CharField(max_length=10, blank=True, default='')
     country = models.CharField(max_length=2, blank=True, default='')
-    org_identifiers = models.ManyToManyField(
-        OrganizationIdentifier, blank=True)
-    ind_identifiers = models.ManyToManyField(IndividualIdentifier, blank=True)
+    # org_identifiers = models.ManyToManyField(
+    #    OrganizationIdentifier, blank=True, related_name="addresses_org_identifiers")
+    # ind_identifiers = models.ManyToManyField(IndividualIdentifier, blank=True)
     subject = models.CharField(max_length=250, default='', blank=True)
 
     def __str__(self):
@@ -160,10 +159,12 @@ class Organization(models.Model):
     point_of_contact = models.ForeignKey(
         get_user_model(), on_delete='PROTECT', null=True,
         related_name="organization_point_of_contact")
-    addresses = models.ManyToManyField(Address, blank=True)
+    addresses = models.ManyToManyField(
+        Address, blank=True, related_name="organization_addresses")
     users = models.ManyToManyField(
         get_user_model(), blank=True, related_name='org_staff')
-    identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True)
+    # identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True,
+    #                                     related_name='org_identifiers')
 
     def __str__(self):
         return self.name

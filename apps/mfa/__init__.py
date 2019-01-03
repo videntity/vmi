@@ -50,10 +50,13 @@ def get_device(request):
     except KeyError:
         pass
     else:
-        if backend_path in settings.VERIFICATION_BACKENDS:
-            backend = load_backend(backend_path)
-            device_id = _get_device_session_key(backend, device_pk)
-            device = backend.get_device(device_id)
+        try:
+            if backend_path in settings.VERIFICATION_BACKENDS:
+                backend = load_backend(backend_path)
+                device_id = _get_device_session_key(backend, device_pk)
+                device = backend.get_device(device_id)
+        except Exception:
+            pass
     return device
 
 

@@ -4,9 +4,12 @@ from fido2 import cose, cbor
 
 
 class AttestedCredentialData(models.Model):
-    aaguid = models.BinaryField()
-    _credential_id = models.BinaryField(db_column='credential_id')
-    _public_key = models.BinaryField(db_column='public_key')
+    name = models.CharField(max_length=255, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+    aaguid = models.BinaryField(editable=False)
+    _credential_id = models.BinaryField(db_column='credential_id', editable=False)
+    _public_key = models.BinaryField(db_column='public_key', editable=False)
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

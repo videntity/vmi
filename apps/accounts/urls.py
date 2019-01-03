@@ -10,6 +10,11 @@ from .staff_views import (create_org_account,
                           request_org_affiliation)
 from .sms_mfa_views import mfa_login, mfa_code_confirm
 from .phone_views import mobile_phone, verify_mobile_phone_number
+from .identifier_views import (display_individual_identifiers, add_new_individual_identifier,
+                               delete_individual_identifier, edit_individual_identifier)
+
+from .address_views import (display_addresses, add_new_address,
+                            delete_address, edit_address)
 
 # Copyright Videntity Systems Inc.
 
@@ -43,5 +48,35 @@ urlpatterns = [
 
     url(r'^request-org-affiliation/(?P<organization_slug>[^/]+)',
         request_org_affiliation, name='request_org_afiliation'),
+
+    url("^individual-identifiers/(?P<subject>[^/]+)",
+        display_individual_identifiers, name='display_individual_identifiers_subject'),
+
+    url(r"^individual-identifiers/", display_individual_identifiers,
+        name='display_individual_identifiers'),
+
+
+    url("^add-new-individual-identifier/(?P<subject>[^/]+)$",
+        add_new_individual_identifier, name='add_new_individual_identifier'),
+
+    url("^delete-individual-identifier/(?P<id>[^/]+)$",
+        delete_individual_identifier, name='delete_individual_identifier'),
+
+    url("^edit-individual-identifier/(?P<id>[^/]+)$",
+        edit_individual_identifier, name='edit_individual_identifier'),
+
+
+    url("^addresses/(?P<subject>[^/]+)$",
+        display_addresses, name='display_addresses_subject'),
+    url(r"^addresses/", display_addresses, name='display_addresses'),
+
+
+    url("^add-new-address/(?P<subject>[^/]+)$",
+        add_new_address, name='add_new_address'),
+
+    url("^delete-address/(?P<id>[^/]+)$",
+        delete_address, name='delete_address'),
+
+    url("^edit-address/(?P<id>[^/]+)$", edit_address, name='edit_address'),
 
 ]
