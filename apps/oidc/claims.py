@@ -32,17 +32,19 @@ class ClaimProvider(object):
                 **claims,
                 **p(user=self.user,
                     token=self.token,
-                    request=self.request).get_claims()
+                    request=self.request,
+                    claims=claims).get_claims()
             }
         return claims
 
 
 class BaseProvider(object):
 
-    def __init__(self, user=None, token=None, request=None, **kwargs):
+    def __init__(self, user=None, token=None, request=None, claims=None, **kwargs):
         self.user = user
         self.token = token
         self.request = request
+        self.claims = claims or {}
 
     @classmethod
     def get_supported_claims(cls):
