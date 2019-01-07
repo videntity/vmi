@@ -88,11 +88,11 @@ def authenticated_enduser_home(request):
     except Exception:
         profile = UserProfile.objects.create(user=request.user)
 
-    if not getattr(profile, 'ial_2', False):
-        messages.warning(
-            request,
-            """Your identity has not been verified.
-                <a href="">Verify your identity Now</a>""")
+    if not profile.phone_verified:
+
+        msg = """Your mobile phane has not been verified.
+                <a href="%s">Verify your Mobile phone number now.</a>""" % (reverse('mobile_phone'))
+        messages.warning(request, msg)
 
     context = {'name': name, 'profile': profile}
     template = 'authenticated-home.html'
