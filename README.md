@@ -3,7 +3,7 @@
 [![OpenID Certified](https://cloud.githubusercontent.com/assets/1454075/7611268/4d19de32-f97b-11e4-895b-31b2455a7ca6.png)](https://openid.net/certification/)
 
 Verify My Identity is a certified OpenID Connect Provider supporting 
-identity assurance escelation and FIDO.
+identity assurance escalation and FIDO.
 
 This project is based on Python 3.6 and Django 2.1.x.
 
