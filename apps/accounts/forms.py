@@ -53,7 +53,7 @@ class SignupForm(forms.Form):
                                help_text="Your desired user name or handle.")
     first_name = forms.CharField(max_length=100, label=_("First Name*"))
     last_name = forms.CharField(max_length=100, label=_("Last Name*"))
-    nickname = forms.CharField(max_length=100)
+    nickname = forms.CharField(max_length=100, required=False)
     mobile_phone_number = PhoneNumberField(required=False,
                                            label=_(
                                                "Mobile Phone Number"))
@@ -138,7 +138,7 @@ class SignupForm(forms.Form):
 class AccountSettingsForm(forms.Form):
     first_name = forms.CharField(max_length=100, label=_("First Name*"))
     last_name = forms.CharField(max_length=100, label=_("Last Name*"))
-    nickname = forms.CharField(max_length=100)
+    nickname = forms.CharField(max_length=100, required=False)
     username = forms.CharField(max_length=30)
     email = forms.EmailField(label=_('Email'), required=False)
     required_css_class = 'required'

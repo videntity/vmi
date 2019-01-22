@@ -17,7 +17,7 @@ class StaffSignupForm(forms.Form):
     email = forms.EmailField(max_length=150, label=_("Email"), required=True)
     first_name = forms.CharField(max_length=100, label=_("First Name"))
     last_name = forms.CharField(max_length=100, label=_("Last Name"))
-    nickname = forms.CharField(max_length=100, label=_("Nickname"))
+    nickname = forms.CharField(max_length=100, label=_("Nickname"), required=False)
 
     mobile_phone_number = forms.CharField(required=True,
                                           label=_("Mobile Phone Number"),

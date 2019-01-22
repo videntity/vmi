@@ -13,11 +13,10 @@
             <td>{{ device.name }}</td>
             <td>{{ device.created_at }}</td>
             <td>
-                <a class="btn" href="{{device.id}}">
+                <a href="{{device.id}}" ><button class="btn btn-primary"">
                     Edit
-                </a>
-            </td>
-            <td>
+                </button></a>
+                
                 <button class="btn btn-danger" onclick="remove({{ device.id }})">
                     Remove
                 </button>
