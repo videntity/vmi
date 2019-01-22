@@ -45,7 +45,7 @@
             <li><a href="{% url 'display_addresses' %}"> <i class="fa fa-map"></i> Addresses</a></li>
             <li><a href="{% url 'mobile_phone' %}"> <i class="fa fa-mobile"></i> Mobile Phone</a></li>
             <li><a href="{% url 'fido:register' %}"> <i class="fa fa-key"></i> Register Security Devices</a></li>
-            <li><a href="/device/manage/devices"> <i class="fa fa-key"></i> Manage Security Devices</a></li>
+            <li><a href="{% url 'fido:fido-list' %}"> <i class="fa fa-key"></i> Manage Security Devices</a></li>
             <li><a href="{% url 'oauth2_provider:authorized-token-list' %}"> <i class="fa fa-legal"></i> Authorized Applications</a>
 		        <li><a href="{% url 'oauth2_provider:list' %}">  <i class="fa fa-key"></i> Developer Application Registration</a>
             <li><a href="{% url 'reset_password' %}"><i class="fa fa-sync"></i> Change Password</a></li>
