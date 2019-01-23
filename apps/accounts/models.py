@@ -263,6 +263,9 @@ class UserProfile(models.Model):
     def phone_number(self):
         return str(self.mobile_phone_number)
 
+    def get_verified_phone_number(self):
+        return self.phone_number if self.phone_verified else None
+
     @property
     def preferred_username(self):
         return self.user.username
