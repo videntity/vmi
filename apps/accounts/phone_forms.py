@@ -7,8 +7,8 @@ from phonenumber_field.formfields import PhoneNumberField
 
 
 class PhoneVerifyCodeForm(forms.Form):
-    code = forms.CharField(widget=forms.PasswordInput, max_length=30,
-                           label=_('Code*'))
+    code = forms.CharField(max_length=30, help_text=_("The code sent to your mobile phone."),
+                           label=_('Code'))
     required_css_class = 'required'
 
 
