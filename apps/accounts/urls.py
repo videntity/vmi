@@ -1,5 +1,6 @@
 # Copyright Videntity Systems, Inc.
 from django.conf.urls import url
+from django.urls import path
 from .views import (account_settings,
                     mylogout, create_account,
                     forgot_password, activation_verify,
@@ -9,6 +10,11 @@ from .staff_views import (create_org_account,
                           deny_org_affiliation,
                           request_org_affiliation)
 from .sms_mfa_views import mfa_login, mfa_code_confirm
+from .mfa_views import (
+    DisableSMSMFAView,
+    EnableSMSMFAView,
+    ManageView,
+)
 from .phone_views import mobile_phone, verify_mobile_phone_number
 from .identifier_views import (display_individual_identifiers, add_new_individual_identifier,
                                delete_individual_identifier, edit_individual_identifier)
@@ -79,4 +85,8 @@ urlpatterns = [
 
     url("^edit-address/(?P<id>[^/]+)$", edit_address, name='edit_address'),
 
+
+    path("mfa", ManageView.as_view(), name='mfa-management'),
+    path("sms/enable", EnableSMSMFAView.as_view(), name='sms-mfa-enable'),
+    path("sms/disable", DisableSMSMFAView.as_view(), name='sms-mfa-disable'),
 ]

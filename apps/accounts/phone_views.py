@@ -73,8 +73,8 @@ def mobile_phone(request):
                 messages.info(request,
                               _('Your number has already been verified.'))
                 return HttpResponseRedirect(reverse('mobile_phone'))
-            elif up.mobile_phone_number != data['mobile_phone_number'] and \
-                    data['phone_verified'] is True or up.phone_verified is False:
+            elif (up.mobile_phone_number != data['mobile_phone_number'] or up.phone_verified is False) and \
+                    data['verify_now'] is True:
                 # Save the new number
                 up.mobile_phone_number = data['mobile_phone_number']
                 up.phone_verified = False
