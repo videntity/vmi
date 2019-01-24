@@ -90,7 +90,7 @@ def authenticated_enduser_home(request):
 
     if not profile.phone_verified:
 
-        msg = """Your mobile phane has not been verified.
+        msg = """Your mobile phone has not been verified.
                 <a href="%s">Verify your Mobile phone number now.</a>""" % (reverse('mobile_phone'))
         messages.warning(request, msg)
 
