@@ -23,8 +23,21 @@
             </td>
         </tr>
         {% endfor %}
+        
+         <tr>
+
+       <th scope="row"><a href="{% url 'fido:register' %}"><button type="button" class="btn btn-success"> Add New Device </button>
+       <th scope="row">--</th>
+       </a>
+     
+       </th>
+        
     </tbody>
 </table>
+
+
+<li><a href="{% url 'fido:register' %}"> <i class="fa fa-key"></i> Register FIDO Devices</a></li>
+
     <script>
         function remove(id) {
             fetch(id, {
