@@ -26,7 +26,9 @@ class CodeForm(forms.Form):
 class CodeView(LoginRequiredMixin, FormView):
     template_name = 'code.html'
     form_class = CodeForm
-    success_url = '/'
+    
+    def get_success_url(self):
+        return self.request.build_absolute_uri()
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -43,4 +45,5 @@ class CodeView(LoginRequiredMixin, FormView):
             expires__gt=timezone.now()).device
 
         verify(self.request, device)
+        # Should return a redirect to the current url
         return super().form_valid(form)
