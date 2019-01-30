@@ -26,7 +26,7 @@ class CodeForm(forms.Form):
 class CodeView(LoginRequiredMixin, FormView):
     template_name = 'code.html'
     form_class = CodeForm
-    
+
     def get_success_url(self):
         return self.request.build_absolute_uri()
 
