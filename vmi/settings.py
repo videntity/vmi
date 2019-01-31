@@ -73,6 +73,8 @@ VERIFICATION_BACKENDS = [
     'apps.mfa.backends.sms.backend.SMSBackend',
 ]
 
+SMS_CODE_CHARSET = "1234567890"
+
 ROOT_URLCONF = 'vmi.urls'
 
 TEMPLATES = [
