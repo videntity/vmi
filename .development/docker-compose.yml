@@ -12,7 +12,7 @@ services:
     build:
             context: ../
             dockerfile: .development/Dockerfile
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: python3 manage.py runserver_plus --cert-file /tmp/cert.crt 0.0.0.0:8000
     environment:
       - DATABASES_CUSTOM=postgres://postgres:toor@db:5432/vmi
       - OAUTHLIB_INSECURE_TRANSPORT=true

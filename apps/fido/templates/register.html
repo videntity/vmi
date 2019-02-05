@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+  {% block extra_head %}
+      
+        <title>Fido 2.0 Authentication</title>
+  <script src="{% static 'cbor.js' %}"></script>
+  <style>
+    body { font-family: sans-serif; line-height: 1.5em; padding: 2em 10em; }
+    h1, h2 { color: #325F74; }
+    a { color: #0080ac; font-weight: bold; text-decoration: none;}
+    a:hover { text-decoration: underline; }
+  </style>
+  
+      
+    {% endblock %}
+
+{% block Content %}
+
+
+
+  <h1>Register a credential</h1>
+  
+  <h5>(A credential cab be a hardware device such as YubiKey or Smart Phone.)</h5>
+
+    <p>Touch your authenticator device now...</p>
+  <a href="javascript:history.go(-1)">Cancel</a>
+  
+  <h6>
+  <i>This is an implementation of FIDO 2.0. Your browser must support the WebAuthn API!
+  A newer version of </i></h6>
+  <script>
+    fetch('/device/register/begin', {
+      method: 'POST',
+      headers: {
+       'X-CSRFToken': '{{ csrf_token }}',
+      }
+    }).then(function(response) {
+      if(response.ok) return response.arrayBuffer();
+      throw new Error('Error getting registration data!');
+    }).then(CBOR.decode).then(function(options) {
+      return navigator.credentials.create(options);
+    }).then(function(attestation) {
+      return fetch('/device/register/complete', {
+        method: 'POST',
+        headers: {
+	    'Content-Type': 'application/cbor',
+            'X-CSRFToken': '{{ csrf_token }}',
+	},
+        body: CBOR.encode({
+          "attestationObject": new Uint8Array(attestation.response.attestationObject),
+          "clientDataJSON": new Uint8Array(attestation.response.clientDataJSON),
+        })
+      });
+    }).then(function(response) {
+      var stat = response.ok ? 'successful' : 'unsuccessful';
+      console.debug('Registration ' + stat + ' More details in server log...');
+      if (response.ok) {
+        location.replace("{% url 'fido:fido-list' %}")
+      }
+    }, function(reason) {
+      console.error(reason);
+    });
+  </script>
+  
+  
+  
+{% endblock %}

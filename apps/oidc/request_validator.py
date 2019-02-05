@@ -5,6 +5,7 @@ from oauth2_provider.oauth2_validators import (
 )
 from oauth2_provider.models import AbstractApplication, get_grant_model
 from oauth2_provider.settings import oauth2_settings
+from oauth2_provider.scopes import get_scopes_backend
 from django.utils import timezone
 from .claims import get_claims_provider
 from .jwt import get_jwt_builder
@@ -36,6 +37,12 @@ class RequestValidator(OAuth2Validator):
             return client.allows_grant_type(AbstractApplication.GRANT_IMPLICIT)
         else:
             return False
+
+    def validate_silent_login(self, request):
+        return False
+
+    def validate_silent_authorization(self, request):
+        return False
 
     def validate_user_match(self, id_token_hint, scopes, claims, request):
         if id_token_hint is None:
@@ -85,3 +92,19 @@ class RequestValidator(OAuth2Validator):
             nonce=getattr(request, 'nonce', None)
         )
         g.save()
+
+    def validate_scopes(self,
+                        client_id,
+                        scopes, client,
+                        request,
+                        *args,
+                        **kwargs):
+
+        available_scopes = get_scopes_backend().get_available_scopes(
+            application=client,
+            request=request)
+
+        request.scopes = list(set(available_scopes) & set(scopes))
+        # https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest
+        # unexpected scopes should be ignored
+        return True

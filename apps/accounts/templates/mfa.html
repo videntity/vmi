@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block Content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>SMS Authentication</h3>
+            {% if available %}
+            {% if not enabled %}
+            <form method="POST" action="{% url 'sms-mfa-enable' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn">Enable SMS two factor authentication</button>
+            </form>
+            {% else %}
+            <form method="POST" action="{% url 'sms-mfa-disable' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Disable SMS two factor authentication</button>
+            </form>
+            {% endif %}
+            {% else %}
+            <p> You must verify you phone number in settings in order to use it for MFA</p>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h3>Hardware/Biometric Authentication</h3>
+             <a href="{% url 'fido:fido-list' %}" class="btn btn-primary">Manage Keys and Devices</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

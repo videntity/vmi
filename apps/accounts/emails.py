@@ -2,7 +2,7 @@ import random
 from django.conf import settings
 from django.urls import reverse
 from django.core.mail import EmailMultiAlternatives
-
+from django.template.loader import get_template
 # Copyright Videntity Systems Inc.
 
 
@@ -114,6 +114,30 @@ def send_activation_key_via_email(user, signup_key):
        The Team
 
        """ % (user.first_name, activation_link)
+
+    msg = EmailMultiAlternatives(subject=subject, body=text_content,
+                                 to=to, from_email=from_email)
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send()
+
+
+def send_new_org_account_approval_email(to_user, about_user):
+    plaintext = get_template('approve-organization-affiliation-email.txt')
+    htmly = get_template('approve-organization-affiliation-email.txt')
+    context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
+               "TO_FIRST_NAME": to_user.first_name,
+               "TO_LAST_NAME": to_user.last_name,
+               "FROM_FIRST_NAME": about_user.first_name,
+               "FROM_LAST_NAME": about_user.last_name
+               }
+
+    subject = """[%s]A New user account has been created for your organization that requires your approval.""" % (
+        settings.ORGANIZATION_NAME)
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to = [to_user.email, ]
+
+    text_content = plaintext.render(context)
+    html_content = htmly.render(context)
 
     msg = EmailMultiAlternatives(subject=subject, body=text_content,
                                  to=to, from_email=from_email)

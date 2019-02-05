@@ -21,7 +21,7 @@ from django.urls import (
 from django.conf.urls import url
 from oauth2_provider import views as oauth2_views
 from apps.oidc import views as oidc_views
-from apps.home.views import authenticated_home
+from apps.home.views import authenticated_home, user_search, user_profile
 
 oauth2_base_urlpatterns = [
     url(r"^authorize/$",
@@ -71,13 +71,23 @@ urlpatterns = [
          admin.site.urls),
     path('o/',
          include((oauth2_management_urlpatterns + oauth2_base_urlpatterns,
-                 'oauth2_provider'))),
+                  'oauth2_provider'))),
     path('auth/',
          include('django.contrib.auth.urls')),
     path('accounts/',
          include('apps.accounts.urls')),
+    path('ial/',
+         include('apps.ial.urls')),
     path('.well-known/',
          include('apps.oidc.wellknown_urls')),
     path('o/', include(('apps.oidc.urls', 'oidc'), namespace='oidc')),
     path('', authenticated_home, name='home'),
+    path('search', user_search, name='user_search'),
+    path('device/',
+         include(('apps.fido.urls', 'fido'), namespace='fido')),
+    url("^profile/(?P<subject>[^/]+)$",
+        user_profile, name='user_profile_subject'),
+    url(r"^profile/", user_profile, name='user_profile'),
+
+
 ]

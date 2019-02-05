@@ -40,11 +40,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrapform',
+    'phonenumber_field',
     'oauth2_provider',
     'rest_framework',
     'apps.oidc',
     'apps.home',
     'apps.accounts',
+    'apps.ial',
+    'apps.fido',
+    'apps.mfa.backends.sms',
+
+    # 'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +61,19 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.mfa.middleware.DeviceVerificationMiddleware',
+    'apps.mfa.middleware.AssertDeviceVerificationMiddleware',
+
+    'apps.oidc.error_handlers.AuthenticationRequiredExceptionMiddleware',
+    'apps.oidc.error_handlers.OIDCNoPromptMiddleware',
 ]
+
+VERIFICATION_BACKENDS = [
+    'apps.fido.auth.backends.FIDO2Backend',
+    'apps.mfa.backends.sms.backend.SMSBackend',
+]
+
+SMS_CODE_CHARSET = "1234567890"
 
 ROOT_URLCONF = 'vmi.urls'
 
@@ -146,7 +164,7 @@ STATICFILES_DIRS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-    )
+    ),
 }
 
 # OAUTH SETTINGS
@@ -155,16 +173,39 @@ OAUTH2_PROVIDER = {
     'DEFAULT_SCOPES': ['openid'],
     'OAUTH2_VALIDATOR_CLASS': 'apps.oidc.request_validator.RequestValidator',
     'OAUTH2_SERVER_CLASS': 'apps.oidc.server.Server',
+    'REQUEST_APPROVAL_PROMPT': 'auto',
 }
 OAUTH2_PROVIDER_GRANT_MODEL = 'oidc.Grant'
 OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'oauth2_provider.AccessToken'
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
 OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'oauth2_provider.RefreshToken'
-# OIDC_PROVIDER = {
-#     'OIDC_ISSUER': 'http://localhost:8000',
-# }
+OIDC_PROVIDER = {
+    # 'OIDC_ISSUER': 'http://localhost:8000',
+    'OIDC_BASE_CLAIM_PROVIDER_CLASS': 'apps.oidc.claims.ClaimProvider',
+    'OIDC_CLAIM_PROVIDERS': [
+        # Mandatory
+        'apps.oidc.claims.UserClaimProvider',
+        'apps.accounts.claims.SubjectClaimProvider',
+        # Optional
+        # This claim provider currently gets all claims fetch-able via the
+        # UserProfile.
+        'apps.accounts.claims.UserProfileClaimProvider',
+        'apps.accounts.claims.AddressClaimProvider',
+        'apps.accounts.claims.IdentifierClaimProvider',
+        # 'apps.accounts.claims.EmailVerifiedClaimProvider',
+        # 'apps.accounts.claims.PhoneNumberClaimProvider',
+        # 'apps.accounts.claims.IdentityAssuranceLevelClaimProvider',
+        # 'apps.accounts.claims.AuthenticatorAssuranceLevelClaimProvider',
+        # 'apps.accounts.claims.VectorsOfTrustClaimProvider',
+        'apps.fido.claims.AuthenticatorAssuranceProvider',
+        'apps.mfa.backends.sms.claims.AuthenticatorAssuranceProvider',
+    ],
+}
 
 
+# Add a prefix to the lugh checkdigit calculation.
+# This can help identify genuine subject ids and indicate provenance.
+SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
 APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE',
                         'Verify My Identity')
 ORGANIZATION_TITLE = env(
@@ -224,6 +265,7 @@ SETTINGS_EXPORT = [
     'USER_DOCS',
     'DEVELOPER_DOCS',
     'USER_DOCS_TITLE',
+    'HOSTNAME_URL',
 ]
 
 # Emails
@@ -241,6 +283,27 @@ EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', EMAIL_BACKEND_DEFAULT)
 
 MFA = True
 
-# AWS Credentials need to support SES, SQS and SNS
 SIGNUP_TIMEOUT_DAYS = 3
 ORGANIZATION_NAME = "Verify My Identity"
+
+
+INDIVIDUAL_ID_TYPE_CHOICES = (
+    ('PATIENT_ID_FHIR', 'Patient ID FHIR'),
+    ('MPI', 'Master Patient Index (Not FHIR Patient id)'),
+    ('SSN', 'Social Security Number'),
+    ('MEDICIAD_ID', 'Medicaid ID Number'),
+    ('MEDICICARE_HICN', 'Medicare HICN (Legacy)'),
+    ('MEDICIARE_ID', 'Medicare ID Number'),
+    ('INDURANCE_ID', 'Insurance ID Number'),
+    ('IHE_ID', 'Health Information Exchange ID'),
+    ('UHI', 'Universal Health Identifier'),
+)
+
+ORGANIZATION_ID_TYPE_CHOICES = (
+    ('FEIN', 'Federal Employer ID Number (Tax ID)'),
+    ('NPI', 'National Provider Identifier'),
+    ('OEID', 'Other Entity Identifier'),
+    ('PECOS', 'PECOS Medicare ID')
+)
+
+PHONENUMBER_DEFAULT_REGION = 'US'

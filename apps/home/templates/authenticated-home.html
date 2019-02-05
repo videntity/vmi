@@ -25,11 +25,23 @@
         <div class="col-lg-12">
 
     
+    <h3>Hello {{request.user.first_name|title}}. Your account number is <span class="label label-default">{{profile.subject}}</span></h3>
+    
+    
+    {% ifequal profile.ial "1" %}
+     <p>We need to verify you identity before you can gain full access. Your identity level is <span class="label label-default">{{profile.ial}}</span>,
+     but most services require level <span class="label label-success">2</span>. Please see your point of contact so they can help you verify your identity.
 
-				<div class="btn-group-justified">
-					<a href="{% url 'oauth2_provider:authorized-token-list' %}" >
-					  <button type="button" class="btn btn-default"> <i class="fa fa-gears"></i>  Show Applications You Have Granted Access</button></a>
-				</div>
+     
+     {% else %}
+     <h4>Your identity has been verified to level <span class="label label-success">{{profile.ial}}</span> and you may now access available information from here and
+     other parties relying on this service.
+    {% endifequal %}
+    
+
+   
+    </p>
+    
 	    </div>
 		
     </div> <!-- /.row -->

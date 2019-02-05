@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block Content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Registered</th>
+    </thead>
+    <tbody>
+        {% for device in results %}
+        <tr>
+            <td>{{ device.name }}</td>
+            <td>{{ device.created_at }}</td>
+            <td>
+                <a href="{{device.id}}" ><button class="btn btn-primary"">
+                    Edit
+                </button></a>
+                
+                <button class="btn btn-danger" onclick="remove({{ device.id }})">
+                    Remove
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+        
+         <tr>
+
+       <th scope="row"><a href="{% url 'fido:register' %}"><button type="button" class="btn btn-success"> Add New Device </button>
+       <th scope="row">--</th>
+       </a>
+     
+       </th>
+        
+    </tbody>
+</table>
+
+
+<li><a href="{% url 'fido:register' %}"> <i class="fa fa-key"></i> Register FIDO Devices</a></li>
+
+    <script>
+        function remove(id) {
+            fetch(id, {
+                method: "DELETE",
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            }).then(function(){
+                location.reload()
+            })
+        }
+    </script>
+{% endblock %}

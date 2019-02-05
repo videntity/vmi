@@ -24,7 +24,7 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 def reset_password(request):
 
     name = _('Reset Password')
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         if request.method == 'POST':
             form = PasswordResetForm(request.POST)
             if form.is_valid():
@@ -55,12 +55,13 @@ def mylogout(request):
 
 @login_required
 def account_settings(request):
-    name = _('Account Settings')
+    name = _('Basic Information')
     up = get_object_or_404(UserProfile, user=request.user)
 
     groups = request.user.groups.values_list('name', flat=True)
     for g in groups:
-        messages.info(request, _('You are in the group: %s' % (g)))
+        if settings.DEBUG:
+            messages.info(request, _('You are in the group: %s' % (g)))
 
     if request.method == 'POST':
         form = AccountSettingsForm(request.POST)
@@ -73,14 +74,11 @@ def account_settings(request):
             request.user.last_name = data['last_name']
             request.user.save()
             # update the user profile
-            up.organization_name = data['organization_name']
-            up.mobile_phone_number = data['mobile_phone_number']
+            up.nickname = data['nickname']
             up.save()
             messages.success(request,
-                             'Your account settings have been updated.')
-            return render(request,
-                          'account-settings.html',
-                          {'form': form, 'name': name})
+                             _('Your account settings have been updated.'))
+            return HttpResponseRedirect(reverse('account_settings'))
         else:
             # the form had errors
             return render(request,
@@ -92,8 +90,8 @@ def account_settings(request):
         initial={
             'username': request.user.username,
             'email': request.user.email,
-            'organization_name': up.organization_name,
             'mobile_phone_number': up.mobile_phone_number,
+            'nickname': up.nickname,
             'last_name': request.user.last_name,
             'first_name': request.user.first_name,
         }
@@ -105,16 +103,11 @@ def account_settings(request):
 
 def create_account(request, service_title=settings.APPLICATION_TITLE):
 
-    name = "Signup for %s" % (service_title)
-    print("hello", service_title)
+    name = _("Signup for %s") % (service_title)
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request,
-                             _("Your account was created. Please "
-                               "check your email to confirm your email "
-                               "address."))
             # get the username and password
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
@@ -175,7 +168,7 @@ def activation_verify(request, activation_key):
 
 
 def forgot_password(request):
-    name = _('Forgot Password')
+    name = _('Forgot Password?')
     if request.method == 'POST':
         form = PasswordResetRequestForm(request.POST)
 

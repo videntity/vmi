@@ -53,8 +53,9 @@ class RSA256Keys(object):
             self.generate_keys()
             _rsakey = get_key_storage().public
         _rsakey = RSA.import_key(_rsakey)
-        _rsajwk = RSAKey(kid="test", use="sig", alg="RS256", key=_rsakey)
-        return _rsajwk.serialize(private=True)
+        _rsajwk = RSAKey(use="sig", alg="RS256", key=_rsakey)
+        _rsajwk.add_kid()
+        return _rsajwk.serialize()
 
     def get_private_key(self):
         try:

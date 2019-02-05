@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from .claims import DefaultProvider
+from .claims import get_claims_provider
 
 UserModel = get_user_model()
 
@@ -18,6 +18,6 @@ class ClaimProviderTests(TestCase):
             "123456")
 
     def test_get_claims(self):
-        cp = DefaultProvider(user=self.test_user)
+        cp = get_claims_provider()(user=self.test_user)
         claims = cp.get_claims()
         self.assertEqual(claims['email'], "test@example.com")

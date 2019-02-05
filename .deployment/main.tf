@@ -55,10 +55,6 @@ variable "environment" {
   type = "string"
 }
 
-variable "version" {
-  type = "string"
-}
-
 variable "dbname" {
   type    = "string"
   default = "devdb"
@@ -141,24 +137,6 @@ resource "aws_s3_bucket" "default" {
 
 resource "aws_ecr_repository" "vmi" {
   name = "vmi"
-}
-
-data "template_file" "Dockerrun" {
-  template = "${file("${path.module}/Dockerrun.aws.json")}"
-
-  vars {
-    ecr_url = "${aws_ecr_repository.vmi.repository_url}"
-    version = "${var.version}"
-  }
-}
-
-resource "aws_s3_bucket_object" "default" {
-  bucket  = "${aws_s3_bucket.default.id}"
-  key     = "${var.version}/Dockerrun.aws.json"
-  content = "${data.template_file.Dockerrun.rendered}"
-  lifecycle = {
-    create_before_destroy = true
-  }
 }
 
 #
@@ -423,22 +401,10 @@ resource "aws_elastic_beanstalk_application" "default" {
   description = "vmi-${var.environment}-desc"
 }
 
-resource "aws_elastic_beanstalk_application_version" "default" {
-  name        = "vmi-${var.environment}-${var.version}"
-  application = "${aws_elastic_beanstalk_application.default.name}"
-  description = "VMI application version created by terraform"
-  bucket      = "${aws_s3_bucket.default.id}"
-  key         = "${aws_s3_bucket_object.default.id}"
-  lifecycle   = {
-    create_before_destroy = true
-  }
-}
-
 resource "aws_elastic_beanstalk_environment" "default" {
   name                = "vmi-${var.environment}-env"
   application         = "${aws_elastic_beanstalk_application.default.name}"
   solution_stack_name = "64bit Amazon Linux 2018.03 v2.12.3 running Docker 18.06.1-ce"
-  version_label       = "${aws_elastic_beanstalk_application_version.default.name}"
 
   setting {
     namespace = "aws:ec2:vpc"
