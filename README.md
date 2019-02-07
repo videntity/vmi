@@ -76,10 +76,7 @@ If you're working with a fresh db image
 the migrations have to be run.
 
 ```
-docker-compose exec web .development/migrate.sh
-# if any permissions errors are thrown try
-# docker-compose exec web chmod +x .development/migrate.sh
-# then run the migrate script again
+docker-compose -f .development/docker-compose.yml exec web python manage.py migrate
 ```
 
 If you make changes to `requirements.txt` to add libraries re-run 
@@ -89,7 +86,7 @@ After the VMI Docer container is comepltely setup, you execute Django
 commands like so:
 
 
-`docker-compose exec web python manage.py`
+`docker-compose -f .development/docker-compose.yml exec web python manage.py`
 
 
 
@@ -100,7 +97,7 @@ Connecting ShareMyHealth and VerifyMyIdentity
 The following link outlines some settings for getting Verify My Identity and Share My Health working in
 a in a local development environment.
 
-https://gist.github.com/whytheplatypus/4b11eec09df978656b9007155a96c7dd
+[Local Verify My Identity and Share My Health](https://gist.github.com/whytheplatypus/4b11eec09df978656b9007155a96c7dd)
 
 
 
