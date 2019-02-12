@@ -20,6 +20,7 @@ from django.urls import (
 )
 from django.conf.urls import url
 from oauth2_provider import views as oauth2_views
+from .oauth2_views import ApplicationRegistration
 from apps.oidc import views as oidc_views
 from apps.home.views import authenticated_home, user_search, user_profile
 
@@ -45,7 +46,7 @@ oauth2_management_urlpatterns = [
         oauth2_views.ApplicationList.as_view(),
         name="list"),
     url(r"^applications/register/$",
-        oauth2_views.ApplicationRegistration.as_view(),
+        ApplicationRegistration.as_view(),
         name="register"),
     url(r"^applications/(?P<pk>[\w-]+)/$",
         oauth2_views.ApplicationDetail.as_view(),
