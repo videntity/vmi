@@ -1,6 +1,6 @@
 from oauth2_provider.oauth2_validators import OAuth2Validator as ParentValidator
-from oauthlib.oauth2 import InvalidGrantError
 from django.conf import settings
+
 
 class SettingsFlowValidatorMixin(object):
     def validate_grant_type(self, client_id, grant_type, client, request, *args, **kwargs):

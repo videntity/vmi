@@ -1,8 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
-from django.urls import reverse_lazy
 from django.views.generic import (
-    CreateView, DeleteView, DetailView, ListView, UpdateView
+    CreateView,
 )
 
 from oauth2_provider.models import get_application_model
@@ -14,13 +13,12 @@ class ApplicationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
         self.fields['client_id'].disabled = True
         self.fields['client_secret'].disabled = True
 
     class Meta:
         model = get_application_model()
-        fields=(
+        fields = (
             "name", "client_id", "client_secret", "client_type",
             "authorization_grant_type", "redirect_uris"
         )
