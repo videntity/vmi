@@ -113,7 +113,7 @@ def create_account(request, service_title=settings.APPLICATION_TITLE):
             # authenticate user then login
             user = authenticate(username=username, password=password)
             login(request, user)
-            redirect_url = request.GET['redirect_url'] if request.GET['redirect_url'] else reverse('home')
+            redirect_url = request.GET['next'] if request.GET['next'] else reverse('home')
             return HttpResponseRedirect(redirect_url)
         else:
             # return the bound form with errors
