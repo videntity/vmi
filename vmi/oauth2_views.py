@@ -32,6 +32,7 @@ class ApplicationRegistration(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class ApplicationUpdate(LoginRequiredMixin, UpdateView):
     template_name = "oauth2_provider/application_registration_form.html"
     context_object_name = "application"
