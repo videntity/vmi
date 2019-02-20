@@ -20,7 +20,10 @@ from django.urls import (
 )
 from django.conf.urls import url
 from oauth2_provider import views as oauth2_views
-from .oauth2_views import ApplicationRegistration
+from .oauth2_views import (
+    ApplicationRegistration,
+    ApplicationUpdate,
+)
 from apps.oidc import views as oidc_views
 from apps.home.views import authenticated_home, user_search, user_profile
 
@@ -55,7 +58,7 @@ oauth2_management_urlpatterns = [
         oauth2_views.ApplicationDelete.as_view(),
         name="delete"),
     url(r"^applications/(?P<pk>[\w-]+)/update/$",
-        oauth2_views.ApplicationUpdate.as_view(),
+        ApplicationUpdate.as_view(),
         name="update"),
     # Token management views
     url(r"^authorized_tokens/$",
