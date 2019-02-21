@@ -1,36 +1,37 @@
 from django.views.generic import TemplateView
-from django.views.generic.edit import FormView
+from django.views.generic.base import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.mfa.backends.sms.backend import SMSBackend
 from apps.mfa.backends.sms.models import SMSDevice
+from django.http import HttpResponseRedirect
 from apps.mfa import verify
 
 # Copyright Videntity Systems Inc.
 
 
-class EnableSMSMFAView(LoginRequiredMixin, FormView):
+class EnableSMSMFAView(LoginRequiredMixin, View):
     success_url = "/accounts/mfa"
 
-    def post(self, form):
-        user = self.request.user
+    def post(self, request, *args, **kwargs):
+        user = request.user
         number = user.userprofile.get_verified_phone_number()
         device = SMSDevice.objects.create(
             user=user,
             phone_number=number,
         )
-        verify(self.request, device)
-        return super().form_valid(form)
+        verify(request, device, backend='apps.mfa.backends.sms.backend.SMSBackend')
+        return HttpResponseRedirect(self.success_url)
 
 
-class DisableSMSMFAView(LoginRequiredMixin, FormView):
+class DisableSMSMFAView(LoginRequiredMixin, View):
     success_url = "/accounts/mfa"
 
-    def post(self, form):
-        user = self.request.user
+    def post(self, request, *args, **kwargs):
+        user = request.user
         SMSDevice.objects.filter(
             user=user,
         ).delete()
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.success_url)
 
 
 class ManageView(LoginRequiredMixin, TemplateView):

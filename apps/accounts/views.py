@@ -102,7 +102,6 @@ def account_settings(request):
 
 
 def create_account(request, service_title=settings.APPLICATION_TITLE):
-
     name = _("Signup for %s") % (service_title)
     if request.method == 'POST':
         form = SignupForm(request.POST)
@@ -114,7 +113,8 @@ def create_account(request, service_title=settings.APPLICATION_TITLE):
             # authenticate user then login
             user = authenticate(username=username, password=password)
             login(request, user)
-            return HttpResponseRedirect(reverse('home'))
+            redirect_url = request.GET.get('next', reverse('home'))
+            return HttpResponseRedirect(redirect_url)
         else:
             # return the bound form with errors
             return render(request,

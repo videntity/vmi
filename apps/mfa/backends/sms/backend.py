@@ -6,6 +6,10 @@ from .models import (
 )
 
 
+def has_sms_device(user):
+    return SMSDevice.objects.filter(user=user).exists()
+
+
 class SMSBackend:
     def get_device_model(self):
         return SMSDevice

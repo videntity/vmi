@@ -143,7 +143,7 @@ class RequestValidatorTests(TestCase):
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn("id_token", response["Location"])
+        self.assertIn("error", response["Location"])
 
     def test_id_token_only_implicit_works(self):
         """
@@ -166,4 +166,4 @@ class RequestValidatorTests(TestCase):
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn("id_token", response["Location"])
+        self.assertIn("error", response["Location"])

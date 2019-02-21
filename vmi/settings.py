@@ -73,6 +73,8 @@ VERIFICATION_BACKENDS = [
     'apps.mfa.backends.sms.backend.SMSBackend',
 ]
 
+SMS_CODE_CHARSET = "1234567890"
+
 ROOT_URLCONF = 'vmi.urls'
 
 TEMPLATES = [
@@ -169,7 +171,7 @@ REST_FRAMEWORK = {
 OAUTH2_PROVIDER = {
     'SCOPES': {'openid': 'open id connect access'},
     'DEFAULT_SCOPES': ['openid'],
-    'OAUTH2_VALIDATOR_CLASS': 'apps.oidc.request_validator.RequestValidator',
+    'OAUTH2_VALIDATOR_CLASS': 'vmi.oauth2_validators.RequestValidator',
     'OAUTH2_SERVER_CLASS': 'apps.oidc.server.Server',
     'REQUEST_APPROVAL_PROMPT': 'auto',
 }
@@ -177,6 +179,16 @@ OAUTH2_PROVIDER_GRANT_MODEL = 'oidc.Grant'
 OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'oauth2_provider.AccessToken'
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
 OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'oauth2_provider.RefreshToken'
+OAUTH2_PROVIDER_ALLOWED_GRANT_TYPES = (
+    "authorization_code",
+    # "password",
+    # "client_credentials",
+    "refresh_token",
+)
+OAUTH2_PROVIDER_ALLOWED_RESPONSE_TYPES = (
+    # "token",
+    "code",
+)
 OIDC_PROVIDER = {
     # 'OIDC_ISSUER': 'http://localhost:8000',
     'OIDC_BASE_CLAIM_PROVIDER_CLASS': 'apps.oidc.claims.ClaimProvider',
@@ -196,6 +208,7 @@ OIDC_PROVIDER = {
         # 'apps.accounts.claims.AuthenticatorAssuranceLevelClaimProvider',
         # 'apps.accounts.claims.VectorsOfTrustClaimProvider',
         'apps.fido.claims.AuthenticatorAssuranceProvider',
+        'apps.mfa.backends.sms.claims.AuthenticatorAssuranceProvider',
     ],
 }
 
