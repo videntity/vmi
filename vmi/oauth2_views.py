@@ -13,14 +13,14 @@ class ApplicationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['client_id'].disabled = True
-        self.fields['client_secret'].disabled = True
 
     class Meta:
         model = get_application_model()
         fields = (
-            "name", "client_id", "client_secret", "client_type",
-            "authorization_grant_type", "redirect_uris"
+            "name",
+            "client_type",
+            "authorization_grant_type",
+            "redirect_uris",
         )
 
 
@@ -34,7 +34,7 @@ class ApplicationRegistration(LoginRequiredMixin, CreateView):
 
 
 class ApplicationUpdate(LoginRequiredMixin, UpdateView):
-    template_name = "oauth2_provider/application_registration_form.html"
+    template_name = "oauth2_provider/application_form.html"
     context_object_name = "application"
     form_class = ApplicationForm
 
