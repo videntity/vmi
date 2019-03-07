@@ -10,7 +10,7 @@
 	      <ol class="breadcrumb">
 	        <li ><a href="/">Home</a></li>
          <li ><a href="{% url 'user_search' %}">Search</a></li>
-          <li class="active"><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile.subject}}</a></li>
+          <li class="active"><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
 	      </ol>
         </div>
      </div>
@@ -25,7 +25,7 @@
 
       
        <p>{{user.userprofile}}</p>
-       
+       <p>Account Number: {{user.userprofile.subject}}</p>
        <p>Phone: {{user.userprofile.mobile_phone_number|default:"--"}}</p>
        <p>Identity Level: {{user.userprofile.ial}}
        
