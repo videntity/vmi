@@ -83,7 +83,7 @@ module "db" {
   identifier = "${var.dbname}"
 
   engine            = "postgres"
-  engine_version    = "9.6.6"
+  engine_version    = "9.6.11"
   instance_class    = "${var.db_size}"
   allocated_storage = 5
   storage_encrypted = false
