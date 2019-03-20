@@ -204,6 +204,8 @@ class OrganizationAffiliationRequest(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
                                 db_index=True, null=False)
+    picture = models.ImageField(
+        upload_to='profile-picture/', default='profile-picture/None/no-img.jpg')
     subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject for identity token',
                                db_index=True)
@@ -314,8 +316,8 @@ class UserProfile(models.Model):
         return ""
 
     @property
-    def picture(self):
-        return ""
+    def picture_url(self):
+        return "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
 
     @property
     def vot(self):
