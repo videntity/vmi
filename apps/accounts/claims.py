@@ -20,9 +20,9 @@ class IdentifierClaimProvider(BaseProvider):
 
 
 class UserProfileClaimProvider(BaseProvider):
-    """"This claim is MANDATORY"""
 
     def claim_sub(self):
+        """"This claim is MANDATORY"""
         try:
             return self.user.userprofile.subject
         except Exception:
@@ -36,13 +36,14 @@ class UserProfileClaimProvider(BaseProvider):
 
     def claim_family_name(self):
         try:
-            return self.user.userprofile.family_name_name
+            return self.user.userprofile.family_name
         except Exception:
             return None
 
     def claim_name(self):
         try:
-            return self.user.userprofile.name
+            return "%s %s" % (self.user.userprofile.given_name,
+                              self.user.userprofile.family_name)
         except Exception:
             return None
 
