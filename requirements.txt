@@ -17,6 +17,7 @@ future==0.16.0
 idna==2.7
 mccabe==0.6.1
 git+https://github.com/TransparentHealth/oauthlib.git@patch-ui_locales#egg=oauthlib
+Pillow==5.4.1
 phonenumbers==8.10.2
 pluggy==0.7.1
 py==1.6.0
