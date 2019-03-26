@@ -26,6 +26,8 @@ from .oauth2_views import (
 )
 from apps.oidc import views as oidc_views
 from apps.home.views import authenticated_home, user_search, user_profile
+from django.conf import settings
+from django.conf.urls.static import static
 
 oauth2_base_urlpatterns = [
     url(r"^authorize/$",
@@ -92,6 +94,4 @@ urlpatterns = [
     url("^profile/(?P<subject>[^/]+)$",
         user_profile, name='user_profile_subject'),
     url(r"^profile/", user_profile, name='user_profile'),
-
-
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
