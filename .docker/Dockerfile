@@ -4,6 +4,8 @@ FROM python:3.6-alpine
 #apk update && apk upgrade && \
 RUN apk update 
 RUN apk add bash \
+	jpeg-dev \
+	zlib-dev \
 	libffi-dev \
 	python3-dev \
 	openssh \

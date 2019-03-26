@@ -119,7 +119,7 @@ class UserProfileClaimProvider(BaseProvider):
 
     def claim_picture(self):
         try:
-            return self.user.userprofile.picture
+            return self.user.userprofile.picture_url
         except Exception:
             return None
 
