@@ -24,7 +24,7 @@ from ..ial.models import IdentityAssuranceLevelDocumentation
 __author__ = "Alan Viars"
 
 
-SEX_CHOICES = (('M', 'Male'), ('F', 'Female'), ('U', 'Unknown'))
+SEX_CHOICES = (('female', 'Female'), ('male', 'Male'), ('', 'Unspecified'))
 
 GENDER_CHOICES = (('M', 'Male'),
                   ('F', 'Female'),
@@ -226,8 +226,8 @@ class UserProfile(models.Model):
         max_length=4, blank=True, default="",
         help_text=_('If populated, this field must contain exactly four numbers.'),)
     sex = models.CharField(choices=SEX_CHOICES,
-                           max_length=1, default="U",
-                           help_text=_('Sex'),
+                           max_length=6, default="", blank=True,
+                           help_text=_('Specify sex, not gender identity.')
                            )
     gender_identity = models.CharField(choices=GENDER_CHOICES,
                                        max_length=3, default="U",
