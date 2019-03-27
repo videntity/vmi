@@ -4,7 +4,9 @@ from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from phonenumber_field.formfields import PhoneNumberField
-from .models import UserProfile, create_activation_key
+from .models import UserProfile, create_activation_key, SEX_CHOICES
+
+YEARS = [x for x in range(1901, 2000)]
 
 # Copyright Videntity Systems Inc.
 
@@ -47,8 +49,11 @@ class SignupForm(forms.Form):
     mobile_phone_number = PhoneNumberField(required=False,
                                            label=_(
                                                "Mobile Phone Number"))
-
     email = forms.EmailField(max_length=75, required=False)
+    sex = forms.ChoiceField(choices=SEX_CHOICES, required=False,
+                            help_text="Enter sex, not gender identity.")
+    birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=YEARS),
+                                 required=False)
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password"))
     password2 = forms.CharField(widget=forms.PasswordInput, max_length=128,
@@ -117,7 +122,9 @@ class SignupForm(forms.Form):
         UserProfile.objects.create(
             user=new_user,
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
-            nickname=self.cleaned_data.get('nickname', "")
+            nickname=self.cleaned_data.get('nickname', ""),
+            sex=self.cleaned_data.get('sex', ""),
+            birth_date=self.cleaned_data.get('birth_date')
         )
 
         # Send a verification email
@@ -133,11 +140,15 @@ class DeleteAccountForm(forms.Form):
 
 
 class AccountSettingsForm(forms.Form):
+    username = forms.CharField(max_length=30)
     first_name = forms.CharField(max_length=100, label=_("First Name*"))
     last_name = forms.CharField(max_length=100, label=_("Last Name*"))
     nickname = forms.CharField(max_length=100, required=False)
-    username = forms.CharField(max_length=30)
     email = forms.EmailField(label=_('Email'), required=False)
+    sex = forms.ChoiceField(choices=SEX_CHOICES, required=False,
+                            help_text="Enter sex, not gender identity.")
+    birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=YEARS),
+                                 required=False)
     required_css_class = 'required'
 
     def clean_first_name(self):

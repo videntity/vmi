@@ -92,6 +92,8 @@ def account_settings(request):
             request.user.save()
             # update the user profile
             up.nickname = data['nickname']
+            up.sex = data['sex']
+            up.birth_date = data['birth_date']
             up.save()
             messages.success(request,
                              _('Your account settings have been updated.'))
@@ -108,6 +110,8 @@ def account_settings(request):
             'username': request.user.username,
             'email': request.user.email,
             'mobile_phone_number': up.mobile_phone_number,
+            'sex': up.sex,
+            'birth_date': up.birth_date,
             'nickname': up.nickname,
             'last_name': request.user.last_name,
             'first_name': request.user.first_name,
