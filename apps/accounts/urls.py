@@ -4,7 +4,7 @@ from django.urls import path
 from .views import (account_settings,
                     mylogout, create_account,
                     forgot_password, activation_verify,
-                    reset_password)
+                    reset_password, delete_account)
 from .staff_views import (create_org_account,
                           approve_org_affiliation,
                           deny_org_affiliation,
@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^verify-mobile-phone-number/(?P<uid>[^/]+)/', verify_mobile_phone_number,
         name='verify_mobile_phone_number'),
     url(r'^settings', account_settings, name='account_settings'),
+    url(r'^delete', delete_account, name='delete_account'),
     url(r'^login', mfa_login, name='mfa_login'),
     url(r'^create-account/(?P<service_title>[^/]+)/', create_account,
         name='create_account_enduser_affilate'),

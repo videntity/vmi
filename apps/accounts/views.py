@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from .forms import (PasswordResetForm, PasswordResetRequestForm)
 from .models import UserProfile, ValidPasswordResetKey
 from .forms import (AccountSettingsForm,
-                    SignupForm)
+                    SignupForm, DeleteAccountForm)
 
 from .utils import validate_activation_key
 from django.conf import settings
@@ -51,6 +51,23 @@ def mylogout(request):
     logout(request)
     messages.success(request, _('You have been logged out.'))
     return HttpResponseRedirect(reverse('home'))
+
+
+@login_required
+def delete_account(request):
+    name = _('Delete Account Information')
+    if request.method == 'POST':
+        form = DeleteAccountForm(request.POST)
+        if form.is_valid():
+            request.user.delete()
+            logout(request)
+            messages.success(request, _('Your account has been deleted.'))
+            return HttpResponseRedirect(reverse('home'))
+    # This is a GET
+    messages.warning(request, _('You are about to permanently delete your account. This action cannot be undone.'))
+    return render(request,
+                  'generic/bootstrapform.html',
+                  {'name': name, 'form': DeleteAccountForm()})
 
 
 @login_required

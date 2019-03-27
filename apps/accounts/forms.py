@@ -125,6 +125,13 @@ class SignupForm(forms.Form):
         return new_user
 
 
+class DeleteAccountForm(forms.Form):
+    are_you_sure = forms.BooleanField(label=_("Are you sure?"),
+                                      help_text=_("Check the box and press continue to delete your account."))
+
+    required_css_class = 'required'
+
+
 class AccountSettingsForm(forms.Form):
     first_name = forms.CharField(max_length=100, label=_("First Name*"))
     last_name = forms.CharField(max_length=100, label=_("Last Name*"))
