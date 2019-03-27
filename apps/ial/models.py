@@ -14,7 +14,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
     """
     subject_user = models.ForeignKey(
         get_user_model(),
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         db_index=True,
         related_name="subject_user")
     verifying_user = models.ForeignKey(
