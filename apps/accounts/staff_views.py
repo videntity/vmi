@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from .models import Organization, OrganizationAffiliationRequest
 from .staff_forms import StaffSignupForm
 from django.conf import settings
-# from .emails import send_new_org_account_approval_email
+from .emails import send_org_account_approved_email
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import permission_required
@@ -37,6 +37,7 @@ def approve_org_affiliation(request, organization_slug, username):
     msg = _("""%s %s is now affiliated with %s.""") % (user.first_name,
                                                        user.last_name,
                                                        org.name)
+    send_org_account_approved_email(user)
     messages.success(request, msg)
     return HttpResponseRedirect(reverse('home'))
 

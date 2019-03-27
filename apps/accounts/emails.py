@@ -143,3 +143,25 @@ def send_new_org_account_approval_email(to_user, about_user):
                                  to=to, from_email=from_email)
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
+
+
+def send_org_account_approved_email(to_user):
+    plaintext = get_template('organization-affiliation-approved-email.txt')
+    htmly = get_template('organization-affiliation-approved-email.txt')
+    context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
+               "TO_FIRST_NAME": to_user.first_name,
+               "TO_LAST_NAME": to_user.last_name,
+               }
+
+    subject = """[%s]Your account has been approved by your organization's point of contact""" % (
+        settings.ORGANIZATION_NAME)
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to = [to_user.email, ]
+
+    text_content = plaintext.render(context)
+    html_content = htmly.render(context)
+
+    msg = EmailMultiAlternatives(subject=subject, body=text_content,
+                                 to=to, from_email=from_email)
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send()
