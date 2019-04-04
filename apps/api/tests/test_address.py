@@ -22,7 +22,7 @@ class AddressTestCase(BaseTestCase):
                 "preferred_username": "james",
                 "given_name": "James",
                 "family_name": "Kirk",
-                "gender": "M",
+                "gender": "male",
                 "password": "tree garden jump fox",
                 "birthdate": "1952-01-03",
                 "nickname": "Jim",

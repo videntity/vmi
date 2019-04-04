@@ -4,7 +4,7 @@ from oauth2_provider.contrib.rest_framework import authentication
 from django.contrib.auth import get_user_model
 from apps.accounts.models import (
     UserProfile,
-    GENDER_CHOICES,
+    SEX_CHOICES,
 )
 from apps.oidc.claims import get_claims_provider
 # {
@@ -26,7 +26,7 @@ class UserSerializer(serializers.Serializer):
     preferred_username = serializers.CharField(max_length=255, source='user.username')
     given_name = serializers.CharField(max_length=255, source='user.first_name')
     family_name = serializers.CharField(max_length=255, source='user.last_name')
-    gender = serializers.ChoiceField(choices=GENDER_CHOICES, source='sex')
+    gender = serializers.ChoiceField(choices=SEX_CHOICES, source='sex')
     password = serializers.CharField(max_length=255, write_only=True, source='user.password')
     birthdate = serializers.DateField(source='birth_date')
     nickname = serializers.CharField(max_length=255)
