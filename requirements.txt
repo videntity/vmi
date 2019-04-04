@@ -35,6 +35,7 @@ pyjwt==1.6.4
 pycryptodome==3.6.6
 pyjwkest==1.4.0 
 djangorestframework==3.8.2
+drf-nested-routers==0.91
 cryptography==2.3.1 
 psycopg2==2.7.5
 luhn==0.2.0

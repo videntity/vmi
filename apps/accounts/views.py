@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from .forms import (PasswordResetForm, PasswordResetRequestForm)
 from .models import UserProfile, ValidPasswordResetKey
 from .forms import (AccountSettingsForm,
-                    SignupForm)
+                    SignupForm, DeleteAccountForm)
 
 from .utils import validate_activation_key
 from django.conf import settings
@@ -54,6 +54,23 @@ def mylogout(request):
 
 
 @login_required
+def delete_account(request):
+    name = _('Delete Account Information')
+    if request.method == 'POST':
+        form = DeleteAccountForm(request.POST)
+        if form.is_valid():
+            request.user.delete()
+            logout(request)
+            messages.success(request, _('Your account has been deleted.'))
+            return HttpResponseRedirect(reverse('home'))
+    # This is a GET
+    messages.warning(request, _('You are about to permanently delete your account. This action cannot be undone.'))
+    return render(request,
+                  'generic/bootstrapform.html',
+                  {'name': name, 'form': DeleteAccountForm()})
+
+
+@login_required
 def account_settings(request):
     name = _('Basic Information')
     up = get_object_or_404(UserProfile, user=request.user)
@@ -75,6 +92,8 @@ def account_settings(request):
             request.user.save()
             # update the user profile
             up.nickname = data['nickname']
+            up.sex = data['sex']
+            up.birth_date = data['birth_date']
             up.save()
             messages.success(request,
                              _('Your account settings have been updated.'))
@@ -91,6 +110,8 @@ def account_settings(request):
             'username': request.user.username,
             'email': request.user.email,
             'mobile_phone_number': up.mobile_phone_number,
+            'sex': up.sex,
+            'birth_date': up.birth_date,
             'nickname': up.nickname,
             'last_name': request.user.last_name,
             'first_name': request.user.first_name,

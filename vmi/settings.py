@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'apps.ial',
     'apps.fido',
     'apps.mfa.backends.sms',
+    'apps.api',
 
     # 'django_extensions',
 ]
@@ -93,6 +94,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'vmi.wsgi.application'
 
@@ -168,6 +170,8 @@ STATIC_ROOT = 'sitestatic'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static-assets"),
 ]
+
+ATOMIC_REQUESTS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

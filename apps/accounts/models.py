@@ -24,7 +24,7 @@ from ..ial.models import IdentityAssuranceLevelDocumentation
 __author__ = "Alan Viars"
 
 
-SEX_CHOICES = (('M', 'Male'), ('F', 'Female'), ('U', 'Unknown'))
+SEX_CHOICES = (('female', 'Female'), ('male', 'Male'), ('', 'Unspecified'))
 
 GENDER_CHOICES = (('M', 'Male'),
                   ('F', 'Female'),
@@ -100,6 +100,7 @@ class OrganizationIdentifier(models.Model):
 
 
 class Address(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, db_index=True, editable=False)
     user = models.ForeignKey(get_user_model(), on_delete='PROTECT', null=True)
     street_1 = models.CharField(max_length=250, blank=True, default='')
     street_2 = models.CharField(max_length=250, blank=True, default='')
@@ -130,10 +131,14 @@ class Address(models.Model):
         return '%s %s' % (self.street_1, self.street_2)
 
     @property
+    def formatted(self):
+        return '%s %s\n%s, %s %s' % (
+            self.street_1, self.street_2, self.city, self.state, self.zipcode)
+
+    @property
     def formatted_address(self):
         od = OrderedDict()
-        od['formatted'] = '%s %s\n%s %s %s' % (
-            self.street_1, self.street_2, self.city, self.state, self.zipcode)
+        od['formatted'] = self.formatted
         od['street_address'] = self.street_address
         od['locality'] = self.locality
         od['region'] = self.region
@@ -226,8 +231,8 @@ class UserProfile(models.Model):
         max_length=4, blank=True, default="",
         help_text=_('If populated, this field must contain exactly four numbers.'),)
     sex = models.CharField(choices=SEX_CHOICES,
-                           max_length=1, default="U",
-                           help_text=_('Sex'),
+                           max_length=6, default="", blank=True,
+                           help_text=_('Specify sex, not gender identity.')
                            )
     gender_identity = models.CharField(choices=GENDER_CHOICES,
                                        max_length=3, default="U",

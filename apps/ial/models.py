@@ -1,10 +1,26 @@
+import json
+import uuid
 from django.db import models
 from django.contrib.auth import get_user_model
 from datetime import date
-import json
 from collections import OrderedDict
 
 __author__ = "Alan Viars"
+
+
+EVIDENCE_CLASSIFICATIONS = (
+    ('',
+     'None'),
+    ('ONE-SUPERIOR-OR-STRONG+',
+     'One Superior or Strong+ pieces of identity evidence'),
+    ('ONE-STRONG-TWO-FAIR',
+     'One Strong and Two Fair pieces of identity evidence'),
+    ('TWO-STRONG',
+     'Two Pieces of Strong identity evidence'),
+    ('TRUSTED-REFEREE-VOUCH',
+     'I am a Trusted Referee Vouching for this person'),
+    ('KBA',
+     'Knowledged-Based Identity Verification'))
 
 
 class IdentityAssuranceLevelDocumentation(models.Model):
@@ -12,9 +28,10 @@ class IdentityAssuranceLevelDocumentation(models.Model):
     """This model is based on NIST SP 800-63-3 Part A
     https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63a.pdf
     """
+    uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)
     subject_user = models.ForeignKey(
         get_user_model(),
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         db_index=True,
         related_name="subject_user")
     verifying_user = models.ForeignKey(
@@ -37,19 +54,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         default='',
         blank=False)
     evidence = models.CharField(
-        choices=(
-            ('',
-             'None'),
-            ('ONE-SUPERIOR-OR-STRONG+',
-             'One Superior or Strong+ pieces of identity evidence'),
-            ('ONE-STRONG-TWO-FAIR',
-             'One Strong and Two Fair pieces of identity evidence'),
-            ('TWO-STRONG',
-             'Two Pieces of Strong identity evidence'),
-            ('TRUSTED-REFEREE-VOUCH',
-             'I am a Trusted Referee Vouching for this person'),
-            ('KBA',
-             'Knowledged-Based Identity Verification')),
+        choices=EVIDENCE_CLASSIFICATIONS,
         max_length=24,
         default='',
         blank=True)
@@ -63,6 +68,11 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         default='',
         help_text="""Complete this description when downgrading the ID assurance level.""")
 
+    note = models.TextField(
+        blank=True,
+        null=True,
+    )
+
     metadata = models.TextField(
         blank=True,
         default="""{"subject_user":null, "history":[]}""",
@@ -71,6 +81,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
     # type is be some enumerated\codified list.
     type = models.CharField(max_length=16, blank=True, default='')
     expires_at = models.DateField(blank=True, null=True)
+    verification_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
