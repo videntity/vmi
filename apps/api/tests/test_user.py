@@ -32,7 +32,7 @@ class UserTestCase(BaseTestCase):
         )
         self.assertEqual(response.status_code, 201, response.content)
         self.assertDictContainsSubset({
-            "iss": "http://localhost:8000",
+            # "iss": "http://localhost:8000",
             # "subject": "123456789012345",
             "preferred_username": "james",
             "given_name": "James",
@@ -76,7 +76,7 @@ class UserTestCase(BaseTestCase):
         )
         self.assertEqual(response.status_code, 200, response.content)
         self.assertDictContainsSubset({
-            "iss": "http://localhost:8000",
+            # "iss": "http://localhost:8000",
             # "subject": "123456789012345",
             "preferred_username": "james",
             "given_name": "James",
