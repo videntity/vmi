@@ -61,10 +61,10 @@ class UserProfileClaimProvider(BaseProvider):
 
     def claim_gender(self):
         try:
-            gender = self.user.userprofile.gender
-            if gender == "M":
+            gender = self.user.userprofile.sex
+            if gender == "male":
                 return "male"
-            if gender == "F":
+            if gender == "female":
                 return "female"
         except Exception:
             return None
