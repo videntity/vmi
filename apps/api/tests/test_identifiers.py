@@ -22,15 +22,15 @@ class IdentifierTestCase(BaseTestCase):
                 "preferred_username": "james",
                 "given_name": "James",
                 "family_name": "Kirk",
-                "gender": "M",
+                "gender": "male",
                 "password": "tree garden jump fox",
                 "birthdate": "1952-01-03",
                 "nickname": "Jim",
                 "phone_number": "+15182345678",
                 "email": "jamess@example.com",
-             },
-             content_type="application/json",
-             Authorization="Bearer {}".format(self.token.token),
+            },
+            content_type="application/json",
+            Authorization="Bearer {}".format(self.token.token),
         )
         self.assertEqual(201, response.status_code, response.content)
         self.subject = response.json()['sub']

@@ -20,7 +20,7 @@ class UserTestCase(BaseTestCase):
                 "preferred_username": "james",
                 "given_name": "James",
                 "family_name": "Kirk",
-                "gender": "M",
+                "gender": "male",
                 "password": "tree garden jump fox",
                 "birthdate": "1952-01-03",
                 "nickname": "Jim",
@@ -32,7 +32,7 @@ class UserTestCase(BaseTestCase):
         )
         self.assertEqual(response.status_code, 201, response.content)
         self.assertDictContainsSubset({
-            "iss": "http://localhost:8000",
+            # "iss": "http://localhost:8000",
             # "subject": "123456789012345",
             "preferred_username": "james",
             "given_name": "James",
@@ -60,7 +60,7 @@ class UserTestCase(BaseTestCase):
                 "preferred_username": "james",
                 "given_name": "James",
                 "family_name": "Kirk",
-                "gender": "M",
+                "gender": "male",
                 "password": "tree garden jump fox",
                 "birthdate": "1952-01-03",
                 "nickname": "Jim",
@@ -76,7 +76,7 @@ class UserTestCase(BaseTestCase):
         )
         self.assertEqual(response.status_code, 200, response.content)
         self.assertDictContainsSubset({
-            "iss": "http://localhost:8000",
+            # "iss": "http://localhost:8000",
             # "subject": "123456789012345",
             "preferred_username": "james",
             "given_name": "James",
@@ -102,7 +102,7 @@ class UserTestCase(BaseTestCase):
                 "preferred_username": "james",
                 "given_name": "James",
                 "family_name": "Kirk",
-                "gender": "M",
+                "gender": "male",
                 "password": "tree garden jump fox",
                 "birthdate": "1952-01-03",
                 "nickname": "Jim",
@@ -137,7 +137,7 @@ class UserTestCase(BaseTestCase):
                 "preferred_username": "james",
                 "given_name": "James",
                 "family_name": "Kirk",
-                "gender": "M",
+                "gender": "male",
                 "password": "tree garden jump fox",
                 "birthdate": "1952-01-03",
                 "nickname": "Jim",
