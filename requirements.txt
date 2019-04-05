@@ -33,10 +33,11 @@ urllib3==1.23
 virtualenv==16.0.0
 pyjwt==1.6.4
 pycryptodome==3.6.6
-pyjwkest==1.4.0 
+pyjwkest==1.4.0
 djangorestframework==3.8.2
+django-filter==2.0.0
 drf-nested-routers==0.91
-cryptography==2.3.1 
+cryptography==2.3.1
 psycopg2==2.7.5
 luhn==0.2.0
 fido2==0.5.0
