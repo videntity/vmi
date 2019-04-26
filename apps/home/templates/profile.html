@@ -22,10 +22,15 @@
     </div>
 
 
+        <div style="width:300px">
+        <a href="{% url 'upload_profile_picture_subject' user.userprofile.subject %}"><img src="{{user.userprofile.picture_url}}" alt="image" style="max-width:100%";/></a>    
+        </div>
 
-      
+
        <p>{{user.userprofile}}</p>
        <p>Account Number: {{user.userprofile.subject}}</p>
+       <p>Birthdate: {{user.userprofile.birthdate}}</p>
+       <p>Gender: {{user.userprofile.gender}}</p>
        <p>Phone: {{user.userprofile.mobile_phone_number|default:"--"}}</p>
        <p>Identity Level: {{user.userprofile.ial}}
        

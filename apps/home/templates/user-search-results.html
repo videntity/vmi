@@ -25,19 +25,39 @@
   <thead>
     <tr>
       <th scope="col">User</th>
-      <th scope="col">Attention Items</th>
+      <th scope="col">Actions</th>
     </tr>
   </thead>
    <tbody>
     {% for up in search_results %}
             
       <tr>
-       <th scope="row">{{up}}<br>
+       <th scope="row">
+        <div style="width:100px">
+        <a href="{% url 'user_profile_subject' up.subject|default:"None" %}">
+           <img src="{{up.picture_url}}" alt="no image" style="max-width:100%";/>
+        </a>    
+        </div>
+       
+       <a href="{% url 'user_profile_subject' up.subject|default:"None" %}"> 
+       {{up}}</a><br>
        Phone: {{up.mobile_phone_number|default:"--"}}<br>
        Identity Level: {{up.ial}}
        </th>
-       <td> <a href="{% url 'user_profile_subject' up.subject|default:"None" %}">
-        <button type="button" class="btn btn-primary"> View Profile </button> 
+       <td>
+        
+       {% if up.ial == '1' %}
+       
+       <a href="{% url 'inperson_id_verify' up.subject|default:"None" %}">
+           <button type="button" class="btn btn-warning"> Verify Identity</button> 
+      </a> 
+     
+       
+       {% endif %}
+        
+        
+        <a href="{% url 'user_profile_subject' up.subject|default:"None" %}">
+        <button type="button" class="btn btn-default"> View Profile </button> 
        </a>
 
        
