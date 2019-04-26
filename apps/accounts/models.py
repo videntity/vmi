@@ -327,7 +327,6 @@ class UserProfile(models.Model):
     @property
     def vot(self):
         """Vectors of Trust rfc8485"""
-        # TODO Add MFA support
         response = ""
         ial = self.ial
         aal = self.aal
