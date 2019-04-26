@@ -154,3 +154,79 @@ class UserTestCase(BaseTestCase):
         self.assertEqual(delete_response.status_code, 204, delete_response.content)
         with self.assertRaises(UserProfile.DoesNotExist):
             UserProfile.objects.get(subject=response.json()['sub'])
+
+    def test_search_users(self):
+        """The user API endpoint can be searched with the 'first_or_last_name' parameter."""
+        client = Client()
+
+        # There is currently 1 user (the one making the request)
+        response1 = client.get(
+            "/api/v1/user/",
+            Authorization="Bearer {}".format(self.token.token),
+        )
+        self.assertEqual(len(response1.json()), 1)
+
+        # Create some users
+        user1 = User.objects.create(first_name='One', last_name='Example', username='testuser1')
+        UserProfile.objects.create(user=user1)
+        user2 = User.objects.create(first_name='Two', last_name='Example', username='testuser2')
+        UserProfile.objects.create(user=user2)
+        user3 = User.objects.create(first_name='Three', last_name='Example', username='testuser3')
+        UserProfile.objects.create(user=user3)
+
+        with self.subTest('No search term'):
+            # GETting the user list page without a search term returns all users
+            response = client.get(
+                "/api/v1/user/",
+                Authorization="Bearer {}".format(self.token.token),
+            )
+            self.assertEqual(len(response.json()), 4)
+
+        with self.subTest('Empty search term'):
+            # GETting the user list page with an empty search term returns all users
+            response = client.get(
+                "/api/v1/user/?first_or_last_name=",
+                Authorization="Bearer {}".format(self.token.token),
+            )
+            self.assertEqual(len(response.json()), 4)
+
+        with self.subTest('Exact match'):
+            # GETting the user list page with a search term that matches 1 user
+            response = client.get(
+                "/api/v1/user/?first_or_last_name=one",  # Note: the search is case-insensitive
+                Authorization="Bearer {}".format(self.token.token),
+            )
+            self.assertEqual(len(response.json()), 1)
+            self.assertEqual(response.json()[0]['given_name'], 'One')
+            self.assertDictContainsSubset(
+                {'given_name': 'One', 'family_name': 'Example', 'sub': user1.userprofile.sub},
+                response.json()[0]
+            )
+
+        with self.subTest('Multiple matches'):
+            # GETting the user list page with a search term that matches multiple users
+            response = client.get(
+                "/api/v1/user/?first_or_last_name=example",
+                Authorization="Bearer {}".format(self.token.token),
+            )
+            self.assertEqual(len(response.json()), 3)
+            self.assertEqual(
+                set(user['given_name'] for user in response.json()),
+                set(['One', 'Two', 'Three'])
+            )
+            self.assertEqual(
+                set(user['family_name'] for user in response.json()),
+                set(['Example', 'Example', 'Example'])
+            )
+            self.assertEqual(
+                set(user['sub'] for user in response.json()),
+                set([user1.userprofile.sub, user2.userprofile.sub, user3.userprofile.sub])
+            )
+
+        with self.subTest('No match'):
+            # GETting the user list page with a search term that matches no users
+            response = client.get(
+                "/api/v1/user/?first_or_last_name=jkfskjdfskjdnbfjshbvjhsbvsjd",
+                Authorization="Bearer {}".format(self.token.token),
+            )
+            self.assertEqual(len(response.json()), 0)

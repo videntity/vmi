@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'oauth2_provider',
     'rest_framework',
+    'django_filters',
     'apps.oidc',
     'apps.home',
     'apps.accounts',
@@ -176,6 +177,9 @@ ATOMIC_REQUESTS = True
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
 

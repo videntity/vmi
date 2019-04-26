@@ -1,7 +1,9 @@
+from django_filters import rest_framework as filters
 from rest_framework import serializers, viewsets, permissions
 from oauth2_provider.contrib.rest_framework import authentication
 
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from apps.accounts.models import (
     UserProfile,
     SEX_CHOICES,
@@ -20,6 +22,20 @@ from apps.oidc.claims import get_claims_provider
 # }
 User = get_user_model()
 ClaimsProvider = get_claims_provider()
+
+
+class UserFilter(filters.FilterSet):
+    first_or_last_name = filters.CharFilter(method='filter_first_or_last_name')
+
+    def filter_first_or_last_name(self, queryset, name, value):
+        """Filter by the UserProfile's User's first_name or last_name."""
+        return queryset.filter(
+            Q(user__first_name__icontains=value) | Q(user__last_name__icontains=value)
+        )
+
+    class Meta:
+        model = UserProfile
+        fields = ['first_or_last_name']
 
 
 class UserSerializer(serializers.Serializer):
@@ -64,6 +80,7 @@ class UserViewSet(viewsets.ModelViewSet):
     lookup_field = "subject"
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializer
+    filterset_class = UserFilter
     authentication_classes = [authentication.OAuth2Authentication]
     permission_classes = [permissions.DjangoModelPermissions]
 
