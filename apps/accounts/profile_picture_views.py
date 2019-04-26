@@ -4,7 +4,6 @@ from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
-# from .emails import send_new_org_account_approval_email
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile
 from .profile_picture_forms import ProfilePictureForm
@@ -17,7 +16,7 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
 @login_required
 def upload_profile_picture(request, subject=None):
-    print("subject", subject)
+    # print("subject", subject)
     if not subject:
         # Looking at your own record.
         user = request.user
