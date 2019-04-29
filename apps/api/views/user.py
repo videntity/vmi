@@ -48,7 +48,7 @@ class UserSerializer(serializers.Serializer):
     nickname = serializers.CharField(max_length=255)
     email = serializers.EmailField(max_length=255, source='user.email')
     phone_number = serializers.CharField(max_length=255, source='mobile_phone_number')
-    picture = serializers.ImageField()
+    picture = serializers.ImageField(required=False)
 
     def create(self, validated_data):
         # raise Exception(validated_data)
