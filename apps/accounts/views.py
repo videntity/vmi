@@ -1,7 +1,7 @@
 import logging
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
@@ -64,62 +64,70 @@ def delete_account(request):
             messages.success(request, _('Your account has been deleted.'))
             return HttpResponseRedirect(reverse('home'))
     # This is a GET
-    messages.warning(request, _('You are about to permanently delete your account. This action cannot be undone.'))
+    messages.warning(request, _(
+        'You are about to permanently delete your account. This action cannot be undone.'))
     return render(request,
                   'generic/bootstrapform.html',
                   {'name': name, 'form': DeleteAccountForm()})
 
 
 @login_required
-def account_settings(request):
-    name = _('Basic Information')
-    up = get_object_or_404(UserProfile, user=request.user)
-
-    groups = request.user.groups.values_list('name', flat=True)
-    for g in groups:
-        if settings.DEBUG:
-            messages.info(request, _('You are in the group: %s' % (g)))
+def account_settings(request, subject=None):
+    if not subject:
+        # Looking at your own record.
+        user = request.user
+        up = get_object_or_404(UserProfile, user=user)
+        name = _('Edit Your Basic Profile Information')
+    else:
+        up = get_object_or_404(UserProfile, subject=subject)
+        # Check permission that the user can view other profiles.
+        if not request.user.has_perm('accounts.change_userprofile'):
+            raise Http404()
+        user = up.user
+        name = _("Edit Basic Profile Information for %s" % (up))
 
     if request.method == 'POST':
         form = AccountSettingsForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             # update the user info
-            request.user.username = data['username']
-            request.user.email = data['email']
-            request.user.first_name = data['first_name']
-            request.user.last_name = data['last_name']
-            request.user.save()
+            user.username = data['username']
+            user.email = data['email']
+            user.first_name = data['first_name']
+            user.last_name = data['last_name']
+            user.save()
             # update the user profile
             up.nickname = data['nickname']
             up.sex = data['sex']
             up.birth_date = data['birth_date']
             up.save()
             messages.success(request,
-                             _('Your account settings have been updated.'))
+                             _('Pro settings have been updated.'))
+            if subject:
+                return HttpResponseRedirect(reverse('account_settings_subject', args=(subject,)))
             return HttpResponseRedirect(reverse('account_settings'))
         else:
             # the form had errors
             return render(request,
                           'account-settings.html',
-                          {'form': form, 'name': name})
+                          {'form': form, 'name': name, 'up': up})
 
     # this is an HTTP GET
     form = AccountSettingsForm(
         initial={
-            'username': request.user.username,
-            'email': request.user.email,
+            'username': user.username,
+            'last_name': user.last_name,
+            'first_name': user.first_name,
+            'email': user.email,
             'mobile_phone_number': up.mobile_phone_number,
             'sex': up.sex,
             'birth_date': up.birth_date,
             'nickname': up.nickname,
-            'last_name': request.user.last_name,
-            'first_name': request.user.first_name,
         }
     )
     return render(request,
                   'account-settings.html',
-                  {'name': name, 'form': form})
+                  {'name': name, 'form': form, 'up': up})
 
 
 def create_account(request, service_title=settings.APPLICATION_TITLE):

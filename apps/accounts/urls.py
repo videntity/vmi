@@ -22,6 +22,8 @@ from .identifier_views import (display_individual_identifiers, add_new_individua
 from .address_views import (display_addresses, add_new_address,
                             delete_address, edit_address)
 
+from .profile_picture_views import upload_profile_picture
+
 # Copyright Videntity Systems Inc.
 
 urlpatterns = [
@@ -29,9 +31,12 @@ urlpatterns = [
     url(r'^mobile-phone', mobile_phone, name='mobile_phone'),
     url(r'^verify-mobile-phone-number/(?P<uid>[^/]+)/', verify_mobile_phone_number,
         name='verify_mobile_phone_number'),
+    url(r'^settings/(?P<subject>[^/]+)', account_settings, name='account_settings_subject'),
     url(r'^settings', account_settings, name='account_settings'),
     url(r'^delete', delete_account, name='delete_account'),
     url(r'^login', mfa_login, name='mfa_login'),
+    url(r'^upload-profile-picture/(?P<subject>[^/]+)', upload_profile_picture, name='upload_profile_picture_subject'),
+    url(r'^upload-profile-picture', upload_profile_picture, name='upload_profile_picture'),
     url(r'^create-account/(?P<service_title>[^/]+)/', create_account,
         name='create_account_enduser_affilate'),
     url(r'^create-account', create_account, name='create_account_enduser'),
