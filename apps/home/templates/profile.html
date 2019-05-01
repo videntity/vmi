@@ -32,29 +32,44 @@
        <p>Birthdate: {{user.userprofile.birthdate}}</p>
        <p>Gender: {{user.userprofile.gender}}</p>
        <p>Phone: {{user.userprofile.mobile_phone_number|default:"--"}}</p>
+       
+       
        <p>Identity Level: {{user.userprofile.ial}}
        
        
        {% if user.userprofile.ial == '1' %}
        (<a href="{% url 'inperson_id_verify' user.userprofile.subject|default:"None" %}">
-    Verify Identity 1-->2
+    Verify Identity of {{user.userprofile}}
        </a>)
        {% elif user.userprofile.ial == '2' %}
         (<a href="{% url 'ial_two_to_one_downgrade' user.userprofile.subject|default:"None" %}">
-       Downgrade Identity Level 2-->1
+       Downgrade Identity Level from 2-->1
        </a>)
         {% endif %}
        </p>
        
        <p>
+         {% if user.userprofile.ial == '1' %}
+              <a href="{% url 'inperson_id_verify' user.userprofile.subject|default:"None" %}">
+     <button type="button" class="btn btn-warning"> Verify Identity </button> 
+       </a> 
+       
+       
+       {% endif %}
+       <a href="{% url 'account_settings_subject' user.userprofile.subject|default:"None" %}">
+     <button type="button" class="btn btn-default"> Add/Edit Basic Profile Information </button> 
+       </a> 
+        
+        
         <a href="{% url 'display_addresses_subject' user.userprofile.subject|default:"None" %}">
-    Addresses
+     <button type="button" class="btn btn-default"> Add/Edit/Delete Addresses </button> 
+
        </a>
         </p>
  
         <p>
         <a href="{% url 'display_individual_identifiers_subject' user.userprofile.subject|default:"None" %}">
-    Identifiers
+    <button type="button" class="btn btn-default"> Add/Edit/Delete Identifiers </button> 
        </a>
         </p>
 	   

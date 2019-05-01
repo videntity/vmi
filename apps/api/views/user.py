@@ -48,11 +48,16 @@ class UserSerializer(serializers.Serializer):
     nickname = serializers.CharField(max_length=255)
     email = serializers.EmailField(max_length=255, source='user.email')
     phone_number = serializers.CharField(max_length=255, source='mobile_phone_number')
+    picture = serializers.ImageField(required=False)
 
     def create(self, validated_data):
         # raise Exception(validated_data)
         user_data = validated_data.get('user', {})
         user = User.objects.create(**user_data)
+
+        # We must use the set_password() method to set the user's password
+        user.set_password(user_data['password'])
+        user.save()
 
         validated_data['user'] = user
         return UserProfile.objects.create(**validated_data)
@@ -61,6 +66,11 @@ class UserSerializer(serializers.Serializer):
         user_data = validated_data.pop('user', {})
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
+
+        # If the user's password is being set, we must use the set_password() method to set it
+        if user_data.get('password'):
+            instance.user.set_password(user_data['password'])
+            instance.user.save()
 
         instance.save()
 

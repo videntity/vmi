@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^mobile-phone', mobile_phone, name='mobile_phone'),
     url(r'^verify-mobile-phone-number/(?P<uid>[^/]+)/', verify_mobile_phone_number,
         name='verify_mobile_phone_number'),
+    url(r'^settings/(?P<subject>[^/]+)', account_settings, name='account_settings_subject'),
     url(r'^settings', account_settings, name='account_settings'),
     url(r'^delete', delete_account, name='delete_account'),
     url(r'^login', mfa_login, name='mfa_login'),
