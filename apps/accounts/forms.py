@@ -1,14 +1,20 @@
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.utils.safestring import mark_safe
 from phonenumber_field.formfields import PhoneNumberField
 from .models import UserProfile, create_activation_key, SEX_CHOICES
 
+# Copyright Videntity Systems Inc.
+
 YEARS = [x for x in range(1901, 2000)]
 
-# Copyright Videntity Systems Inc.
+
+agree_tos_label = mark_safe(
+    'Do you agree to the <a href="%s">terms of service</a>?' % (settings.TOS_URI))
 
 User = get_user_model()
 
@@ -58,6 +64,7 @@ class SignupForm(forms.Form):
                                 label=_("Password"))
     password2 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password (again)"))
+    agree_tos = forms.BooleanField(label=_(agree_tos_label))
     required_css_class = 'required'
 
     def clean_first_name(self):
@@ -124,8 +131,8 @@ class SignupForm(forms.Form):
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
             nickname=self.cleaned_data.get('nickname', ""),
             sex=self.cleaned_data.get('sex', ""),
-            birth_date=self.cleaned_data.get('birth_date')
-        )
+            birth_date=self.cleaned_data.get('birth_date', ""),
+            agree_tos=settings.CURRENT_TOS_VERSION)
 
         # Send a verification email
         create_activation_key(new_user)

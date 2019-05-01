@@ -4,10 +4,14 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from .models import UserProfile, create_activation_key, Organization, OrganizationAffiliationRequest
-
+from django.conf import settings
+from django.utils.safestring import mark_safe
 # Copyright Videntity Systems Inc.
 
 User = get_user_model()
+
+agree_tos_label = mark_safe(
+    'Do you agree to the <a href="%s">terms of service</a>?' % (settings.TOS_URI))
 
 
 class StaffSignupForm(forms.Form):
@@ -17,7 +21,8 @@ class StaffSignupForm(forms.Form):
     email = forms.EmailField(max_length=150, label=_("Email"), required=True)
     first_name = forms.CharField(max_length=100, label=_("First Name"))
     last_name = forms.CharField(max_length=100, label=_("Last Name"))
-    nickname = forms.CharField(max_length=100, label=_("Nickname"), required=False)
+    nickname = forms.CharField(
+        max_length=100, label=_("Nickname"), required=False)
 
     mobile_phone_number = forms.CharField(required=True,
                                           label=_("Mobile Phone Number"),
@@ -26,6 +31,7 @@ class StaffSignupForm(forms.Form):
                                 label=_("Password"))
     password2 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password (again)"))
+    agree_tos = forms.BooleanField(label=_(agree_tos_label))
     org_slug = forms.CharField(widget=forms.HiddenInput(),
                                max_length=128, required=True)
 
@@ -102,7 +108,7 @@ class StaffSignupForm(forms.Form):
             user=new_user,
             nickname=self.cleaned_data.get('nickname', ''),
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
-        )
+            agree_tos=settings.CURRENT_TOS_VERSION)
         up.save()
         organization_slug = self.cleaned_data['org_slug']
         org = Organization.objects.get(slug=organization_slug)
