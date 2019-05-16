@@ -1,5 +1,6 @@
 from django_filters import rest_framework as filters
 from rest_framework import serializers, viewsets, permissions
+from rest_framework.exceptions import ValidationError
 from oauth2_provider.contrib.rest_framework import authentication
 
 from django.contrib.auth import get_user_model
@@ -53,6 +54,9 @@ class UserSerializer(serializers.Serializer):
     def create(self, validated_data):
         # raise Exception(validated_data)
         user_data = validated_data.get('user', {})
+        if User.objects.filter(username=user_data['username']).exists():
+            raise ValidationError(
+                'Could not create user with that username. Please choose another.', code=400)
         user = User.objects.create(**user_data)
 
         # We must use the set_password() method to set the user's password

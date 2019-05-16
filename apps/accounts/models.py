@@ -242,6 +242,10 @@ class UserProfile(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+    agree_tos = models.CharField(max_length=64, default="", blank=True,
+                                 help_text=_('Do you agree to the terms and conditions?'))
+    agree_privacy_policy = models.CharField(max_length=64, default="", blank=True,
+                                            help_text=_('Do you agree to the privacy policy?'))
 
     def save(self, commit=True, **kwargs):
         if not self.subject:
