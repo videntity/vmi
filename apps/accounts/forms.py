@@ -132,7 +132,8 @@ class SignupForm(forms.Form):
             nickname=self.cleaned_data.get('nickname', ""),
             sex=self.cleaned_data.get('sex', ""),
             birth_date=self.cleaned_data.get('birth_date', ""),
-            agree_tos=settings.CURRENT_TOS_VERSION)
+            agree_tos=settings.CURRENT_TOS_VERSION,
+            agree_privacy_policy=settings.CURRENT_PP_VERSION)
 
         # Send a verification email
         create_activation_key(new_user)

@@ -108,7 +108,8 @@ class StaffSignupForm(forms.Form):
             user=new_user,
             nickname=self.cleaned_data.get('nickname', ''),
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
-            agree_tos=settings.CURRENT_TOS_VERSION)
+            agree_tos=settings.CURRENT_TOS_VERSION,
+            agree_privacy_policy=settings.CURRENT_PP_VERSION)
         up.save()
         organization_slug = self.cleaned_data['org_slug']
         org = Organization.objects.get(slug=organization_slug)
