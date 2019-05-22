@@ -19,6 +19,34 @@ class IdentifierClaimProvider(BaseProvider):
             return None
 
 
+class OrganizationAgentClaimProvider(BaseProvider):
+
+    def claim_organization_agent(self):
+        try:
+            return self.user.userprofile.organization_agent
+        except Exception:
+            return None
+
+
+# TODO
+class MemberClaimProvider(BaseProvider):
+
+    def claim_member(self):
+        try:
+            return self.user.userprofile.organization_membership
+        except Exception:
+            return None
+
+
+class VerifiedPersonDataClaimProvider(BaseProvider):
+
+    def claim_verified_person_data(self):
+        try:
+            return self.user.userprofile.verified_person_data
+        except Exception:
+            return None
+
+
 class UserProfileClaimProvider(BaseProvider):
 
     def claim_sub(self):
