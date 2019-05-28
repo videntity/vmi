@@ -46,16 +46,7 @@ GENDER_CHOICES = (('M', 'Male'),
 #         return "%s relationship with %s since %s" % (self.user, sself.organization. self.created_at)
 #
 #
-# class MemberOrganizationNotes(models.Model):
-#     mor = models.ForeignKey(MemberOrganizationRelationship, on_delete='PROTECT')
-#     member_note =  models.TextField(blank=True, default='')
-#     organization_note =  models.TextField(blank=True, default='')
-#     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-#     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-#
-#     def __str__(self):
-# return "%s note on  %s on %s" % (self.organization, sself.organization.
-# self.created_at)
+
 
 class IndividualIdentifier(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete='PROTECT', null=True)
@@ -151,6 +142,12 @@ class Organization(models.Model):
     name = models.CharField(max_length=250, default='', blank=True)
     slug = models.SlugField(max_length=250, blank=True, default='',
                             db_index=True, unique=True)
+    subject = models.CharField(max_length=64, default=generate_subject_id(), blank=True,
+                               help_text='Subject ID',
+                               db_index=True)
+    picture = models.ImageField(
+        upload_to='organization-logo/', default='organization-logo/None/no-img.jpg')
+
     registration_code = models.CharField(max_length=100,
                                          default='',
                                          blank=True)
@@ -161,6 +158,11 @@ class Organization(models.Model):
         help_text="If populated, restrict email registration to this address.")
     website = models.CharField(max_length=512, blank=True, default='')
     phone_number = models.CharField(max_length=15, blank=True, default='')
+    agree_tos = models.CharField(max_length=64, default="", blank=True,
+                                 help_text=_('Do you agree to the terms and conditions?'))
+    agree_privacy_policy = models.CharField(max_length=64, default="", blank=True,
+                                            help_text=_('Do you agree to the privacy policy?'))
+
     point_of_contact = models.ForeignKey(
         get_user_model(), on_delete='PROTECT', null=True,
         related_name="organization_point_of_contact")
@@ -168,6 +170,9 @@ class Organization(models.Model):
         Address, blank=True, related_name="organization_addresses")
     users = models.ManyToManyField(
         get_user_model(), blank=True, related_name='org_staff')
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+
     # identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True,
     #                                     related_name='org_identifiers')
 
@@ -178,6 +183,21 @@ class Organization(models.Model):
     def signnup_url(self):
         return "%s%s" % (settings.HOSTNAME_URL, reverse(
             'create_org_account', args=(self.slug,)))
+
+    @property
+    def formatted_organization(self):
+        od = OrderedDict()
+        od['name'] = self.name
+        od['slug'] = self.slug
+        od['sub'] = self.subject
+        od['picture_url'] = self.picture_url
+        od['website'] = self.website
+        od['phone_number'] = self.phone_number
+        return od
+
+    @property
+    def picture_url(self):
+        return "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
 
     def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -239,13 +259,12 @@ class UserProfile(models.Model):
                                        help_text=_('Gender / Gender Identity'),
                                        )
     birth_date = models.DateField(blank=True, null=True)
-
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
     agree_tos = models.CharField(max_length=64, default="", blank=True,
                                  help_text=_('Do you agree to the terms and conditions?'))
     agree_privacy_policy = models.CharField(max_length=64, default="", blank=True,
                                             help_text=_('Do you agree to the privacy policy?'))
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def save(self, commit=True, **kwargs):
         if not self.subject:
@@ -313,6 +332,24 @@ class UserProfile(models.Model):
         return str(o.level)
 
     @property
+    def verified_person_data(self):
+        o, created = IdentityAssuranceLevelDocumentation.objects.get_or_create(
+            subject_user=self.user)
+        od = OrderedDict()
+        od["verification"] = OrderedDict()
+        od["verification"]["trust_framework"] = "us_nist_800_63_3"
+        od["verification"]["method"] = o.evidence
+        od["verification"]["ial"] = str(o.level)
+        od["verification"]["method"] = o.evidence
+        od["verification"]["date"] = str(o.verification_date)
+        od["verification"]["claims"] = OrderedDict()
+        od["verification"]["claims"]["given_name"] = self.given_name
+        od["verification"]["claims"]["family_name"] = self.family_name
+        od["verification"]["claims"]["birthdate"] = self.preferred_birthdate
+        od["verification"]["claims"]["gender"] = self.gender
+        return od
+
+    @property
     def aal(self):
         return "1"
 
@@ -359,6 +396,16 @@ class UserProfile(models.Model):
         for i in identifiers:
             formatted_identifiers.append(i.doc_oidc_format)
         return formatted_identifiers
+
+    @property
+    def organization_agent(self):
+        # Get the organizations for this user.
+        orgs = []
+        for o in Organization.objects.all():
+            for u in o.users.all():
+                if u == self.user:
+                    orgs.append(o.formatted_organization)
+        return orgs
 
     @property
     def organizations(self):

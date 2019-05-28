@@ -1,5 +1,6 @@
 boto==2.49.0
 boto3==1.5.9
+django-storages==1.7.1
 certifi==2018.8.24
 chardet==3.0.4
 coverage==4.0.3
