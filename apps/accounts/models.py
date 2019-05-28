@@ -327,9 +327,15 @@ class UserProfile(models.Model):
 
     @property
     def ial(self):
-        o, created = IdentityAssuranceLevelDocumentation.objects.get_or_create(
-            subject_user=self.user)
-        return str(o.level)
+        level = 1
+        ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(subject_user=self.user)
+        for doc in ialdocs:
+            if int(doc.level) == 2:
+                if level == 1:
+                    level = doc.level
+            elif int(doc.level) == 3:
+                level = int(doc.level)
+        return str(level)
 
     @property
     def verified_person_data(self):
