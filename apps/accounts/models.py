@@ -330,10 +330,10 @@ class UserProfile(models.Model):
         level = 1
         ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(subject_user=self.user)
         for doc in ialdocs:
-            if int(doc.level) is 2:
+            if int(doc.level) == 2:
                 if level == 1:
                     level = doc.level
-            elif int(doc.level) is 3:
+            elif int(doc.level) == 3:
                 level = int(doc.level)
         return str(level)
 
