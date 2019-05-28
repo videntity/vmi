@@ -19,7 +19,7 @@ def user_profile(request, subject=None):
     else:
         up = get_object_or_404(UserProfile, subject=subject)
         # Check permission that the user can view other profiles.
-        if (request.user.userprofile.pk != up.pk 
+        if (request.user.userprofile.pk != up.pk
                 and not request.user.has_perm('accounts.view_userprofile')):
             raise Http404()
         user = up.user
