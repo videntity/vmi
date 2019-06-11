@@ -369,7 +369,7 @@ class UserProfile(models.Model):
 
     @property
     def picture_url(self):
-        return "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
+        return "%s" % (self.picture.url)
 
     @property
     def vot(self):
