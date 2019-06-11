@@ -59,7 +59,7 @@ def authenticated_organization_home(request):
 
 
 def authenticated_home(request):
-    """Switch between annon, end user and organizational staff member."""
+    """Switch between anon, end user and organizational staff member."""
     name = _('Home')
     if request.user.is_authenticated:
         # Create user profile if one does not exist,
