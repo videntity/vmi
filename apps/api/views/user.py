@@ -57,6 +57,16 @@ class UserSerializer(serializers.Serializer):
         if User.objects.filter(username=user_data['username']).exists():
             raise ValidationError(
                 'Could not create user with that username. Please choose another.', code=400)
+        # Force upper/lover cases
+        first_name = user_data.get('first_name').upper().strip()
+        last_name = user_data.get('last_name').upper().strip()
+        username = user_data.get('username').lower().strip()
+        email = user_data.get('email').lower().strip()
+        user_data['first_name'] = first_name
+        user_data['last_name'] = last_name
+        user_data['email'] = email
+        user_data['username'] = username
+
         user = User.objects.create(**user_data)
 
         # We must use the set_password() method to set the user's password
