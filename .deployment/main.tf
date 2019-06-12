@@ -79,7 +79,7 @@ resource "random_string" "db_password" {
 #####
 module "db" {
   source = "terraform-aws-modules/rds/aws"
-
+  version = "1.28.0"
   identifier = "${var.dbname}"
 
   engine            = "postgres"
