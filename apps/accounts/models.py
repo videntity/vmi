@@ -190,14 +190,14 @@ class Organization(models.Model):
         od['name'] = self.name
         od['slug'] = self.slug
         od['sub'] = self.subject
-        od['picture_url'] = self.picture_url
+        od['picture'] = self.picture.url
         od['website'] = self.website
         od['phone_number'] = self.phone_number
         return od
 
     @property
     def picture_url(self):
-        return "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
+        return "%s" % (self.picture.url)
 
     def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
