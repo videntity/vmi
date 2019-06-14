@@ -36,7 +36,7 @@ admin.site.register(
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('name', 'user', 'birth_date', 'sex', 'subject')
+    list_display = ('name', 'user', 'birth_date', 'sex', 'subject', 'picture_url')
     search_fields = [
         'user__first_name',
         'user__last_name',
