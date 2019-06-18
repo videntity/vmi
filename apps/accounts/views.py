@@ -48,6 +48,7 @@ def reset_password(request):
 
 
 def mylogout(request):
+    logger.info("$s logged out.", request.user)
     logout(request)
     messages.success(request, _('You have been logged out.'))
     return HttpResponseRedirect(reverse('home'))
@@ -214,10 +215,12 @@ def forgot_password(request):
                         'A user with the email or username supplied '
                         'does not exist.')
                     return HttpResponseRedirect(reverse('forgot_password'))
-
+            logger.info("Forgot password request sent to %s", u.email)
             # success - user found so ask some question
-            return HttpResponseRedirect(reverse('secret_question_challenge',
-                                                args=(u.username,)))
+            messages.success(request,
+                             'Please check your email for a link to reset your password.')
+
+            return HttpResponseRedirect(reverse('home'))
         else:
             return render(request,
                           'generic/bootstrapform.html',
