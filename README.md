@@ -1,4 +1,4 @@
-# Verify My Identity
+# Verify My Identity (VMI)
 
 [![OpenID Certified](https://cloud.githubusercontent.com/assets/1454075/7611268/4d19de32-f97b-11e4-895b-31b2455a7ca6.png)](https://openid.net/certification/)
 
