@@ -197,7 +197,10 @@ class Organization(models.Model):
 
     @property
     def picture_url(self):
-        return "%s" % (self.picture.url)
+        p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
+        if p.count('http') == 2:
+            return self.picture.url
+        return p
 
     def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -328,7 +331,8 @@ class UserProfile(models.Model):
     @property
     def ial(self):
         level = 1
-        ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(subject_user=self.user)
+        ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(
+            subject_user=self.user)
         for doc in ialdocs:
             if int(doc.level) == 2:
                 if level == 1:
@@ -369,7 +373,10 @@ class UserProfile(models.Model):
 
     @property
     def picture_url(self):
-        return "%s" % (self.picture.url)
+        p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
+        if p.count('http') == 2:
+            return self.picture.url
+        return p
 
     @property
     def vot(self):
