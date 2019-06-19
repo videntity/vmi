@@ -190,7 +190,7 @@ class Organization(models.Model):
         od['name'] = self.name
         od['slug'] = self.slug
         od['sub'] = self.subject
-        od['picture'] = self.picture.url
+        od['picture'] = self.picture_url
         od['website'] = self.website
         od['phone_number'] = self.phone_number
         return od
