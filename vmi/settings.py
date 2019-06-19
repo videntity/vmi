@@ -312,7 +312,7 @@ EMAIL_BACKEND_DEFAULT = 'django_ses.SESBackend'
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', EMAIL_BACKEND_DEFAULT)
 
 # Un-comment the next line to print emails to the console instead of using SES.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MFA = True
 
