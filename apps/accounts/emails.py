@@ -47,41 +47,41 @@ def mfa_via_email(user, code):
 
 
 def send_password_reset_url_via_email(user, reset_key):
-    if settings.SEND_EMAIL:
-        subject = '[%s]Your password ' \
-                  'reset request' % (settings.ORGANIZATION_NAME)
-        from_email = settings.DEFAULT_FROM_EMAIL
-        to = user.email
-        link = '%s%s' % (settings.HOSTNAME_URL,
-                         reverse('password_reset_email_verify',
-                                 args=(reset_key,)))
-        html_content = """'
-        <P>
-        Click on the link to reset your password.<br>
-        <a href='%s'> %s</a>
-        </p>
-        <p>
-        Thank you,
-        </p>
-        <p>
-        The Team
+    subject = '[%s]Your password ' \
+              'reset request' % (settings.ORGANIZATION_NAME)
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to = user.email
+    link = '%s%s' % (settings.HOSTNAME_URL,
+                     reverse('password_reset_email_verified',
+                             args=(reset_key,)))
+    html_content = """'
+    <P>
+    Click on the link to reset your password.<br>
+    <a href='%s'> %s</a>
+    </p>
+    <p>
+    Thank you,
+    </p>
+    <p>
+    The Team
 
-        </P>
-        """ % (link, link)
+    </P>
+    """ % (link, link)
 
-        text_content = """
-        Click on the link to reset your password.
-        %s
+    text_content = """
+    Click on the link to reset your password.
+    %s
 
 
-        Thank you,
+    Thank you,
 
-        The Team
+    The Team
 
-        """ % (link)
-        msg = EmailMultiAlternatives(subject, text_content, from_email, [to, ])
-        msg.attach_alternative(html_content, 'text/html')
-        msg.send()
+    """ % (link)
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to, ])
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send()
+    print("SENT")
 
 
 def send_activation_key_via_email(user, signup_key):

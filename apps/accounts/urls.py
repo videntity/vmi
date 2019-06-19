@@ -4,7 +4,8 @@ from django.urls import path
 from .views import (account_settings,
                     mylogout, create_account,
                     forgot_password, activation_verify,
-                    reset_password, delete_account)
+                    reset_password, delete_account, password_reset_email_verified)
+
 from .staff_views import (create_org_account,
                           approve_org_affiliation,
                           deny_org_affiliation,
@@ -28,15 +29,22 @@ from .profile_picture_views import upload_profile_picture
 
 urlpatterns = [
     url(r'^logout', mylogout, name='mylogout'),
+
+
+    url(r'^reset-forgotten-password(?P<reset_password_key>[^/]+)/$',
+        password_reset_email_verified, name='password_reset_email_verified'),
     url(r'^mobile-phone', mobile_phone, name='mobile_phone'),
     url(r'^verify-mobile-phone-number/(?P<uid>[^/]+)/', verify_mobile_phone_number,
         name='verify_mobile_phone_number'),
-    url(r'^settings/(?P<subject>[^/]+)', account_settings, name='account_settings_subject'),
+    url(r'^settings/(?P<subject>[^/]+)',
+        account_settings, name='account_settings_subject'),
     url(r'^settings', account_settings, name='account_settings'),
     url(r'^delete', delete_account, name='delete_account'),
     url(r'^login', mfa_login, name='mfa_login'),
-    url(r'^upload-profile-picture/(?P<subject>[^/]+)', upload_profile_picture, name='upload_profile_picture_subject'),
-    url(r'^upload-profile-picture', upload_profile_picture, name='upload_profile_picture'),
+    url(r'^upload-profile-picture/(?P<subject>[^/]+)',
+        upload_profile_picture, name='upload_profile_picture_subject'),
+    url(r'^upload-profile-picture', upload_profile_picture,
+        name='upload_profile_picture'),
     url(r'^create-account/(?P<service_title>[^/]+)/', create_account,
         name='create_account_enduser_affilate'),
     url(r'^create-account', create_account, name='create_account_enduser'),
