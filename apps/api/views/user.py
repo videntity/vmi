@@ -83,12 +83,12 @@ class UserSerializer(serializers.Serializer):
 
         # If the user's password is being set, we must use the set_password() method to set it
         if user_data.get('password'):
-            instance.user.set_password(user_data['password'])
+            instance.user.set_password(user_data.pop('password'))   # good-bye, raw password
             instance.user.save()
 
         instance.save()
 
-        for attr, value in user_data.items():
+        for attr, value in user_data.items():  # don't set raw password
             setattr(instance.user, attr, value)
 
         instance.user.save()
