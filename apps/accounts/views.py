@@ -163,7 +163,8 @@ def create_account(request, service_title=settings.APPLICATION_TITLE):
                        'service_title': service_title})
 
 
-def password_reset_email_verify(request, reset_password_key=None):
+def password_reset_email_verified(request, reset_password_key=None):
+    name = "Reset Your Password"
     vprk = get_object_or_404(ValidPasswordResetKey,
                              reset_password_key=reset_password_key)
     if request.method == 'POST':
@@ -178,12 +179,13 @@ def password_reset_email_verify(request, reset_password_key=None):
         else:
             return render(request,
                           'generic/bootstrapform.html',
-                          {'form': form,
+                          {'form': form, 'name': name,
                            'reset_password_key': reset_password_key})
 
     return render(request,
                   'generic/bootstrapform.html',
                   {'form': PasswordResetForm(),
+                   'name': name,
                    'reset_password_key': reset_password_key})
 
 
@@ -216,6 +218,8 @@ def forgot_password(request):
                         'does not exist.')
                     return HttpResponseRedirect(reverse('forgot_password'))
             logger.info("Forgot password request sent to %s", u.email)
+
+            ValidPasswordResetKey.objects.create(user=u)
             # success - user found so ask some question
             messages.success(request,
                              'Please check your email for a link to reset your password.')
