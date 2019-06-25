@@ -40,7 +40,10 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-user"></i> Settings<b class="caret"></b></a>
           <ul class="dropdown-menu">
-						<li><a href="{% url 'account_settings' %}"> <i class="fa fa-user"></i> Basic Information</a></li>
+            
+          
+           <li> <a href="{% url 'social:begin' 'google-openidconnect' %}"> <i class="fa fa-google"></i> Link Your Google Account</a></li>
+          	<li><a href="{% url 'account_settings' %}"> <i class="fa fa-user"></i> Basic Information</a></li>
             <li><a href="{% url 'upload_profile_picture' %}"> <i class="fa fa-photo"></i> Profile Picture</a></li>
             <li><a href="{% url 'display_individual_identifiers' %}"> <i class="fa fa-id"></i> Identifiers</a></li>
             <li><a href="{% url 'display_addresses' %}"> <i class="fa fa-map"></i> Addresses</a></li>
