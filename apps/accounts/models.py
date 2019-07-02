@@ -343,21 +343,32 @@ class UserProfile(models.Model):
 
     @property
     def verified_person_data(self):
-        o, created = IdentityAssuranceLevelDocumentation.objects.get_or_create(
+        vpa_list = []
+        ialds = IdentityAssuranceLevelDocumentation.objects.filter(
             subject_user=self.user)
-        od = OrderedDict()
-        od["verification"] = OrderedDict()
-        od["verification"]["trust_framework"] = "us_nist_800_63_3"
-        od["verification"]["method"] = o.evidence
-        od["verification"]["ial"] = str(o.level)
-        od["verification"]["method"] = o.evidence
-        od["verification"]["date"] = str(o.verification_date)
-        od["verification"]["claims"] = OrderedDict()
-        od["verification"]["claims"]["given_name"] = self.given_name
-        od["verification"]["claims"]["family_name"] = self.family_name
-        od["verification"]["claims"]["birthdate"] = self.preferred_birthdate
-        od["verification"]["claims"]["gender"] = self.gender
-        return od
+
+        if not ialds:
+            IdentityAssuranceLevelDocumentation.objects.create(
+                subject_user=self.user)
+            ialds = IdentityAssuranceLevelDocumentation.objects.filter(
+                subject_user=self.user)
+        for i in ialds:
+
+            od = OrderedDict()
+            od["verification"] = OrderedDict()
+            od["verification"]["trust_framework"] = "us_nist_800_63_3"
+            od["verification"]["method"] = i.evidence
+            od["verification"]["ial"] = str(i.level)
+            od["verification"]["method"] = i.evidence
+            od["verification"]["date"] = str(i.verification_date)
+            od["verification"]["claims"] = OrderedDict()
+            od["verification"]["claims"]["given_name"] = self.given_name
+            od["verification"]["claims"]["family_name"] = self.family_name
+            od["verification"]["claims"][
+                "birthdate"] = self.preferred_birthdate
+            od["verification"]["claims"]["gender"] = self.gender
+            vpa_list.append(od)
+        return vpa_list
 
     @property
     def aal(self):
