@@ -343,14 +343,17 @@ class UserProfile(models.Model):
 
     @property
     def verified_person_data(self):
-        vpa_list  = []
-        ialds  = IdentityAssuranceLevelDocumentation.objects.filter(subject_user=self.user)
-        
+        vpa_list = []
+        ialds = IdentityAssuranceLevelDocumentation.objects.filter(
+            subject_user=self.user)
+
         if not ialds:
-            IdentityAssuranceLevelDocumentation.objects.create(subject_user=self.user)
-            ialds  = IdentityAssuranceLevelDocumentation.objects.filter(subject_user=self.user)
+            IdentityAssuranceLevelDocumentation.objects.create(
+                subject_user=self.user)
+            ialds = IdentityAssuranceLevelDocumentation.objects.filter(
+                subject_user=self.user)
         for i in ialds:
-        
+
             od = OrderedDict()
             od["verification"] = OrderedDict()
             od["verification"]["trust_framework"] = "us_nist_800_63_3"
@@ -361,7 +364,8 @@ class UserProfile(models.Model):
             od["verification"]["claims"] = OrderedDict()
             od["verification"]["claims"]["given_name"] = self.given_name
             od["verification"]["claims"]["family_name"] = self.family_name
-            od["verification"]["claims"]["birthdate"] = self.preferred_birthdate
+            od["verification"]["claims"][
+                "birthdate"] = self.preferred_birthdate
             od["verification"]["claims"]["gender"] = self.gender
             vpa_list.append(od)
         return vpa_list
