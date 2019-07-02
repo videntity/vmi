@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrapform',
+    'social_django',
     'phonenumber_field',
     'oauth2_provider',
     'rest_framework',
@@ -63,12 +64,34 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
     'apps.mfa.middleware.DeviceVerificationMiddleware',
     'apps.mfa.middleware.AssertDeviceVerificationMiddleware',
-
     'apps.oidc.error_handlers.AuthenticationRequiredExceptionMiddleware',
     'apps.oidc.error_handlers.OIDCNoPromptMiddleware',
 ]
+
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google_openidconnect.GoogleOpenIdConnect',
+    'django.contrib.auth.backends.ModelBackend',
+
+)
+
+
+SOCIAL_AUTH_GOOGLE_URL = env(
+    "SOCIAL_AUTH_GOOGLE_URL", 'https://accounts.google.com')
+SOCIAL_AUTH_GOOGLE_OIDC_ENDPOINT = env(
+    "SOCIAL_AUTH_GOOGLE_OIDC_ENDPOINT", 'https://accounts.google.com')
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', '')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', '')
+SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY = env(
+    'SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY', '')
+SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_SECRET = env(
+    'SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_SECRET', '')
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+
 
 VERIFICATION_BACKENDS = [
     'apps.fido.auth.backends.FIDO2Backend',
@@ -146,11 +169,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", "development-vmi-media-storage")
+AWS_STORAGE_BUCKET_NAME = env(
+    "AWS_STORAGE_BUCKET_NAME", "development-vmi-media-storage")
 AWS_AUTO_CREATE_BUCKET = True
 AWS_S3_FILE_OVERWRITE = False
 AWS_QUERYSTRING_AUTH = False
-DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE", 'django.core.files.storage.FileSystemStorage')
+DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE",
+                           'django.core.files.storage.FileSystemStorage')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
