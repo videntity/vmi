@@ -219,6 +219,7 @@ OAUTH2_PROVIDER = {
     'OAUTH2_VALIDATOR_CLASS': 'vmi.oauth2_validators.RequestValidator',
     'OAUTH2_SERVER_CLASS': 'apps.oidc.server.Server',
     'REQUEST_APPROVAL_PROMPT': 'auto',
+    'ACCESS_TOKEN_EXPIRE_SECONDS':  int(env('ACCESS_TOKEN_EXPIRE_SECONDS', 315360000))
 }
 OAUTH2_PROVIDER_GRANT_MODEL = 'oidc.Grant'
 OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'oauth2_provider.AccessToken'
