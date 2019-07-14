@@ -11,7 +11,6 @@ from django.contrib.auth import get_user_model
 from urllib.parse import parse_qs, urlencode, urlparse
 from django.urls import reverse
 from .jwt import get_jwt_builder
-from django.conf import settings
 
 
 Application = get_application_model()
@@ -112,9 +111,6 @@ class RequestValidatorTests(TestCase):
 
         content = json.loads(response.content.decode("utf-8"))
         self.assertEqual(content["token_type"], "Bearer")
-        self.assertEqual(
-            content["expires_in"],
-            settings.OAUTH2_PROVIDER['ACCESS_TOKEN_EXPIRE_SECONDS'])
         id_token = content.get("id_token")
         self.assertIsNotNone(id_token)
         claims = JWTBuilder().decode(
