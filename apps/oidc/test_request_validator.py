@@ -1,7 +1,6 @@
 import base64
 import json
 from django.test import TestCase
-from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.models import (
     get_access_token_model,
     get_application_model,
@@ -12,6 +11,7 @@ from django.contrib.auth import get_user_model
 from urllib.parse import parse_qs, urlencode, urlparse
 from django.urls import reverse
 from .jwt import get_jwt_builder
+
 
 Application = get_application_model()
 AccessToken = get_access_token_model()
@@ -111,9 +111,6 @@ class RequestValidatorTests(TestCase):
 
         content = json.loads(response.content.decode("utf-8"))
         self.assertEqual(content["token_type"], "Bearer")
-        self.assertEqual(
-            content["expires_in"],
-            oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS)
         id_token = content.get("id_token")
         self.assertIsNotNone(id_token)
         claims = JWTBuilder().decode(
