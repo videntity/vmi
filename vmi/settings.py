@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'apps.fido',
     'apps.mfa.backends.sms',
     'apps.api',
-
     # 'django_extensions',
 ]
 
@@ -84,8 +83,6 @@ SOCIAL_AUTH_GOOGLE_URL = env(
 SOCIAL_AUTH_GOOGLE_OIDC_ENDPOINT = env(
     "SOCIAL_AUTH_GOOGLE_OIDC_ENDPOINT", 'https://accounts.google.com')
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', '')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', '')
 SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY = env(
     'SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY', '')
 SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_SECRET = env(
@@ -216,7 +213,8 @@ REST_FRAMEWORK = {
 OAUTH2_PROVIDER = {
     'SCOPES': {'openid': 'open id connect access'},
     'DEFAULT_SCOPES': ['openid'],
-    'OAUTH2_VALIDATOR_CLASS': 'vmi.oauth2_validators.RequestValidator',
+
+    'OAUTH2_VALIDATOR_CLASS': 'vmi.oauth2_validators.SingleAccessTokenValidator',
     'OAUTH2_SERVER_CLASS': 'apps.oidc.server.Server',
     'REQUEST_APPROVAL_PROMPT': 'auto',
     'ACCESS_TOKEN_EXPIRE_SECONDS':  int(env('ACCESS_TOKEN_EXPIRE_SECONDS', 315360000))
@@ -224,6 +222,7 @@ OAUTH2_PROVIDER = {
 OAUTH2_PROVIDER_GRANT_MODEL = 'oidc.Grant'
 OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'oauth2_provider.AccessToken'
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
+
 OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'oauth2_provider.RefreshToken'
 OAUTH2_PROVIDER_ALLOWED_GRANT_TYPES = (
     "authorization_code",
