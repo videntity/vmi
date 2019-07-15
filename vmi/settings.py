@@ -264,8 +264,7 @@ OIDC_PROVIDER = {
 # Add a prefix to the lugh checkdigit calculation.
 # This can help identify genuine subject ids and indicate provenance.
 SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
-APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE',
-                        "Share My Health Accounts")
+APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE', "Share My Health Accounts")
 KILLER_APP_URI = env('KILLER_APP_URI', 'https://app.sharemy.health')
 
 TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'Share My Health')
