@@ -265,7 +265,11 @@ OIDC_PROVIDER = {
 # This can help identify genuine subject ids and indicate provenance.
 SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
 APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE',
-                        'Verify My Identity')
+                        "New York's Health ID")
+KILLER_APP_URI = env('KILLER_APP_URI', 'https://app.sharemy.health')
+
+TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'Share My Health')
+
 ORGANIZATION_TITLE = env(
     'DJANGO_ORGANIZATION_TITLE',
     'Alliance for Better Health')
@@ -324,6 +328,8 @@ SETTINGS_EXPORT = [
     'DEVELOPER_DOCS',
     'USER_DOCS_TITLE',
     'HOSTNAME_URL',
+    'TOP_LEFT_TITLE',
+    'KILLER_APP_URI',
 ]
 
 # Emails
