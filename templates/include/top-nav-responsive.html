@@ -19,8 +19,8 @@
                  style="vertical-align:text-top;max-height:100%;max-width:100%"></a>
         <a href="{% url 'home' %}" contenteditable="false"
            class="navbar-brand"
-           alt="{{ settings.APPLICATION_TITLE }}">
-                <strong>{{ settings.APPLICATION_TITLE }}</strong>
+           alt="{{ settings.TOP_LEFT_TITLE }}">
+                <strong>{{ settings.TOP_LEFT_TITLE }}</strong>
         </a>
     </div>
 
@@ -42,7 +42,7 @@
           <ul class="dropdown-menu">
             
           
-           <li> <a href="{% url 'social:begin' 'google-openidconnect' %}"> <i class="fa fa-google"></i> Link Your Google Account</a></li>
+           <!-- <li> <a href="{% url 'social:begin' 'google-openidconnect' %}"> <i class="fa fa-google"></i> Link Your Google Account</a></li> -->
           	<li><a href="{% url 'account_settings' %}"> <i class="fa fa-user"></i> Basic Information</a></li>
             <li><a href="{% url 'upload_profile_picture' %}"> <i class="fa fa-photo"></i> Profile Picture</a></li>
             <li><a href="{% url 'display_individual_identifiers' %}"> <i class="fa fa-id"></i> Identifiers</a></li>
@@ -58,7 +58,7 @@
         </li>
 
         {% else %}
-            <li><a href="{% url 'create_account_enduser' %}"> <i class="fa fa-plus"></i> Signup</a></li>
+            <li><a href="{% url 'mfa_login' %}"> <i class="fa fa-sign-in""></i> Login</a></li>
 
         {% endif %}
         {% if user.is_authenticated %}

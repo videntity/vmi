@@ -76,7 +76,8 @@ def authenticated_home(request):
         return authenticated_enduser_home(request)
 
     # User is not logged in.
-    context = {'name': name}
+    organizations = Organization.objects.all()
+    context = {'name': name, 'organizations': organizations}
     template = 'index.html'
     return render(request, template, context)
 
