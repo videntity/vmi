@@ -15,7 +15,7 @@ from apps.accounts.models import (
 )
 from apps.oidc.claims import get_claims_provider
 
-logger = logging.getLogger('vmi_.%s' % __name__)
+logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
 
 User = get_user_model()
@@ -121,7 +121,7 @@ class UserViewSet(viewsets.ModelViewSet):
 @require_GET
 @protected_resource()
 def logout_user(request):
-    # A remote API call for loggin out the user
+    # A remote API call for logging out the user
     user = request.resource_owner
     delete_all_sessions_for_user(user)
     data = {"status": "ok",
