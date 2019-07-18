@@ -18,7 +18,6 @@ from apps.oidc.claims import get_claims_provider
 logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
 
-
 User = get_user_model()
 ClaimsProvider = get_claims_provider()
 
