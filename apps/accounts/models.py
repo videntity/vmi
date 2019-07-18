@@ -52,10 +52,16 @@ class IndividualIdentifier(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete='PROTECT', null=True)
     name = models.SlugField(max_length=250, blank=True,
                             default='', db_index=True)
-    value = models.CharField(
-        max_length=250,
-        blank=True,
-        default='', db_index=True)
+    # ISO 3166-1
+    country = models.CharField(max_length=2, blank=True,
+        default=settings.DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS, db_index=True,
+         help_text="e.g., a two letter country code in ISO 3166 format.")
+    
+     # ISO 3166-2
+    subdivision = models.CharField(max_length=2, blank=True, default='',
+                                   verbose_name = "State",
+                                   help_text="e.g., a country's subdivision such as a state or province.")   
+    value = models.CharField(max_length=250, blank=True, default='', db_index=True)
     metadata = models.TextField(
         blank=True,
         default='',
@@ -71,6 +77,14 @@ class IndividualIdentifier(models.Model):
         od['type'] = self.type
         od['num'] = self.value
         return od
+    
+    @property
+    def region(self):
+        return self.subdivision
+    
+    @property
+    def state(self):
+        return self.subdivision
 
 
 class OrganizationIdentifier(models.Model):
@@ -331,8 +345,7 @@ class UserProfile(models.Model):
     @property
     def ial(self):
         level = 1
-        ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(
-            subject_user=self.user)
+        ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(subject_user=self.user)
         for doc in ialdocs:
             if int(doc.level) == 2:
                 if level == 1:
