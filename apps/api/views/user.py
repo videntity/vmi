@@ -15,11 +15,8 @@ from apps.accounts.models import (
 )
 from apps.oidc.claims import get_claims_provider
 
-<<<<<<< HEAD
 logger = logging.getLogger('verifymyidentity_.%s' % __name__)
-=======
-logger = logging.getLogger('vmi_.%s' % __name__)
->>>>>>> bd96b69768181632a211757208996c3a00538b44
+
 
 
 User = get_user_model()
