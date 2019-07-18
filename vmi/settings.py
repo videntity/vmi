@@ -353,6 +353,7 @@ ORGANIZATION_NAME = "Verify My Identity"
 MAX_PROFILE_PICTURE_SIZE = env(
     'MAX_PROFILE_PICTURE_SIZE', str(4 * 1024 * 1024))
 
+# Define individual identifier types
 INDIVIDUAL_ID_TYPE_CHOICES = (
     ('PATIENT_ID_FHIR', 'Patient ID FHIR'),
     ('MPI', 'Master Patient Index (Not FHIR Patient id)'),
@@ -362,22 +363,33 @@ INDIVIDUAL_ID_TYPE_CHOICES = (
     ('MEDICIARE_ID', 'Medicare ID Number'),
     ('INDURANCE_ID', 'Insurance ID Number'),
     ('IHE_ID', 'Health Information Exchange ID'),
+    ('NPI', 'National Provider Identifier'),
     ('UHI', 'Universal Health Identifier'),
 )
 
+
+# Define orgnization identifier types
 ORGANIZATION_ID_TYPE_CHOICES = (
     ('FEIN', 'Federal Employer ID Number (Tax ID)'),
     ('NPI', 'National Provider Identifier'),
     ('OEID', 'Other Entity Identifier'),
-    ('PECOS', 'PECOS Medicare ID')
+    ('PECOS', 'PECOS Medicare ID'),
+    ('UHI', 'Universal Health Identifier'),
 )
 
+DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS = env(
+    'DEFAULT_COUNTRY_CODE_FOR_IDENTIFIERS', "US")
 
 PHONENUMBER_DEFAULT_REGION = env('PHONENUMBER_DEFAULT_REGION', "US")
 
-
+# Terms of service version
 CURRENT_TOS_VERSION = env('CURRENT_TOS_VERSION', "1")
+
+# Privacy Policy version
 CURRENT_PP_VERSION = env('CURRENT_PP_VERSION', "1")
 
+# Expire session on browser close.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = env('SESSION_COOKIE_AGE', int(10 * 60))
+
+# Expire session. Default is 10 minutes: 10 * 60 seconds
+SESSION_COOKIE_AGE = int(env('SESSION_COOKIE_AGE', int(10 * 60)))
