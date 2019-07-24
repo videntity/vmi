@@ -79,14 +79,6 @@ class IndividualIdentifier(models.Model):
         od['type'] = self.type
         od['num'] = self.value
         return od
-    
-    @property
-    def region(self):
-        return self.subdivision
-    
-    @property
-    def state(self):
-        return self.subdivision
 
     @property
     def region(self):
@@ -179,7 +171,7 @@ class Organization(models.Model):
         max_length=512,
         blank=True,
         default='',
-        verbose_name = '',
+        verbose_name='',
         help_text="If populated, restrict email registration to this address.")
     website = models.CharField(max_length=512, blank=True, default='')
     phone_number = models.CharField(max_length=15, blank=True, default='')
@@ -357,7 +349,8 @@ class UserProfile(models.Model):
     @property
     def ial(self):
         level = 1
-        ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(subject_user=self.user)
+        ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(
+            subject_user=self.user)
         for doc in ialdocs:
             if int(doc.level) == 2:
                 if level == 1:
