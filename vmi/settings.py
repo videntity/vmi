@@ -277,7 +277,7 @@ POLICY_URI = env(
     'DJANGO_POLICY_URI',
     'https://abhealth.us')
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
-TOS_URI = env('DJANGO_TOS_URI', 'https://abhealth.us')
+TOS_URI = env('DJANGO_TOS_URI', 'http://sharemy.health/terms-of-service1.0.html')
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 TAG_LINE_1 = env('DJANGO_TAG_LINE_1', 'Share your health data')
 TAG_LINE_2 = env('DJANGO_TAG_LINE_2',
@@ -353,7 +353,7 @@ ORGANIZATION_NAME = "Verify My Identity"
 MAX_PROFILE_PICTURE_SIZE = env(
     'MAX_PROFILE_PICTURE_SIZE', str(4 * 1024 * 1024))
 
-#Define individual identifier types
+# Define individual identifier types
 INDIVIDUAL_ID_TYPE_CHOICES = (
     ('PATIENT_ID_FHIR', 'Patient ID FHIR'),
     ('MPI', 'Master Patient Index (Not FHIR Patient id)'),
@@ -368,8 +368,7 @@ INDIVIDUAL_ID_TYPE_CHOICES = (
 )
 
 
-
-#Define orgnization identifier types
+# Define orgnization identifier types
 ORGANIZATION_ID_TYPE_CHOICES = (
     ('FEIN', 'Federal Employer ID Number (Tax ID)'),
     ('NPI', 'National Provider Identifier'),
@@ -378,7 +377,8 @@ ORGANIZATION_ID_TYPE_CHOICES = (
     ('UHI', 'Universal Health Identifier'),
 )
 
-DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS = env('DEFAULT_COUNTRY_CODE_FOR_IDENTIFIERS', "US")
+DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS = env(
+    'DEFAULT_COUNTRY_CODE_FOR_IDENTIFIERS', "US")
 
 PHONENUMBER_DEFAULT_REGION = env('PHONENUMBER_DEFAULT_REGION', "US")
 
@@ -392,4 +392,4 @@ CURRENT_PP_VERSION = env('CURRENT_PP_VERSION', "1")
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Expire session. Default is 10 minutes: 10 * 60 seconds
-SESSION_COOKIE_AGE = int(env('SESSION_COOKIE_AGE', int(10 * 60)))
+SESSION_COOKIE_AGE = int(env('SESSION_COOKIE_AGE', int(30 * 60)))
