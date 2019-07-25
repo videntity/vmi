@@ -396,6 +396,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # Expire session. Default is 10 minutes: 10 * 60 seconds
 SESSION_COOKIE_AGE = int(env('SESSION_COOKIE_AGE', int(30 * 60)))
 
+
 # Pick a login template and title.
 LOGIN_TEMPLATE_PICKER = {"default": 'login.html',
                          'share-my-health': 'login.html',
