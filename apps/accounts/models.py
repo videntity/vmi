@@ -179,7 +179,7 @@ class Organization(models.Model):
         max_length=512,
         blank=True,
         default='',
-        verbose_name = '',
+        verbose_name='Email Domain',
         help_text="If populated, restrict email registration to this address.")
     website = models.CharField(max_length=512, blank=True, default='')
     phone_number = models.CharField(max_length=15, blank=True, default='')
