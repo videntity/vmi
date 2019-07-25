@@ -27,6 +27,8 @@ from .profile_picture_views import upload_profile_picture
 
 # Copyright Videntity Systems Inc.
 
+__author__ = "Alan Viars"
+
 urlpatterns = [
     url(r'^logout', mylogout, name='mylogout'),
 
@@ -40,6 +42,7 @@ urlpatterns = [
         account_settings, name='account_settings_subject'),
     url(r'^settings', account_settings, name='account_settings'),
     url(r'^delete', delete_account, name='delete_account'),
+    url(r'^login/(?P<slug>[^/]+)', mfa_login, name='mfa_login_with_brand'),
     url(r'^login', mfa_login, name='mfa_login'),
     url(r'^upload-profile-picture/(?P<subject>[^/]+)',
         upload_profile_picture, name='upload_profile_picture_subject'),
