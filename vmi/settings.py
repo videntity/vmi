@@ -277,7 +277,7 @@ POLICY_URI = env(
     'DJANGO_POLICY_URI',
     'https://abhealth.us')
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
-TOS_URI = env('DJANGO_TOS_URI', 'https://abhealth.us')
+TOS_URI = env('DJANGO_TOS_URI', 'http://sharemy.health/terms-of-service1.0.html')
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 TAG_LINE_1 = env('DJANGO_TAG_LINE_1', 'Share your health data')
 TAG_LINE_2 = env('DJANGO_TAG_LINE_2',
@@ -392,4 +392,4 @@ CURRENT_PP_VERSION = env('CURRENT_PP_VERSION', "1")
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Expire session. Default is 10 minutes: 10 * 60 seconds
-SESSION_COOKIE_AGE = int(env('SESSION_COOKIE_AGE', int(10 * 60)))
+SESSION_COOKIE_AGE = int(env('SESSION_COOKIE_AGE', int(30 * 60)))

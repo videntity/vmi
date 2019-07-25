@@ -63,6 +63,7 @@ class IndividualIdentifier(models.Model):
                                    help_text="e.g., a country's subdivision such as a state or province.")
     value = models.CharField(max_length=250, blank=True,
                              default='', db_index=True)
+
     metadata = models.TextField(
         blank=True,
         default='',
@@ -156,7 +157,7 @@ class Address(models.Model):
 class Organization(models.Model):
     name = models.CharField(max_length=250, default='', blank=True)
     slug = models.SlugField(max_length=250, blank=True, default='',
-                            db_index=True, unique=True)
+                            db_index=True, unique=True, editable=False)
     subject = models.CharField(max_length=64, default=generate_subject_id(), blank=True,
                                help_text='Subject ID',
                                db_index=True)
@@ -170,6 +171,7 @@ class Organization(models.Model):
         max_length=512,
         blank=True,
         default='',
+        verbose_name='',
         help_text="If populated, restrict email registration to this address.")
     website = models.CharField(max_length=512, blank=True, default='')
     phone_number = models.CharField(max_length=15, blank=True, default='')
@@ -184,7 +186,8 @@ class Organization(models.Model):
     addresses = models.ManyToManyField(
         Address, blank=True, related_name="organization_addresses")
     users = models.ManyToManyField(
-        get_user_model(), blank=True, related_name='org_staff')
+        get_user_model(), blank=True, related_name='org_staff', verbose_name="Organization Agents",
+        help_text="Employees or contractors acting on behalf of the organization.")
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
