@@ -5,10 +5,14 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from .models import UserProfile, MFACode
+from django.conf import settings
 from .sms_mfa_forms import LoginForm, MFACodeForm
 
 
 # Copyright Videntity Systems Inc.
+
+__author__ = "Alan Viars"
+
 
 def mfa_code_confirm(request, uid):
     mfac = get_object_or_404(MFACode, uid=uid)
@@ -66,7 +70,15 @@ def mfa_code_confirm(request, uid):
                   {'form': MFACodeForm()})
 
 
-def mfa_login(request):
+def mfa_login(request, slug=None):
+
+    if not slug:
+        login_template_name = settings.LOGIN_TEMPLATE_PICKER['default']
+        name = settings.APPLICATION_TITLE
+    else:
+        login_template_name = settings.LOGIN_TEMPLATE_PICKER[slug]
+        name = slug.replace('-', ' ')
+
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -79,26 +91,6 @@ def mfa_login(request):
                 if user.is_active:
                     # Get User profile
                     up, g_o_c = UserProfile.objects.get_or_create(user=user)
-                    # If MFA, send code and redirect
-                    # if up.mfa_login_mode in ("SMS", "EMAIL"):
-                    #     # Create an MFA message
-                    #     mfac = MFACode.objects.create(
-                    #         user=up.user, mode=up.mfa_login_mode)
-                    #     # Send code and redirect
-                    #     if up.mfa_login_mode == "SMS":
-                    #         messages.info(
-                    #              request,
-                    #             _('An access code was sent to your mobile'
-                    #               'device. Please enter it here.'))
-                    #     if up.mfa_login_mode == "EMAIL":
-                    #         messages.info(
-                    #             request,
-                    #             _('An access code was sent to your email.'
-                    #               'Please enter it here.'))
-                    #     return HttpResponseRedirect(
-                    #         reverse('mfa_code_confirm',
-                    #         args=(mfac.uid,)))
-                    # Else, just login as normal without MFA
                     login(request, user)
                     next_param = request.GET.get('next', '')
                     if next_param:
@@ -111,11 +103,11 @@ def mfa_login(request):
                     messages.error(request,
                                    _('Please check your email for a link to '
                                      'activate your account.'))
-                    return render(request, 'login.html', {'form': form})
+                    return render(request, login_template_name, {'form': form})
             else:
                 messages.error(request, _('Invalid username or password.'))
-                return render(request, 'login.html', {'form': form})
+                return render(request, login_template_name, {'form': form, 'name': name})
         else:
-            return render(request, 'login.html', {'form': form})
+            return render(request, login_template_name, {'form': form, 'name': name})
     # this is a GET
-    return render(request, 'login.html', {'form': LoginForm()})
+    return render(request, login_template_name, {'form': LoginForm(), 'name': name})

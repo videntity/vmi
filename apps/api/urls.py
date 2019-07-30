@@ -4,18 +4,23 @@ from .views import (
     UserViewSet,
     IdentifierViewSet,
     AddressViewSet,
+    logout_user
+
 )
 
 router = routers.SimpleRouter()
 router.register(r'user', UserViewSet)
 
-owned_by_user_router = routers.NestedSimpleRouter(router, r'user', lookup='user')
-owned_by_user_router.register(r'id-assurance', IdentifierViewSet, base_name='identifier')
+owned_by_user_router = routers.NestedSimpleRouter(
+    router, r'user', lookup='user')
+owned_by_user_router.register(
+    r'id-assurance', IdentifierViewSet, base_name='identifier')
 owned_by_user_router.register(r'address', AddressViewSet, base_name='address')
 
 v1 = [
     path('', include(router.urls)),
     path('', include(owned_by_user_router.urls)),
+    path('remote-logout', logout_user, name="remote_logout"),
 ]
 
 urlpatterns = [

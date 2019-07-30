@@ -25,39 +25,55 @@
                     
                 <div class="col-lg-12 well">
     
-                        <h2>{{ settings.APPLICATION_TITLE }}</h2>
-                        <p>
-                        To become a new Member <a href="{% url 'create_account_enduser' %}">fill out this form</a> 
-                        or <a href="{% url 'social:begin' 'google-openidconnect' %}">continue with Google</a>
-                        <p>
-                        <a href="{% url 'mfa_login' %}">Login</a> if you already have an account.
-                        </p>
+                        <h1>{{ settings.APPLICATION_TITLE }}</h1>
 
-                        <a href="{% url 'mfa_login' %}">
-                        <button type="button" class="btn btn-primary"> <i class="fa fa-sign-in"></i> Login </button></a>
-            
+                                               {{ settings.TOP_LEFT_TITLE }} helps connect people with their own health information.</p>
+               
+                        <!-- or <a href="{% url 'social:begin' 'google-openidconnect' %}">continue with Google</a> -->
+                        <p>
+
+                                   
                         <a href="{% url 'create_account_enduser' %}">
-                                        <button type="button" class="btn btn-primary"> <i class="fa fa-plus"></i> Signup </button></a>
+
+                                        <button type="button" class="btn btn-primary"> <i class="fa fa-plus"></i> Signup as a Community Member</button></a>
+                        
+                                                <a href="#Organizations">
+
+                                        <button type="button" class="btn btn-primary"> <i class="fa fa-plus"></i> Signup as an Organization Agent</button></a>
+                        </div>
+                
+
+            
+                Already have an account? <a href="{{settings.KILLER_APP_URI}}">Login to {{ settings.TOP_LEFT_TITLE }}</a>.
+                        <!-- or <a href="{% url 'social:begin' 'google-openidconnect' %}">continue with Google</a> -->
+                        <p>
+
+                
+             
+                   <div class="col-lg-12 well">
     
-                </div>
+                        
+                        
+                        
+                        <h1>Participating Organizations</h1>
+                        
+                    
+                            {% for o in organizations %}
+                             <a href="{% url 'create_org_account' o.slug %}"><img src="{{o.picture_url}}" alt={{o.name}}></a>{{ o.signup_uri }}<br>
+                            {% endfor %}
                 
-               <i>NOTE: If you are an employee or contractor attempting to create an account on behalf of an organization, then please contact your organization for a special signup link.</i>
+                    
+                        
                 
-                </div>       
+                        </div>
+                
+                
+                
+                  <h2>Want your Organization to join {{ settings.TOP_LEFT_TITLE }}?</h2>
+                  <h3>Contact the <a href="https://abhealth.us/contact-us/"> {{settings.ORGANIZATION_TITLE }}</a> for more information.</h3>
+                
+                </div>   
             </div>
         </div>
-
-
-                 <div class="col-md-12">
-                <h3>About</h3>
-                
-                 {{ settings.APPLICATION_TITLE }} is an <a href="https://github.com/transparenthealth/vmi">open source</a>
-                 implementation of <a href="https://openid.net/connect/">OpenID Connect</a> and
-                 <a href="https://oauth.net/2/">OAuth2</a>. This server-side implementation of OpenID Connect is
-                 <a href="https://openid.net/developers/certified/">certified</a> by the
-                 <a href="https://openid.net/d">Open ID Foundation</a>.
-                 
-                 
-                </div>
 
 {% endblock %}
