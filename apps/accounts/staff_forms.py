@@ -1,3 +1,4 @@
+import re
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
@@ -6,6 +7,8 @@ from django.contrib.auth.password_validation import validate_password
 from .models import UserProfile, create_activation_key, Organization, OrganizationAffiliationRequest
 from django.conf import settings
 from django.utils.safestring import mark_safe
+
+
 # Copyright Videntity Systems Inc.
 
 User = get_user_model()
@@ -15,6 +18,7 @@ agree_tos_label = mark_safe(
 
 
 class StaffSignupForm(forms.Form):
+
     registration_code = forms.CharField(max_length=100,
                                         label=_("Registration Phrase"))
     username = forms.CharField(max_length=30, label=_("User name"))
@@ -79,9 +83,18 @@ class StaffSignupForm(forms.Form):
         return email
 
     def clean_username(self):
+
+        pattern = re.compile(r'^[\w.@+-]+\Z')
+
         username = self.cleaned_data.get('username').strip().lower()
         if User.objects.filter(username=username).count() > 0:
             raise forms.ValidationError(_('This username is already taken.'))
+
+        if not pattern.match(username):
+            message = _('Enter a valid username. This value may contain only English letters, '
+                        'numbers, and @/./+/-/_ characters.')
+            raise forms.ValidationError(_(message))
+
         return username
 
     def clean_first_name(self):
