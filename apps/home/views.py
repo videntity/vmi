@@ -37,10 +37,11 @@ def authenticated_organization_home(request):
             organization=o)
         for oar in affiliation_requests:
 
-            msg = """%s %s is requesting to be affiliated with your organization.
+            msg = """%s %s is requesting to be an agent of %s.
                      Please <a href="%s">approve</a> or <a href="%s">deny</a>
                      the request.""" % (oar.user.first_name,
                                         oar.user.last_name,
+                                        oar.organization.name,
                                         reverse(
                                             'approve_org_affiliation',
                                             args=(
