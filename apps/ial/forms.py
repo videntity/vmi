@@ -7,7 +7,8 @@ class InPersonIdVerifyForm(forms.ModelForm):
 
     class Meta:
         model = IdentityAssuranceLevelDocumentation
-        fields = ('evidence', 'id_verify_description', 'expires_at')
+        fields = ('evidence', 'evidence_subclassification',
+                  'id_verify_description', 'expires_at')
 
     def clean_evidence(self):
         evidence = self.cleaned_data["evidence"]
