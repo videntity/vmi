@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseForbidden
+from ..ial.models import IdentityAssuranceLevelDocumentation
 
 # Copyright Videntity Systems Inc.
 
@@ -39,6 +40,19 @@ def approve_org_affiliation(request, organization_slug, username):
                                                        org.name)
     send_org_account_approved_email(user)
     messages.success(request, msg)
+
+    # Add IAL2 if option is selected.
+    if org.auto_ial_2_for_agents:
+        IdentityAssuranceLevelDocumentation.objects.create(
+            subject_user=user,
+            action='1-TO-2',
+            id_verify_description=settings.AUTO_IAL_2_DESCRIPTION,
+            evidence=settings.AUTO_IAL_2_DEFAULT_CLASSIFICATION,
+            evidence_subclassification=settings.AUTO_IAL_2_DEFAULT_SUBCLASSIFICATION)
+        # Add the user to default groups.
+        for g in org.default_groups_for_agents.all():
+            user.groups.add(g)
+
     return HttpResponseRedirect(reverse('home'))
 
 
