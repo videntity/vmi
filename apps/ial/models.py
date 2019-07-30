@@ -4,29 +4,16 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from datetime import date
 from collections import OrderedDict
+from django.conf import settings
 
 __author__ = "Alan Viars"
-
-
-EVIDENCE_CLASSIFICATIONS = (
-    ('',
-     'None'),
-    ('ONE-SUPERIOR-OR-STRONG+',
-     'One Superior or Strong+ pieces of identity evidence'),
-    ('ONE-STRONG-TWO-FAIR',
-     'One Strong and Two Fair pieces of identity evidence'),
-    ('TWO-STRONG',
-     'Two Pieces of Strong identity evidence'),
-    ('TRUSTED-REFEREE-VOUCH',
-     'I am a Trusted Referee Vouching for this person'),
-    ('KBA',
-     'Knowledged-Based Identity Verification'))
 
 
 class IdentityAssuranceLevelDocumentation(models.Model):
 
     """This model is based on NIST SP 800-63-3 Part A
     https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63a.pdf
+    # Evidence classifications are defined/customizable in settings.
     """
     uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)
     subject_user = models.ForeignKey(
@@ -54,8 +41,14 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         default='',
         blank=False)
     evidence = models.CharField(
-        choices=EVIDENCE_CLASSIFICATIONS,
+        choices=settings.IAL_EVIDENCE_CLASSIFICATIONS,
         max_length=24,
+        default='',
+        blank=True)
+
+    evidence_subclassification = models.CharField(
+        choices=settings.IAL_EVIDENCE_SUBCLASSIFICATIONS,
+        max_length=250,
         default='',
         blank=True)
 

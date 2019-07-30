@@ -6,15 +6,17 @@ __author__ = "Alan Viars"
 
 
 def create_groups():
-    groups = ["ChangeIdentityAssuranceLevel",
-              "ApproveOrganizationalAffiliation",
-              "RegisterOAuth2ClientApps"]
+    groups = ["Member",
+              "OrganizationPointOfContact",
+              "OrganizationalAgent",
+              "TrustedReferee",
+              "OrganizationAdministrator"]
     created_groups = []
     for group in groups:
         g, created = Group.objects.get_or_create(name=group)
         created_groups.append(g)
 
-        if group == "ApproveOrganizationalAffiliation":
+        if group == "OrganizationPointOfContact":
             # Add permissions to group
             content_type = ContentType.objects.get(
                 app_label='accounts', model='organizationaffiliationrequest')

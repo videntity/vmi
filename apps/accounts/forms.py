@@ -1,4 +1,5 @@
 from django import forms
+import re
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
@@ -106,6 +107,13 @@ class SignupForm(forms.Form):
         username = self.cleaned_data.get('username').strip().lower()
         if User.objects.filter(username=username).count() > 0:
             raise forms.ValidationError(_('This username is already taken.'))
+
+        pattern = re.compile(r'^[\w.@+-]+\Z')
+        if not pattern.match(username):
+            message = _('Enter a valid username. This value may contain only English letters, '
+                        'numbers, and @/./+/-/_ characters.')
+            raise forms.ValidationError(_(message))
+
         return username
 
     def clean_four_digit_suffix(self):
