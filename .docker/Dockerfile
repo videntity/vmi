@@ -47,10 +47,6 @@ COPY . /home/docker/code/
 COPY .nginx/uwsgi.ini /home/docker/code/
 COPY .nginx/uwsgi_params /home/docker/code/
 
-#create default groups.
-RUN python /home/docker/code/manage.py create_default_groups
-
-
 # install django, normally you would remove this step because your project would already
 # be installed in the code/app/ directory
 # RUN django-admin.py startproject website /home/docker/code/app/
