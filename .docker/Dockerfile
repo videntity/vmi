@@ -47,7 +47,6 @@ COPY . /home/docker/code/
 COPY .nginx/uwsgi.ini /home/docker/code/
 COPY .nginx/uwsgi_params /home/docker/code/
 
-
 # install django, normally you would remove this step because your project would already
 # be installed in the code/app/ directory
 # RUN django-admin.py startproject website /home/docker/code/app/
