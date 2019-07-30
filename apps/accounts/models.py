@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 import boto3
@@ -18,6 +19,7 @@ from .emails import (send_password_reset_url_via_email,
 from .subject_generator import generate_subject_id
 from collections import OrderedDict
 from ..ial.models import IdentityAssuranceLevelDocumentation
+
 
 # Copyright Videntity Systems Inc.
 
@@ -49,7 +51,8 @@ GENDER_CHOICES = (('M', 'Male'),
 
 
 class IndividualIdentifier(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete='PROTECT', null=True)
+    user = models.ForeignKey(
+        get_user_model(), on_delete=models.PROTECT, null=True)
     name = models.SlugField(max_length=250, blank=True,
                             default='', db_index=True)
     # ISO 3166-1
@@ -79,14 +82,6 @@ class IndividualIdentifier(models.Model):
         od['type'] = self.type
         od['num'] = self.value
         return od
-    
-    @property
-    def region(self):
-        return self.subdivision
-    
-    @property
-    def state(self):
-        return self.subdivision
 
     @property
     def region(self):
@@ -116,7 +111,8 @@ class OrganizationIdentifier(models.Model):
 
 class Address(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, db_index=True, editable=False)
-    user = models.ForeignKey(get_user_model(), on_delete='PROTECT', null=True)
+    user = models.ForeignKey(
+        get_user_model(), on_delete=models.PROTECT, null=True)
     street_1 = models.CharField(max_length=250, blank=True, default='')
     street_2 = models.CharField(max_length=250, blank=True, default='')
     city = models.CharField(max_length=250, blank=True, default='')
@@ -189,13 +185,26 @@ class Organization(models.Model):
                                             help_text=_('Do you agree to the privacy policy?'))
 
     point_of_contact = models.ForeignKey(
-        get_user_model(), on_delete='PROTECT', null=True,
+        get_user_model(), on_delete=models.CASCADE, null=True,
         related_name="organization_point_of_contact")
     addresses = models.ManyToManyField(
         Address, blank=True, related_name="organization_addresses")
+
+    member = models.ManyToManyField(
+        get_user_model(), blank=True, related_name='org_members',
+        help_text="This field is a placeholder and is not supported in this version.")
+
     users = models.ManyToManyField(
-        get_user_model(), blank=True, related_name='org_staff', verbose_name="Organization Agents",
+        get_user_model(), blank=True, related_name='org_staff', verbose_name="Organization Agent",
         help_text="Employees or contractors acting on behalf of the organization.")
+
+    auto_ial_2_for_agents = models.BooleanField(default=True, blank=True)
+    auto_ial_2_for_agents_description = models.TextField(default=settings.AUTO_IAL_2_DESCRIPTION,
+                                                         blank=True)
+
+    default_groups_for_agents = models.ManyToManyField(Group, blank=True,
+                                                       help_text="All new agents will be in these groups by default.")
+
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
@@ -206,7 +215,7 @@ class Organization(models.Model):
         return self.name
 
     @property
-    def signnup_url(self):
+    def signup_url(self):
         return "%s%s" % (settings.HOSTNAME_URL, reverse(
             'create_org_account', args=(self.slug,)))
 
@@ -235,8 +244,8 @@ class Organization(models.Model):
 
 
 class OrganizationAffiliationRequest(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete='PROTECT')
-    organization = models.ForeignKey(Organization, on_delete='PROTECT')
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -257,7 +266,8 @@ class OrganizationAffiliationRequest(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
-                                db_index=True, null=False)
+                                db_index=True, null=False,
+                                )
     picture = models.ImageField(
         upload_to='profile-picture/', default='profile-picture/None/no-img.jpg')
     subject = models.CharField(max_length=64, default='', blank=True,
@@ -357,7 +367,8 @@ class UserProfile(models.Model):
     @property
     def ial(self):
         level = 1
-        ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(subject_user=self.user)
+        ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(
+            subject_user=self.user)
         for doc in ialdocs:
             if int(doc.level) == 2:
                 if level == 1:
