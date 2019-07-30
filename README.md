@@ -144,10 +144,16 @@ docker-compose with the --build option.
 
 ## Associated Projects
 
-[ShareMyHealth](https://github.com/TransparentHealth/sharemyhealth) is designed as a 
-consumer-mediated health information exchange.  
-ShareMyHealth acts as a relying party to 
+[ShareMyHealth App]((https://github.com/TransparentHealth/smh_app) is a PHR that facilitates sharing. It acts as a relying party to
 [vmi](https://github.com/TransparentHealth/vmi).
+
+
+[ShareMyHealth](https://github.com/TransparentHealth/sharemyhealth) is an OAuth2 Provider designed as a 
+consumer-mediated health information exchange.  ShareMyHealth acts as a relying party to 
+[vmi](https://github.com/TransparentHealth/vmi).
+
+
+
 
 ## Supporting Resources
 
