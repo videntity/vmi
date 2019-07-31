@@ -82,14 +82,6 @@ class IndividualIdentifier(models.Model):
         od['type'] = self.type
         od['num'] = self.value
         return od
-    
-    @property
-    def region(self):
-        return self.subdivision
-    
-    @property
-    def state(self):
-        return self.subdivision
 
     @property
     def region(self):
@@ -375,7 +367,8 @@ class UserProfile(models.Model):
     @property
     def ial(self):
         level = 1
-        ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(subject_user=self.user)
+        ialdocs = IdentityAssuranceLevelDocumentation.objects.filter(
+            subject_user=self.user)
         for doc in ialdocs:
             if int(doc.level) == 2:
                 if level == 1:
