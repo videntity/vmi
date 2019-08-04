@@ -1,4 +1,4 @@
-FROM python:3.6-alpine
+FROM python:3.7-alpine3.9
 
 # Install required packages and remove the apt packages cache when done.
 #apk update && apk upgrade && \

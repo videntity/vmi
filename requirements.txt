@@ -30,12 +30,12 @@ PyYAML==4.2b1
 requests==2.20.0
 six==1.11.0
 tox==3.2.1
-urllib3==1.23
+urllib3==1.24.3
 virtualenv==16.0.0
 pyjwt==1.6.4
 pycryptodome==3.6.6
 pyjwkest==1.4.0
-djangorestframework==3.8.2
+djangorestframework==3.10.2
 django-filter==2.0.0
 drf-nested-routers==0.91
 cryptography==2.3.1

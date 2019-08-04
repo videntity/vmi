@@ -1,6 +1,7 @@
 language: python
+dist: bionic
 python:
-  - "3.6"
+  - "3.7"
 
 sudo: required
 
@@ -8,7 +9,7 @@ services:
   - docker
 
 env:
-  - TOX_ENV=py36
+  - TOX_ENV=py37
   - TOX_ENV=flake8
 
 matrix:
