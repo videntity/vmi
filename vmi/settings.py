@@ -276,7 +276,7 @@ ORGANIZATION_TITLE = env(
 ORGANIZATION_URI = env('DJANGO_ORGANIZATION_URI', 'https://abhealth.us')
 POLICY_URI = env(
     'DJANGO_POLICY_URI',
-    'https://abhealth.us')
+    'http://sharemy.health/privacy-policy1.0.html')
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
 TOS_URI = env('DJANGO_TOS_URI',
               'http://sharemy.health/terms-of-service1.0.html')
