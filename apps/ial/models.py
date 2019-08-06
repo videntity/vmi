@@ -42,13 +42,13 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         blank=False)
     evidence = models.CharField(
         choices=settings.IAL_EVIDENCE_CLASSIFICATIONS,
-        max_length=24,
+        max_length=256,
         default='',
         blank=True)
 
     evidence_subclassification = models.CharField(
         choices=settings.IAL_EVIDENCE_SUBCLASSIFICATIONS,
-        max_length=250,
+        max_length=256,
         default='',
         blank=True)
 
