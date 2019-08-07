@@ -2,7 +2,7 @@
 
 [![OpenID Certified](https://cloud.githubusercontent.com/assets/1454075/7611268/4d19de32-f97b-11e4-895b-31b2455a7ca6.png)](https://openid.net/certification/)
 
-Verify My Identity is a certified OpenID Connect Provider. Its supports role-based permission by using Django groups. VMI manages relationships between organizations, staff users, and consumer users. Other features include:
+Verify My Identity is a certified OpenID Connect Provider. Its supports role-based permissions by using Django groups. VMI manages relationships between organizations, staff users, and consumer users. Other features include:
 
 
 * Trusted Referee Support - According to NIST SP 800-63-3.
