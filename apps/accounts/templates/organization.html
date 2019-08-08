@@ -38,7 +38,10 @@
             <h2>Agents:</h2>
             
                 {% for a in organization.users.all %}
-                 <h4><a href="{% url 'user_profile_subject' a.userprofile.sub  %}">{{a.first_name|title}} {{a.last_name|title}}</a></h4>
+                 <h4><a href="{% url 'user_profile_subject' a.userprofile.sub  %}">{{a.first_name|title}} {{a.last_name|title}}</a> 
+                 {% if organization.point_of_contact == request.user %}
+                  | <a href={% url 'remove_agent_from_organization' organization.slug a.id  %}>Remove</a></h4>
+                 {% endif %}
                 {% endfor %}
             
 	    </div>

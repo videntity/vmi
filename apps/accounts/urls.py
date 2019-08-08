@@ -16,7 +16,7 @@ from .mfa_views import (
     EnableSMSMFAView,
     ManageView,
 )
-from .organization_views import display_organization
+from .organization_views import display_organization, remove_agent_from_organization
 from .phone_views import mobile_phone, verify_mobile_phone_number
 from .identifier_views import (display_individual_identifiers, add_new_individual_identifier,
                                delete_individual_identifier, edit_individual_identifier)
@@ -32,6 +32,9 @@ __author__ = "Alan Viars"
 
 urlpatterns = [
     url(r'^logout', mylogout, name='mylogout'),
+    url(r"^organization/(?P<organization_slug>[^/]+)/remove-agent/(?P<user_id>[^/]+)",
+        remove_agent_from_organization,
+        name='remove_agent_from_organization'),
     url(r"^organization/(?P<organization_slug>[^/]+)/", display_organization,
         name='display_organization'),
     url(r'^reset-forgotten-password(?P<reset_password_key>[^/]+)/$',

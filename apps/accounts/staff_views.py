@@ -112,6 +112,8 @@ def create_org_account(request, organization_slug,
             return render(request,
                           'generic/bootstrapform.html',
                           {'name': name, 'form': form,
+                           'org_slug': org.slug,
+                           'domain': org.domain,
                            'service_title': service_title})
     else:
         # this is an HTTP  GET
@@ -120,7 +122,8 @@ def create_org_account(request, organization_slug,
         form_data = {
             'invitation_code': request.GET.get('invitation_code', ''),
             'email': request.GET.get('email', ''),
-            'org_slug': org.slug}
+            'org_slug': org.slug,
+            'domain': org.domain}
         return render(request, 'generic/bootstrapform.html',
                       {'name': name, 'form':
                        StaffSignupForm(initial=form_data),
