@@ -18,7 +18,8 @@ agree_tos_label = mark_safe(
 
 
 class StaffSignupForm(forms.Form):
-
+    domain = forms.CharField(disabled=True, max_length=512, required=False,
+                             help_text="You must register using this email domain.")
     registration_code = forms.CharField(max_length=100,
                                         label=_("Registration Phrase"))
     username = forms.CharField(max_length=30, label=_("User name"))
@@ -38,6 +39,8 @@ class StaffSignupForm(forms.Form):
     agree_tos = forms.BooleanField(label=_(agree_tos_label))
     org_slug = forms.CharField(widget=forms.HiddenInput(),
                                max_length=128, required=True)
+    domain = forms.CharField(widget=forms.HiddenInput(),
+                             max_length=512, required=False)
 
     required_css_class = 'required'
 
@@ -54,10 +57,12 @@ class StaffSignupForm(forms.Form):
 
         domain_to_match = org.domain
         if domain_to_match:
-            user, supplied_domain = email.split("@")
+            email_parts = email.split("@")
+            # Get the part after the @
+            supplied_domain = email_parts[-1]
             if supplied_domain != domain_to_match:
                 raise forms.ValidationError(
-                    _("""You must user your
+                    _("""You must use your
                        company or organization
                        supplied email."""))
 
@@ -73,6 +78,7 @@ class StaffSignupForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data.get('email', "").strip().lower()
+
         if email:
             username = self.cleaned_data.get('username')
             if email and User.objects.filter(email=email).exclude(
@@ -80,6 +86,7 @@ class StaffSignupForm(forms.Form):
                 raise forms.ValidationError(
                     _('This email address is already registered.'))
             return email
+
         return email
 
     def clean_username(self):
