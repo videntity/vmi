@@ -84,6 +84,14 @@ class IndividualIdentifier(models.Model):
         return od
 
     @property
+    def doc_oidc_format_enhanced(self):
+        od = self.doc_oidc_format
+        od['country'] = self.country
+        od['subdivision'] = self.subdivision
+        od['type'] = self.type
+        return od
+
+    @property
     def region(self):
         return self.subdivision
 
@@ -454,7 +462,7 @@ class UserProfile(models.Model):
         formatted_identifiers = []
         identifiers = IndividualIdentifier.objects.filter(user=self.user)
         for i in identifiers:
-            formatted_identifiers.append(i.doc_oidc_format)
+            formatted_identifiers.append(i.doc_oidc_format_enhanced)
         return formatted_identifiers
 
     @property
