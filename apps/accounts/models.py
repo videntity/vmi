@@ -239,10 +239,11 @@ class Organization(models.Model):
 
     @property
     def picture_url(self):
-        p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
-        if p.count('http') == 2:
-            return self.picture.url
-        return p
+        if self.picture:
+            p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
+            if p.count('http') == 2:
+                return self.picture.url
+            return p
 
     def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -426,10 +427,11 @@ class UserProfile(models.Model):
 
     @property
     def picture_url(self):
-        p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
-        if p.count('http') == 2:
-            return self.picture.url
-        return p
+        if self.picture:
+            p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
+            if p.count('http') == 2:
+                return self.picture.url
+            return p
 
     @property
     def vot(self):
