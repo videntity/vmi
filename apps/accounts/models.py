@@ -173,8 +173,7 @@ class Organization(models.Model):
     subject = models.CharField(max_length=64, default=generate_subject_id(), blank=True,
                                help_text='Subject ID',
                                db_index=True)
-    picture = models.ImageField(
-        upload_to='organization-logo/', default='organization-logo/None/no-img.jpg')
+    picture = models.ImageField(upload_to='organization-logo/', null=True)
 
     registration_code = models.CharField(max_length=100,
                                          default='',
@@ -276,8 +275,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
                                 db_index=True, null=False,
                                 )
-    picture = models.ImageField(
-        upload_to='profile-picture/', default='profile-picture/None/no-img.jpg')
+    picture = models.ImageField(upload_to='profile-picture/', null=True)
     subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject for identity token',
                                db_index=True)
