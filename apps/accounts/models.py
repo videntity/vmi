@@ -28,11 +28,12 @@ __author__ = "Alan Viars"
 
 SEX_CHOICES = (('female', 'Female'), ('male', 'Male'), ('', 'Unspecified'))
 
-GENDER_CHOICES = (('M', 'Male'),
-                  ('F', 'Female'),
-                  ('TMF', 'Transgender Male to Female'),
-                  ('TFM', 'Transgender Female to Male'),
-                  ('U', 'Unknown'))
+GENDER_CHOICES = (('', 'Not specified.'),
+                  ('male', 'Male'),
+                  ('female', 'Female'),
+                  ('transgender-male-to-female', 'Transgender Male to Female'),
+                  ('trangender-female-to-male', 'Transgender Female to Male'),
+                  ('unknown', 'Unknown'))
 
 
 # These are "mockups" for now.
@@ -276,6 +277,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
                                 db_index=True, null=False,
                                 )
+    middle_name = models.CharField(max_length=255, default='', blank=True,
+                                   help_text='Middle Name',)
     picture = models.ImageField(upload_to='profile-picture/', null=True)
     subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject for identity token',
