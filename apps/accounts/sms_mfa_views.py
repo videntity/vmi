@@ -7,7 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 from .models import UserProfile, MFACode
 from django.conf import settings
 from .sms_mfa_forms import LoginForm, MFACodeForm
-
+from django.views.decorators.cache import never_cache
+from ratelimit.decorators import ratelimit
 
 # Copyright Videntity Systems Inc.
 
@@ -70,8 +71,10 @@ def mfa_code_confirm(request, uid):
                   {'form': MFACodeForm()})
 
 
+@never_cache
+@ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='POST', block=True)
 def mfa_login(request, slug=None):
-
+    print('ggg')
     if not slug:
         login_template_name = settings.LOGIN_TEMPLATE_PICKER['default']
         name = settings.APPLICATION_TITLE

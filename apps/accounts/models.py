@@ -84,6 +84,14 @@ class IndividualIdentifier(models.Model):
         return od
 
     @property
+    def doc_oidc_format_enhanced(self):
+        od = self.doc_oidc_format
+        od['country'] = self.country
+        od['subdivision'] = self.subdivision
+        od['type'] = self.type
+        return od
+
+    @property
     def region(self):
         return self.subdivision
 
@@ -165,8 +173,7 @@ class Organization(models.Model):
     subject = models.CharField(max_length=64, default=generate_subject_id(), blank=True,
                                help_text='Subject ID',
                                db_index=True)
-    picture = models.ImageField(
-        upload_to='organization-logo/', default='organization-logo/None/no-img.jpg')
+    picture = models.ImageField(upload_to='organization-logo/', null=True)
 
     registration_code = models.CharField(max_length=100,
                                          default='',
@@ -232,10 +239,11 @@ class Organization(models.Model):
 
     @property
     def picture_url(self):
-        p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
-        if p.count('http') == 2:
-            return self.picture.url
-        return p
+        if self.picture:
+            p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
+            if p.count('http') == 2:
+                return self.picture.url
+            return p
 
     def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -268,8 +276,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
                                 db_index=True, null=False,
                                 )
-    picture = models.ImageField(
-        upload_to='profile-picture/', default='profile-picture/None/no-img.jpg')
+    picture = models.ImageField(upload_to='profile-picture/', null=True)
     subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject for identity token',
                                db_index=True)
@@ -420,10 +427,11 @@ class UserProfile(models.Model):
 
     @property
     def picture_url(self):
-        p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
-        if p.count('http') == 2:
-            return self.picture.url
-        return p
+        if self.picture:
+            p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
+            if p.count('http') == 2:
+                return self.picture.url
+            return p
 
     @property
     def vot(self):
@@ -454,7 +462,7 @@ class UserProfile(models.Model):
         formatted_identifiers = []
         identifiers = IndividualIdentifier.objects.filter(user=self.user)
         for i in identifiers:
-            formatted_identifiers.append(i.doc_oidc_format)
+            formatted_identifiers.append(i.doc_oidc_format_enhanced)
         return formatted_identifiers
 
     @property

@@ -43,6 +43,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         'birth_date',
         'sex', ]
     raw_id_fields = ("user", )
+    empty_value_display = ''
 
 
 admin.site.register(UserProfile, UserProfileAdmin)
@@ -52,6 +53,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'signup_url', 'registration_code', 'picture_url')
     search_fields = ['name', 'slug', 'org_identifiers__name']
     raw_id_fields = ("point_of_contact", )
+    empty_value_display = ''
 
 
 admin.site.register(Organization, OrganizationAdmin)
