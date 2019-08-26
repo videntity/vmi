@@ -48,11 +48,12 @@ class PasswordResetForm(forms.Form):
 
 
 class SignupForm(forms.Form):
-    username = forms.CharField(max_length=30, label=_("User Name*"),
-                               help_text="Your desired user name or handle.")
-    first_name = forms.CharField(max_length=100, label=_("First\Given Name*"))
-    last_name = forms.CharField(max_length=100, label=_("Last\Family Name*"))
-    middle_name = forms.CharField(max_length=255, label=_("Middle Name*"))
+    username = forms.CharField(max_length=30, label=_(
+        "User Name*"), help_text="Your desired user name or handle.")
+    first_name = forms.CharField(max_length=100, label=_("First/Given Name*"))
+    last_name = forms.CharField(max_length=100, label=_("Last/Family Name*"))
+    middle_name = forms.CharField(
+        max_length=255, label=_("Middle Name"), required=False)
     nickname = forms.CharField(max_length=100, required=False)
     mobile_phone_number = PhoneNumberField(required=False,
                                            label=_(
@@ -79,7 +80,6 @@ class SignupForm(forms.Form):
 
     def clean_middle_name(self):
         return self.cleaned_data.get("middle_name", "").strip().upper()
-
 
     def clean_nickname(self):
         return self.cleaned_data.get("nickname", "").strip().upper()
@@ -143,6 +143,7 @@ class SignupForm(forms.Form):
 
         UserProfile.objects.create(
             user=new_user,
+            middle_name=self.cleaned_data.get('middle_name', ""),
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
             nickname=self.cleaned_data.get('nickname', ""),
             sex=self.cleaned_data.get('sex', ""),
