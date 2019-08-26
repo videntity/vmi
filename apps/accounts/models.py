@@ -28,7 +28,7 @@ __author__ = "Alan Viars"
 
 SEX_CHOICES = (('female', 'Female'), ('male', 'Male'), ('', 'Unspecified'))
 
-GENDER_CHOICES = (('', 'Not specified.'),
+GENDER_CHOICES = (('', 'Not specified'),
                   ('male', 'Male'),
                   ('female', 'Female'),
                   ('transgender-male-to-female', 'Transgender Male to Female'),
@@ -277,12 +277,13 @@ class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
                                 db_index=True, null=False,
                                 )
-    middle_name = models.CharField(max_length=255, default='', blank=True,
-                                   help_text='Middle Name',)
-    picture = models.ImageField(upload_to='profile-picture/', null=True)
     subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject for identity token',
                                db_index=True)
+    middle_name = models.CharField(max_length=255, default='', blank=True,
+                                   help_text='Middle Name',)
+    picture = models.ImageField(upload_to='profile-picture/', null=True)
+
     nickname = models.CharField(
         max_length=255,
         default='',
@@ -304,8 +305,8 @@ class UserProfile(models.Model):
                            help_text=_('Specify sex, not gender identity.')
                            )
     gender_identity = models.CharField(choices=GENDER_CHOICES,
-                                       max_length=3, default="U",
-                                       help_text=_('Gender / Gender Identity'),
+                                       max_length=3, default="", blank=True,
+                                       help_text=_('Gender Identity is not necessarily the same as birth sex.'),
                                        )
     birth_date = models.DateField(blank=True, null=True)
     agree_tos = models.CharField(max_length=64, default="", blank=True,
