@@ -68,6 +68,12 @@ class UserProfileClaimProvider(BaseProvider):
         except Exception:
             return None
 
+    def claim_middle_name(self):
+        try:
+            return self.user.userprofile.middle_name
+        except Exception:
+            return None
+
     def claim_name(self):
         try:
             return "%s %s" % (self.user.userprofile.given_name,
@@ -94,6 +100,12 @@ class UserProfileClaimProvider(BaseProvider):
                 return "male"
             if gender == "female":
                 return "female"
+        except Exception:
+            return None
+
+    def claim_gender_identity(self):
+        try:
+            return self.user.userprofile.gender_identity
         except Exception:
             return None
 
