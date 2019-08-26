@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
 from phonenumber_field.formfields import PhoneNumberField
-from .models import UserProfile, create_activation_key, SEX_CHOICES
+from .models import UserProfile, create_activation_key, SEX_CHOICES, GENDER_CHOICES
 
 # Copyright Videntity Systems Inc.
 
@@ -50,8 +50,9 @@ class PasswordResetForm(forms.Form):
 class SignupForm(forms.Form):
     username = forms.CharField(max_length=30, label=_("User Name*"),
                                help_text="Your desired user name or handle.")
-    first_name = forms.CharField(max_length=100, label=_("First Name*"))
-    last_name = forms.CharField(max_length=100, label=_("Last Name*"))
+    first_name = forms.CharField(max_length=100, label=_("First\Given Name*"))
+    last_name = forms.CharField(max_length=100, label=_("Last\Family Name*"))
+    middle_name = forms.CharField(max_length=255, label=_("Middle Name*"))
     nickname = forms.CharField(max_length=100, required=False)
     mobile_phone_number = PhoneNumberField(required=False,
                                            label=_(
@@ -59,6 +60,8 @@ class SignupForm(forms.Form):
     email = forms.EmailField(max_length=75, required=False)
     sex = forms.ChoiceField(choices=SEX_CHOICES, required=False,
                             help_text="Enter sex, not gender identity.")
+    gender_identity = forms.ChoiceField(choices=GENDER_CHOICES, required=False,
+                                        help_text="Gender identity is not necessarily the same as birth sex.")
     birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=YEARS),
                                  required=False)
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
@@ -73,6 +76,10 @@ class SignupForm(forms.Form):
 
     def clean_last_name(self):
         return self.cleaned_data.get("last_name", "").strip().upper()
+
+    def clean_middle_name(self):
+        return self.cleaned_data.get("middle_name", "").strip().upper()
+
 
     def clean_nickname(self):
         return self.cleaned_data.get("nickname", "").strip().upper()
@@ -139,6 +146,7 @@ class SignupForm(forms.Form):
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
             nickname=self.cleaned_data.get('nickname', ""),
             sex=self.cleaned_data.get('sex', ""),
+            gender_identity=self.cleaned_data.get('gender_identity', ""),
             birth_date=self.cleaned_data.get('birth_date', ""),
             agree_tos=settings.CURRENT_TOS_VERSION,
             agree_privacy_policy=settings.CURRENT_PP_VERSION)
