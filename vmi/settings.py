@@ -268,7 +268,7 @@ SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
 APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE', "Share My Health Accounts")
 KILLER_APP_URI = env('KILLER_APP_URI', 'https://app.sharemy.health')
 
-TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'Share My Health')
+TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'Verify My Identity')
 
 ORGANIZATION_TITLE = env(
     'DJANGO_ORGANIZATION_TITLE',
@@ -281,12 +281,8 @@ POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
 TOS_URI = env('DJANGO_TOS_URI',
               'http://sharemy.health/terms-of-service1.0.html')
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
-TAG_LINE_1 = env('DJANGO_TAG_LINE_1', 'Share your health data')
-TAG_LINE_2 = env('DJANGO_TAG_LINE_2',
-                 'with applications, organizations, and people you trust.')
-EXPLAINATION_LINE = ('This service allows Medicare beneficiaries'
-                     'to connect their health data to applications'
-                     'of their choosing.')
+EXPLAINATION_LINE = ('is an instance of Verify My Identity, \
+                     an open source OpenID Connect Identity Provider.')
 EXPLAINATION_LINE = env('DJANGO_EXPLAINATION_LINE ', EXPLAINATION_LINE)
 USER_DOCS_URI = "https://abhealth.us"
 USER_DOCS_TITLE = "User Documentation"
@@ -298,7 +294,7 @@ DEVELOPER_DOCS = "Developer Docs"
 DEFAULT_DISCLOSURE_TEXT = """
     Unauthorized or improper use of this
     system or its data may result in disciplinary action, as well as civil
-    and criminal penalties. This system may be monitored, recorded and
+    and criminal penalties. This system may be monitored, recorded and is
     subject to audit.
     """
 
@@ -306,6 +302,8 @@ DISCLOSURE_TEXT = env('DJANGO_PRIVACY_POLICY_URI', DEFAULT_DISCLOSURE_TEXT)
 
 HOSTNAME_URL = env('HOSTNAME_URL', 'http://localhost:8000')
 
+ORG_SIGNUP_CONTACT = env('ORG_SIGNUP_CONTACT',
+                         'https://abhealth.us/contact-us/')
 
 SETTINGS_EXPORT = [
     'DEBUG',
@@ -321,8 +319,6 @@ SETTINGS_EXPORT = [
     'DISCLOSURE_TEXT',
     'TOS_URI',
     'TOS_TITLE',
-    'TAG_LINE_1',
-    'TAG_LINE_2',
     'EXPLAINATION_LINE',
     'USER_DOCS_URI',
     'USER_DOCS',
@@ -331,6 +327,7 @@ SETTINGS_EXPORT = [
     'HOSTNAME_URL',
     'TOP_LEFT_TITLE',
     'KILLER_APP_URI',
+    'ORG_SIGNUP_CONTACT',
 ]
 
 # Emails
@@ -357,10 +354,10 @@ MAX_PROFILE_PICTURE_SIZE = env(
 
 # Define individual identifier types
 INDIVIDUAL_ID_TYPE_CHOICES = (
-    ('PATIENT_ID_FHIR', 'Patient ID FHIR'),
-    ('MPI', 'Master Patient Index (Not FHIR Patient id)'),
+    ('PATIENT_ID_FHIR', 'Patient ID in FHIR'),
+    ('MPI', 'Master Patient Index (Not FHIR Patient ID)'),
     ('SSN', 'Social Security Number'),
-    ('MEDICIAD_ID', 'Medicaid ID Number'),
+    ('MEDICAID_ID', 'Medicaid ID Number'),
     ('MEDICICARE_HICN', 'Medicare HICN (Legacy)'),
     ('MEDICIARE_ID', 'Medicare ID Number'),
     ('INDURANCE_ID', 'Insurance ID Number'),
