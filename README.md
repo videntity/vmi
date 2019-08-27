@@ -22,13 +22,13 @@ Dowload the project:
     git clone https://github.com/TransparentHealth/vmi.git
    
 
-Install supporting libraries. (Consider using virtualenv for your pythoin setup.
+Install supporting libraries. (Consider using virtualenv for your python setup).
 
     cd vmi
     pip install -r requirements.txt
 
 Depending on your local environment you made need some supporting libraries
-for the above com,mand to run cleanly. For example you need a 
+for the above command to run cleanly. For example you need a 
 compiler and python-dev.
 
 Setup some local enviroment variables. 
@@ -82,7 +82,7 @@ docker-compose -f .development/docker-compose.yml exec web python manage.py migr
 If you make changes to `requirements.txt` to add libraries re-run 
 `docker-compose` with the `--build` option.
 
-After the VMI Docer container is comepltely setup, you execute Django 
+After the VMI Docker container is completely setup, you execute Django 
 commands like so:
 
 
