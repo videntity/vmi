@@ -65,7 +65,7 @@ A successful response `HTTP 200` will return a similar structure to what was sen
 Create a User Example #2 - More Options
 ========================================
 
-The following example illustrates an account creation with more demographic and identity infiormation.
+The following example illustrates an account creation with more demographic and identity information.
 
 
 * HTTP Method: POST 
@@ -165,11 +165,11 @@ Adding\Modify Identity Assurance Level Evidence
 * Endpoint:https://alpha.verifymyidentity.com/api/v1/user/[sub]
 * Authorization: OAuth2 Bearer Token
 
-Adding a record of identifity verifieaction is how the IAL is calculated.  The `sub` is provided  as the identifer for the user record. 
+Adding a record of identity verification is how the IAL is calculated.  The `sub` is provided  as the identifier for the user record. 
 In most cases, the goal is to move a user's account from level `1` to level `2` for an extended period of time. The identity assurance level (IAL) claim contains:
 
 * A description of the evidence
-* A code classifiing the evidence. Codes include `ONE-SUPERIOR-OR-STRONG+`,`ONE-STRONG-TWO-FAIR`,`TWO-STRONG`,  `TRUSTED-REFEREE-VOUCH`, and `KBA`. See Nist SP 800-63-3 for details.
+* A code classifying the evidence. Codes include `ONE-SUPERIOR-OR-STRONG+`,`ONE-STRONG-TWO-FAIR`,`TWO-STRONG`,  `TRUSTED-REFEREE-VOUCH`, and `KBA`. See Nist SP 800-63-3 for details.
 * The subject identifier of the person acting as a trusted agent (if applicable).
 * The date of the identity verification check.
 
@@ -256,7 +256,7 @@ Adding\Modifying Identifiers
 * Endpoint:https://alpha.verifymyidentity.com/api/v1/user/[sub]/identifier/
 * Authorization: OAuth2 Bearer Token
 
-Identifiers are for adding master patient indexes and other types of pointers to individuals.  Examples include, a Mediciad ID number, a driver's license numbers, and a patient ID to a particular online resource (e.g. FHIR)aa record of identifity verifieaction is how the IAL is calculated.  The `sub` is provided  as the identifer for the user record. 
+Identifiers are for adding master patient indexes and other types of pointers to individuals.  Examples include, a Medicaid ID number, a driver's license numbers, and a patient ID to a particular online resource (e.g. FHIR)aa record of identity verification is how the IAL is calculated.  The `sub` is provided  as the identifer for the user record. 
 In most cases, the goal is to move a user's account from level `1` to level `2` for an extended period of time.
 
 
@@ -272,7 +272,7 @@ Request Body for Create Identifier
 
       {
   	  "issuer": "New York Department of Health HHS Mediciad Duke Health Systems",
-      type": "MEDICIAD_ID_NY",
+      type": "MEDICAID_ID_NY",
       "num": "9ASDFG2",
       "region": "NY"
       }
@@ -286,7 +286,7 @@ Successful Response for Create Identifer
     {
     "uid": "94474d22-0962-4a6b-89ba-cddbe3e3a8d4",
     "issuer": "New York Department of Health HHS Mediciad Duke Health Systems",
-    "type": "MEDICIAD_ID_NY",
+    "type": "MEDICAID_ID_NY",
     "num": "9ASDFG2",
     "region": "NY"
     "user": {
@@ -337,7 +337,7 @@ Successful Response
     	{
         "uid": "94474d22-0962-4a6b-89ba-cddbe3e3a8d4",
     	"issuer": "New York Department of Health HHS Mediciad Duke Health Systems",
-    	"type": "MEDICIAD_ID",
+    	"type": "MEDICAID_ID",
     	"num": "9ASDFG2",
         "region": "NY"
         "user": {
