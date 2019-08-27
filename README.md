@@ -7,7 +7,7 @@ Verify My Identity is a certified OpenID Connect Provider. Its supports role-bas
 
 * Trusted Referee Support - According to NIST SP 800-63-3.
 * FIDO U2F / FIDO 2 Support
-* Text Message multi-facotor authentication support 
+* Text Message multi-factor authentication support 
 * Vectors of Trust Support
 * Support for `document` and `address` claims as defined in the iGov Profile for OIDC.
 
