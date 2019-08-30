@@ -27,7 +27,7 @@
     
                         <h1>{{ settings.APPLICATION_TITLE }}</h1>
 
-                                               {{ settings.TOP_LEFT_TITLE }} helps connect people with their own health information.</p>
+                                               {{ settings.APPLICATION_TITLE }} {{ settings.EXPLAINATION_LINE }}</p>
                
                         <!-- or <a href="{% url 'social:begin' 'google-openidconnect' %}">continue with Google</a> -->
                         <p>
@@ -37,14 +37,13 @@
 
                                         <button type="button" class="btn btn-primary"> <i class="fa fa-plus"></i> Signup as a Community Member</button></a>
                         
-                                                <a href="#Organizations">
-
-                                        <button type="button" class="btn btn-primary"> <i class="fa fa-plus"></i> Signup as an Organization Agent</button></a>
+                        
+               <p> Already have an account? Maybe you want to login to <a href="{{settings.KILLER_APP_URI}}">{{ settings.TOP_LEFT_TITLE }}</a></p>
+                                            
                         </div>
                 
 
             
-                Already have an account? <a href="{{settings.KILLER_APP_URI}}">Login to {{ settings.TOP_LEFT_TITLE }}</a>.
                         <!-- or <a href="{% url 'social:begin' 'google-openidconnect' %}">continue with Google</a> -->
                         <p>
 
@@ -59,18 +58,25 @@
                         
                     
                             {% for o in organizations %}
-                             <a href="{% url 'create_org_account' o.slug %}"><img src="{{o.picture_url}}" alt={{o.name}}></a>{{ o.signup_uri }}<br>
+                             <a href="{% url 'create_org_account' o.slug %}">
+              
+
+                               <button type="button" class="btn btn-primary"> <i class="fa fa-building"></i> {{o.name}}</button>
+                            
+                            
+                            </a>
                             {% endfor %}
-                
-                    
+                            </br><br>
                         
+                    
+                         <p>Want your Organization to join {{ settings.TOP_LEFT_TITLE }}?
+                         Contact the <a href="{{ settings.ORG_SIGNUP_CONTACT  }}"> {{settings.ORGANIZATION_TITLE }}</a> for more information.</h3>
                 
                         </div>
                 
                 
                 
-                  <h2>Want your Organization to join {{ settings.TOP_LEFT_TITLE }}?</h2>
-                  <h3>Contact the <a href="https://abhealth.us/contact-us/"> {{settings.ORGANIZATION_TITLE }}</a> for more information.</h3>
+                 
                 
                 </div>   
             </div>

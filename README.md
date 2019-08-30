@@ -7,7 +7,7 @@ Verify My Identity is a certified OpenID Connect Provider. Its supports role-bas
 
 * Trusted Referee Support - According to NIST SP 800-63-3.
 * FIDO U2F / FIDO 2 Support
-* Text Message multi-facotor authentication support 
+* Text Message multi-factor authentication support 
 * Vectors of Trust Support
 * Support for `document` and `address` claims as defined in the iGov Profile for OIDC.
 
@@ -22,13 +22,13 @@ Dowload the project:
     git clone https://github.com/TransparentHealth/vmi.git
    
 
-Install supporting libraries. (Consider using virtualenv for your pythoin setup.
+Install supporting libraries. (Consider using virtualenv for your python setup).
 
     cd vmi
     pip install -r requirements.txt
 
 Depending on your local environment you made need some supporting libraries
-for the above com,mand to run cleanly. For example you need a 
+for the above command to run cleanly. For example you need a 
 compiler and python-dev.
 
 Setup some local enviroment variables. 
@@ -82,7 +82,7 @@ docker-compose -f .development/docker-compose.yml exec web python manage.py migr
 If you make changes to `requirements.txt` to add libraries re-run 
 `docker-compose` with the `--build` option.
 
-After the VMI Docer container is comepltely setup, you execute Django 
+After the VMI Docker container is completely setup, you execute Django 
 commands like so:
 
 
