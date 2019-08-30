@@ -266,6 +266,7 @@ OIDC_PROVIDER = {
 # This can help identify genuine subject ids and indicate provenance.
 SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
 APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE', "Share My Health Accounts")
+KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Share My Health')
 KILLER_APP_URI = env('KILLER_APP_URI', 'https://app.sharemy.health')
 
 TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'Verify My Identity')
@@ -281,7 +282,7 @@ POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
 TOS_URI = env('DJANGO_TOS_URI',
               'http://sharemy.health/terms-of-service1.0.html')
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
-EXPLAINATION_LINE = ('is an instance of Verify My Identity, \
+EXPLAINATION_LINE = ('This is an instance of Verify My Identity, \
                      an open source OpenID Connect Identity Provider.')
 EXPLAINATION_LINE = env('DJANGO_EXPLAINATION_LINE ', EXPLAINATION_LINE)
 USER_DOCS_URI = "https://abhealth.us"
@@ -305,6 +306,9 @@ HOSTNAME_URL = env('HOSTNAME_URL', 'http://localhost:8000')
 ORG_SIGNUP_CONTACT = env('ORG_SIGNUP_CONTACT',
                          'https://abhealth.us/contact-us/')
 
+# Allow Members to create accounts
+ALLOW_MEMBER_SIGNUP = bool_env(env('ALLOW_MEMBER_SIGNUP', False))
+
 SETTINGS_EXPORT = [
     'DEBUG',
     'ALLOWED_HOSTS',
@@ -327,7 +331,9 @@ SETTINGS_EXPORT = [
     'HOSTNAME_URL',
     'TOP_LEFT_TITLE',
     'KILLER_APP_URI',
+    'KILLER_APP_TITLE',
     'ORG_SIGNUP_CONTACT',
+    'ALLOW_MEMBER_SIGNUP'
 ]
 
 # Emails
@@ -426,9 +432,9 @@ IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_1 = env(
 
 
 IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_2 = env(
-    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_2', "MEDICIAD-CARD")
+    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_2', "MEDICAID-CARD")
 IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_2 = env(
-    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_2', "Mediciad card")
+    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_2', "Medicaid card")
 
 IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_3 = env(
     'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_3', "MEDICARE-CARD")
