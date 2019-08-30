@@ -305,7 +305,7 @@ class UserProfile(models.Model):
                            help_text=_('Specify sex, not gender identity.')
                            )
     gender_identity = models.CharField(choices=GENDER_CHOICES,
-                                       max_length=3, default="", blank=True,
+                                       max_length=64, default="", blank=True,
                                        help_text=_('Gender Identity is not necessarily the same as birth sex.'),
                                        )
     birth_date = models.DateField(blank=True, null=True)

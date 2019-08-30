@@ -48,7 +48,6 @@ class StaffSignupForm(forms.Form):
                                max_length=128, required=True)
     domain = forms.CharField(widget=forms.HiddenInput(),
                              max_length=512, required=False)
-
     required_css_class = 'required'
 
     def clean(self):

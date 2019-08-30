@@ -27,18 +27,17 @@
     
                         <h1>{{ settings.APPLICATION_TITLE }}</h1>
 
-                                               {{ settings.APPLICATION_TITLE }} {{ settings.EXPLAINATION_LINE }}</p>
+                        </p>
                
                         <!-- or <a href="{% url 'social:begin' 'google-openidconnect' %}">continue with Google</a> -->
                         <p>
 
-                                   
+                         {% if settings.ALLOW_MEMBER_SIGNUP %}          
                         <a href="{% url 'create_account_enduser' %}">
-
-                                        <button type="button" class="btn btn-primary"> <i class="fa fa-plus"></i> Signup as a Community Member</button></a>
+                        <button type="button" class="btn btn-primary"> <i class="fa fa-plus"></i> Signup as a Community Member</button></a>
+                        {% endif %}
                         
-                        
-               <p> Already have an account? Maybe you want to login to <a href="{{settings.KILLER_APP_URI}}">{{ settings.TOP_LEFT_TITLE }}</a></p>
+                        <p> Already have an account? Maybe you want to login to <a href="{{settings.KILLER_APP_URI}}">{{settings.KILLER_APP_TITLE}}</a></p>
                                             
                         </div>
                 
@@ -69,7 +68,7 @@
                             </br><br>
                         
                     
-                         <p>Want your Organization to join {{ settings.TOP_LEFT_TITLE }}?
+                         <p>Want your Organization to join?
                          Contact the <a href="{{ settings.ORG_SIGNUP_CONTACT  }}"> {{settings.ORGANIZATION_TITLE }}</a> for more information.</h3>
                 
                         </div>
