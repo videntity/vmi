@@ -67,7 +67,6 @@ class IndividualIdentifier(models.Model):
                                    help_text="e.g., a country's subdivision such as a state or province.")
     value = models.CharField(max_length=250, blank=True,
                              default='', db_index=True)
-
     metadata = models.TextField(
         blank=True,
         default='',
@@ -85,20 +84,20 @@ class IndividualIdentifier(models.Model):
         return od
 
     @property
-    def doc_oidc_format_enhanced(self):
-        od = self.doc_oidc_format
-        od['country'] = self.country
-        od['subdivision'] = self.subdivision
-        od['type'] = self.type
-        return od
-
-    @property
     def region(self):
         return self.subdivision
 
     @property
     def state(self):
         return self.subdivision
+
+    @property
+    def doc_oidc_format_enhanced(self):
+        od = self.doc_oidc_format
+        od['country'] = self.country
+        od['subdivision'] = self.subdivision
+        od['type'] = self.type
+        return od
 
 
 class OrganizationIdentifier(models.Model):
@@ -174,7 +173,8 @@ class Organization(models.Model):
     subject = models.CharField(max_length=64, default=generate_subject_id(), blank=True,
                                help_text='Subject ID',
                                db_index=True)
-    picture = models.ImageField(upload_to='organization-logo/', null=True)
+    picture = models.ImageField(
+        upload_to='organization-logo/', null=True, blank=True)
 
     registration_code = models.CharField(max_length=100,
                                          default='',
@@ -198,7 +198,7 @@ class Organization(models.Model):
     addresses = models.ManyToManyField(
         Address, blank=True, related_name="organization_addresses")
 
-    member = models.ManyToManyField(
+    members = models.ManyToManyField(
         get_user_model(), blank=True, related_name='org_members',
         help_text="This field is a placeholder and is not supported in this version.")
 
@@ -215,9 +215,6 @@ class Organization(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-
-    # identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True,
-    #                                     related_name='org_identifiers')
 
     def __str__(self):
         return self.name
@@ -275,8 +272,7 @@ class OrganizationAffiliationRequest(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
-                                db_index=True, null=False,
-                                )
+                                db_index=True, null=False)
     subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject for identity token',
                                db_index=True)
@@ -306,7 +302,8 @@ class UserProfile(models.Model):
                            )
     gender_identity = models.CharField(choices=GENDER_CHOICES,
                                        max_length=64, default="", blank=True,
-                                       help_text=_('Gender Identity is not necessarily the same as birth sex.'),
+                                       help_text=_(
+                                           'Gender Identity is not necessarily the same as birth sex.'),
                                        )
     birth_date = models.DateField(blank=True, null=True)
     agree_tos = models.CharField(max_length=64, default="", blank=True,
@@ -488,6 +485,16 @@ class UserProfile(models.Model):
                 if u == self.user:
                     orgs.append(o)
         return orgs
+
+    @property
+    def memberships(self):
+        # Get the organizations for this user.
+        members = []
+        for o in Organization.objects.all():
+            for m in o.members.all():
+                if m == self.user:
+                    members.append(o.formatted_organization)
+        return members
 
 
 MFA_CHOICES = (
