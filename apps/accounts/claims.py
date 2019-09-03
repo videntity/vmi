@@ -28,12 +28,11 @@ class OrganizationAgentClaimProvider(BaseProvider):
             return None
 
 
-# TODO
-class MemberClaimProvider(BaseProvider):
+class MembershipClaimProvider(BaseProvider):
 
-    def claim_member(self):
+    def claim_memberships(self):
         try:
-            return self.user.userprofile.organization_membership
+            return self.user.userprofile.memberships
         except Exception:
             return None
 
