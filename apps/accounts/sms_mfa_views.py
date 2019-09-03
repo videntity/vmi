@@ -74,7 +74,6 @@ def mfa_code_confirm(request, uid):
 @never_cache
 @ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='POST', block=True)
 def mfa_login(request, slug=None):
-    print('ggg')
     if not slug:
         login_template_name = settings.LOGIN_TEMPLATE_PICKER['default']
         name = settings.APPLICATION_TITLE
