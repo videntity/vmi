@@ -123,6 +123,7 @@ def account_settings(request, subject=None):
             'email': user.email,
             'mobile_phone_number': up.mobile_phone_number,
             'sex': up.sex,
+            'gender_identity': up.gender_identity,
             'birth_date': up.birth_date,
             'nickname': up.nickname,
         }
