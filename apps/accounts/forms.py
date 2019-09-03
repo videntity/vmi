@@ -168,10 +168,14 @@ class AccountSettingsForm(forms.Form):
     username = forms.CharField(max_length=30)
     first_name = forms.CharField(max_length=100, label=_("First Name*"))
     last_name = forms.CharField(max_length=100, label=_("Last Name*"))
+    middle_name = forms.CharField(
+        max_length=255, label=_("Middle Name"), required=False)
     nickname = forms.CharField(max_length=100, required=False)
     email = forms.EmailField(label=_('Email'), required=False)
     sex = forms.ChoiceField(choices=SEX_CHOICES, required=False,
                             help_text="Enter sex, not gender identity.")
+    gender_identity = forms.ChoiceField(choices=GENDER_CHOICES, required=False,
+                                        help_text="Gender identity is not necessarily the same as birth sex.")
     birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=YEARS),
                                  required=False)
     required_css_class = 'required'
@@ -181,6 +185,9 @@ class AccountSettingsForm(forms.Form):
 
     def clean_last_name(self):
         return self.cleaned_data.get("last_name", "").strip().upper()
+
+    def clean_middle_name(self):
+        return self.cleaned_data.get("middle_name", "").strip().upper()
 
     def clean_nickname(self):
         return self.cleaned_data.get("nickname", "").strip().upper()
@@ -211,6 +218,10 @@ class AccountSettingsForm(forms.Form):
 
         up, created = UserProfile.objects.get_or_create(user=user)
         up.nickname = self.cleaned_data.get('nickname', "")
+        up.middle_name = self.cleaned_data.get('middle_name', "")
+        up.sex = self.cleaned_data.get('sex', ""),
+        up.gender_identity = self.cleaned_data.get('gender_identity', ""),
+        up.birth_date = self.cleaned_data.get('birth_date', ""),
         up.save()
         return user
 
