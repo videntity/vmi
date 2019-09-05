@@ -50,17 +50,17 @@ class StaffSignupForm(forms.Form):
         org_slug = self.cleaned_data["org_slug"]
         email = self.cleaned_data.get('email', "")
         org = Organization.objects.get(slug=org_slug)
-        domain_to_match = org.domain
+        domains_to_match = org.domain.split()
 
-        if domain_to_match:
+        if domains_to_match:
             email_parts = email.split("@")
             # Get the part after the @
             supplied_domain = email_parts[-1]
-            if supplied_domain != domain_to_match:
+            if supplied_domain not in domains_to_match:
                 raise forms.ValidationError(
                     _("""You must use your
                        company or organization
-                       supplied email."""))
+                       supplied email. Valid domains are %s.""" % (domains_to_match)))
 
         if password1 != password2:
             raise forms.ValidationError(
