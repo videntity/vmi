@@ -17,6 +17,7 @@ from .emails import (send_password_reset_url_via_email,
                      mfa_via_email,
                      send_new_org_account_approval_email)
 from .subject_generator import generate_subject_id
+from .password_recovery_passphrase_generator import generate_password_recovery_phrase
 from collections import OrderedDict
 from ..ial.models import IdentityAssuranceLevelDocumentation
 
@@ -24,7 +25,6 @@ from ..ial.models import IdentityAssuranceLevelDocumentation
 # Copyright Videntity Systems Inc.
 
 __author__ = "Alan Viars"
-
 
 SEX_CHOICES = (('female', 'Female'), ('male', 'Male'), ('', 'Unspecified'))
 
@@ -166,6 +166,18 @@ class Address(models.Model):
         return od
 
 
+class PersonToPersonRelationship(models.Model):
+    grantor = models.ForeignKey(
+        get_user_model(), on_delete=models.PROTECT, null=True,
+        related_name="persontoperson_grantor")
+    grantee = models.ForeignKey(
+        get_user_model(), on_delete=models.PROTECT, null=True,
+        related_name="persontoperson_grantee")
+    description = models.TextField(blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+
+
 class Organization(models.Model):
     name = models.CharField(max_length=250, default='', blank=True)
     slug = models.SlugField(max_length=250, blank=True, default='',
@@ -183,8 +195,8 @@ class Organization(models.Model):
         max_length=512,
         blank=True,
         default='',
-        verbose_name='Email Domain',
-        help_text="If populated, restrict email registration to this address.")
+        verbose_name='Email Domain(s)',
+        help_text="A list of domains separated by white space. If populated, restrict email registration to these domains.")
     website = models.CharField(max_length=512, blank=True, default='')
     phone_number = models.CharField(max_length=15, blank=True, default='')
     agree_tos = models.CharField(max_length=64, default="", blank=True,
@@ -279,6 +291,8 @@ class UserProfile(models.Model):
     middle_name = models.CharField(max_length=255, default='', blank=True,
                                    help_text='Middle Name',)
     picture = models.ImageField(upload_to='profile-picture/', null=True)
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
+                                db_index=True, null=False)
 
     nickname = models.CharField(
         max_length=255,
@@ -289,6 +303,11 @@ class UserProfile(models.Model):
     phone_verified = models.BooleanField(default=False, blank=True)
     mobile_phone_number = PhoneNumberField(blank=True, default="",
                                            help_text=_('US numbers only.'),)
+    password_recovery_passphrase = models.TextField(default="", blank=True)
+    password_recovery_passphrase_hash = models.TextField(
+        default="", blank=True)
+    public_key = models.TextField(default="", blank=True)
+    private_key = models.TextField(default="", blank=True)
 
     mobile_phone_number_verified = models.BooleanField(
         blank=True, default=False)
@@ -318,6 +337,8 @@ class UserProfile(models.Model):
             self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
                                                number_1=self.mobile_phone_number,
                                                number_2=self.four_digit_suffix)
+        if not self.password_recovery_passphrase:
+            self.password_recovery_passphrase = generate_password_recovery_phrase()
 
         if commit:
             super(UserProfile, self).save(**kwargs)
