@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  web:
+    build:
+            context: ../
+            dockerfile: .deployment_staging/Dockerfile
+    command: python3 manage.py runserver_plus --cert-file /tmp/cert.crt 0.0.0.0:8000
+    environment:
+      - DATABASES_CUSTOM=postgres://postgres:T00manysecrets@test-staging.cecenlbri17c.us-east-1.rds.amazonaws.com:5432
+      - OAUTHLIB_INSECURE_TRANSPORT=true
+      - OIDC_ISSUER=http://localhost:8000
+      - ALLOWED_HOSTS=localhost
+    volumes:
+      - ../:/code
+    ports:
+      - "8000:8000"
