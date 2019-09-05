@@ -177,6 +177,9 @@ class PersonToPersonRelationship(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
+    class Meta:
+        unique_together = [['grantor', 'grantee']]
+
 
 class Organization(models.Model):
     name = models.CharField(max_length=250, default='', blank=True)
