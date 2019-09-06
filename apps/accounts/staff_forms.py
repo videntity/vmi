@@ -7,7 +7,6 @@ from django.contrib.auth.password_validation import validate_password
 from .models import UserProfile, create_activation_key, Organization, OrganizationAffiliationRequest
 from django.conf import settings
 from django.utils.safestring import mark_safe
-from .models import SEX_CHOICES, GENDER_CHOICES
 
 # Copyright Videntity Systems Inc.
 YEARS = [x for x in range(1901, 2000)]
@@ -23,21 +22,15 @@ class StaffSignupForm(forms.Form):
                              help_text="You must register using this email domain.")
     username = forms.CharField(max_length=30, label=_("User name*"))
     email = forms.EmailField(max_length=150, label=_("Email*"), required=True)
-    first_name = forms.CharField(max_length=100, label=_("First Name*"))
-    last_name = forms.CharField(max_length=100, label=_("Last Name*"))
-    miiddle_name = forms.CharField(
-        max_length=100, label=_("Middle Name"), required=False)
-    nickname = forms.CharField(
-        max_length=100, label=_("Nickname"), required=False)
     mobile_phone_number = forms.CharField(required=True,
                                           label=_("Mobile Phone Number*"),
                                           max_length=10)
-    sex = forms.ChoiceField(choices=SEX_CHOICES, required=False,
-                            help_text="Enter sex, not gender identity.")
-    gender_identity = forms.ChoiceField(choices=GENDER_CHOICES, required=False,
-                                        help_text="Gender identity is not necessarily the same as birth sex.")
-    birth_date = forms.DateField(
-        label='Birth Date', widget=forms.SelectDateWidget(years=YEARS), required=False)
+    first_name = forms.CharField(max_length=100, label=_("First Name*"))
+    last_name = forms.CharField(max_length=100, label=_("Last Name*"))
+    middle_name = forms.CharField(
+        max_length=100, label=_("Middle Name"), required=False)
+    nickname = forms.CharField(
+        max_length=100, label=_("Nickname"), required=False)
 
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password*"))
@@ -57,17 +50,17 @@ class StaffSignupForm(forms.Form):
         org_slug = self.cleaned_data["org_slug"]
         email = self.cleaned_data.get('email', "")
         org = Organization.objects.get(slug=org_slug)
-        domain_to_match = org.domain
+        domains_to_match = org.domain.split()
 
-        if domain_to_match:
+        if domains_to_match:
             email_parts = email.split("@")
             # Get the part after the @
             supplied_domain = email_parts[-1]
-            if supplied_domain != domain_to_match:
+            if supplied_domain not in domains_to_match:
                 raise forms.ValidationError(
                     _("""You must use your
                        company or organization
-                       supplied email."""))
+                       supplied email. Valid domains are %s.""" % (domains_to_match)))
 
         if password1 != password2:
             raise forms.ValidationError(
@@ -114,7 +107,7 @@ class StaffSignupForm(forms.Form):
         return self.cleaned_data.get("last_name", "").strip().upper()
 
     def clean_middle_name(self):
-        return self.cleaned_data.get("last_name", "").strip().upper()
+        return self.cleaned_data.get("middle_name", "").strip().upper()
 
     def clean_nickname(self):
         return self.cleaned_data.get("nickname", "").strip().upper()
@@ -135,8 +128,6 @@ class StaffSignupForm(forms.Form):
             nickname=self.cleaned_data.get('nickname', ''),
             middle_name=self.cleaned_data.get('middle_name', ""),
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
-            sex=self.cleaned_data.get('sex', ""),
-            gender_identity=self.cleaned_data.get('gender_identity', ""),
             agree_tos=settings.CURRENT_TOS_VERSION,
             agree_privacy_policy=settings.CURRENT_PP_VERSION)
         up.save()
