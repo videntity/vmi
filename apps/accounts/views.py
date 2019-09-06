@@ -100,10 +100,11 @@ def account_settings(request, subject=None):
             # update the user profile
             up.nickname = data['nickname']
             up.sex = data['sex']
+            up.gender_identity = data['gender_identity']
             up.birth_date = data['birth_date']
             up.save()
             messages.success(request,
-                             _('Pro settings have been updated.'))
+                             _('Your account settings have been updated.'))
             if subject:
                 return HttpResponseRedirect(reverse('account_settings_subject', args=(subject,)))
             return HttpResponseRedirect(reverse('account_settings'))
@@ -122,6 +123,7 @@ def account_settings(request, subject=None):
             'email': user.email,
             'mobile_phone_number': up.mobile_phone_number,
             'sex': up.sex,
+            'gender_identity': up.gender_identity,
             'birth_date': up.birth_date,
             'nickname': up.nickname,
         }
