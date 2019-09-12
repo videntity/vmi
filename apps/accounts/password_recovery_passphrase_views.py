@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from .models import UserProfile, ValidPasswordResetKey
 from django.conf import settings
 from .password_recovery_passphrase_generator import generate_password_recovery_phrase, passphrase_hash
-from .password_recovery_passphrase_forms import RecoverPassowrdWithPassphraseForm
+from .password_recovery_passphrase_forms import RecoverPasswordWithPassphraseForm
 from django.views.decorators.cache import never_cache
 from ratelimit.decorators import ratelimit
 from .forms import PasswordResetForm
@@ -53,7 +53,7 @@ def generate_password_recovery_passphrase(request):
 @ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='POST', block=True)
 def reset_password_with_recovery_passphrase(request):
     name = _('Reset Your Password With Your Recovery Passphrase')
-    form = RecoverPassowrdWithPassphraseForm(request.POST)
+    form = RecoverPasswordWithPassphraseForm(request.POST)
     if request.method == 'POST':
         if form.is_valid():
             username = form.cleaned_data['username']
@@ -67,7 +67,7 @@ def reset_password_with_recovery_passphrase(request):
                           {'form': form, 'name': name})
     # this is a GET
     return render(request, 'generic/bootstrapform.html',
-                  {'form': RecoverPassowrdWithPassphraseForm(),
+                  {'form': RecoverPasswordWithPassphraseForm(),
                    'name': name})
 
 

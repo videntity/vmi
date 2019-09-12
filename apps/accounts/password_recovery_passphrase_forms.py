@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 __author__ = "Alan Viars"
 
 
-class RecoverPassowrdWithPassphraseForm(forms.Form):
+class RecoverPasswordWithPassphraseForm(forms.Form):
     username = forms.CharField(max_length=150, label=_('Username'),
                                widget=forms.TextInput(attrs={'placeholder': 'Your username*'}))
     passphrase = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Your Passphrase*'}), max_length=512,
