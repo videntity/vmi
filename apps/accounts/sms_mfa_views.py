@@ -112,4 +112,4 @@ def mfa_login(request, slug=None):
         else:
             return render(request, login_template_name, {'form': form, 'name': name})
     # this is a GET
-    return render(request, login_template_name, {'form': LoginForm(), 'name': name})
+    return render(request, login_template_name, {'form': LoginForm(initial=request.GET), 'name': name})
