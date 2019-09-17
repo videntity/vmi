@@ -20,7 +20,10 @@ from .organization_views import display_organization, remove_agent_from_organiza
 from .phone_views import mobile_phone, verify_mobile_phone_number
 from .identifier_views import (display_individual_identifiers, add_new_individual_identifier,
                                delete_individual_identifier, edit_individual_identifier)
-
+from .password_recovery_passphrase_views import (password_recovery_passphrase_home,
+                                                 generate_password_recovery_passphrase,
+                                                 reset_password_with_recovery_passphrase,
+                                                 reset_password_after_passphrase_verified)
 from .address_views import (display_addresses, add_new_address,
                             delete_address, edit_address)
 
@@ -32,6 +35,18 @@ __author__ = "Alan Viars"
 
 urlpatterns = [
     url(r'^logout', mylogout, name='mylogout'),
+
+    url(r'^password-recovery-passphrase/$', password_recovery_passphrase_home,
+        name='password_recovery_passphrase_home'),
+    url(r'^password-recovery-passphrase/generate', generate_password_recovery_passphrase,
+        name='generate_password_recovery_passphrase'),
+    url(r'^password-recovery-passphrase/reset-password$', reset_password_with_recovery_passphrase,
+        name='reset_password_with_recovery_passphrase'),
+    url(r'^password-recovery-passphrase/reset-after-passphrase-verified/(?P<username>[^/]+)/(?P<reset_password_key>[^/]+)/$',
+        reset_password_after_passphrase_verified, name='reset_password_after_passphrase_verified'),
+
+
+    url(r'^p', mylogout, name='mylogout'),
     url(r"^organization/(?P<organization_slug>[^/]+)/remove-agent/(?P<user_id>[^/]+)",
         remove_agent_from_organization,
         name='remove_agent_from_organization'),

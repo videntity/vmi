@@ -13,7 +13,7 @@
               {% include "include/messages.html" %}
               
                     <h3>Login to {{name|title}}</h3>
-                    <form method="post" action="">
+                    <form method="post" action="" name="loginform">
                      {% csrf_token %}
                             {% load bootstrap %}
           {{ form|bootstrap }}
@@ -26,7 +26,8 @@
                         </div>
                         <div class="form-group">
 
-                            <a href="{% url 'forgot_password' %}" class="ForgetPwd" value="Login">Forget Password?</a>
+                            Forgot your password? <a href="{% url 'forgot_password' %}" class="ForgetPwd" value="Login">Recover with email</a> or
+                            <a href="{% url 'reset_password_with_recovery_passphrase' %}" class="ForgetPwd" value="Login">with a passphrase </a>
                         </div>
                     </form>
                 </div>
@@ -39,4 +40,13 @@
 
     {% block ExtraJSFoot %}
 	<script type="application/javascript">$("#id_username").focus();</script>
+    
+    <script type="application/javascript">
+    var empt = document.forms["loginform"]["username"].value;
+    if (empt != "")
+        {
+        $("#id_password").focus();
+        }
+    </script>
+    
 	{% endblock %}

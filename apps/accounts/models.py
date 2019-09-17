@@ -17,7 +17,6 @@ from .emails import (send_password_reset_url_via_email,
                      mfa_via_email,
                      send_new_org_account_approval_email)
 from .subject_generator import generate_subject_id
-from .password_recovery_passphrase_generator import generate_password_recovery_phrase
 from collections import OrderedDict
 from ..ial.models import IdentityAssuranceLevelDocumentation
 
@@ -370,9 +369,6 @@ class UserProfile(models.Model):
             self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
                                                number_1=self.mobile_phone_number,
                                                number_2=self.four_digit_suffix)
-        if not self.password_recovery_passphrase:
-            self.password_recovery_passphrase = generate_password_recovery_phrase()
-
         if commit:
             super(UserProfile, self).save(**kwargs)
 
@@ -713,7 +709,8 @@ class ValidPasswordResetKey(models.Model):
         self.expires = expires
 
         # send an email with reset url
-        send_password_reset_url_via_email(self.user, self.reset_password_key)
+        if self.user.email:
+            send_password_reset_url_via_email(self.user, self.reset_password_key)
         if commit:
             super(ValidPasswordResetKey, self).save(**kwargs)
 
