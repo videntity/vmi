@@ -5,7 +5,7 @@ from vmi.ssmenv import EC2ParameterStore
 import dotenv
 
 if __name__ == '__main__':
-    dotenv.read_dotenv()
+    dotenv.read_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
     try:
         parameter_store = EC2ParameterStore(region_name="us-east-1")
         # Automate env (dev)
