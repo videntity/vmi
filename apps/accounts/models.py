@@ -53,7 +53,9 @@ GENDER_CHOICES = (('', 'Not specified'),
 class IndividualIdentifier(models.Model):
     user = models.ForeignKey(
         get_user_model(), on_delete=models.PROTECT, null=True)
-    name = models.SlugField(max_length=250, blank=True,
+    type = models.CharField(choices=settings.INDIVIDUAL_ID_TYPE_CHOICES,
+                            max_length=255, blank=True, default='', db_index=True)
+    name = models.SlugField(max_length=255, blank=True,
                             default='', db_index=True)
     # ISO 3166-1
     country = models.CharField(max_length=2, blank=True,
@@ -64,13 +66,16 @@ class IndividualIdentifier(models.Model):
     subdivision = models.CharField(max_length=2, blank=True, default='',
                                    verbose_name="State",
                                    help_text="e.g., a country's subdivision such as a state or province.")
+
     value = models.CharField(max_length=250, blank=True,
                              default='', db_index=True)
+
+    uri = models.TextField(blank=True, default='', db_index=True)
+
     metadata = models.TextField(
         blank=True,
         default='',
         help_text="JSON Object")
-    type = models.CharField(max_length=16, blank=True, default='')
 
     def __str__(self):
         return self.value
@@ -96,7 +101,15 @@ class IndividualIdentifier(models.Model):
         od['country'] = self.country
         od['subdivision'] = self.subdivision
         od['type'] = self.type
+        od['uri'] = self.uri
         return od
+
+    def save(self, commit=True, *args, **kwargs):
+        self.slug = slugify(self.name)
+        if commit:
+            if not self.name:
+                self.name = self.type
+            super(IndividualIdentifier, self).save(*args, **kwargs)
 
 
 class OrganizationIdentifier(models.Model):
@@ -247,6 +260,19 @@ class Organization(models.Model):
         od['picture'] = self.picture_url
         od['website'] = self.website
         od['phone_number'] = self.phone_number
+        od['point_of_contact'] = self.point_of_contact_dict
+        return od
+
+    @property
+    def point_of_contact_dict(self):
+        od = OrderedDict()
+        self.point_of_contact
+        up = UserProfile.objects.get(user=self.point_of_contact)
+        od['first_name'] = self.point_of_contact.first_name
+        od['last_name'] = self.point_of_contact.last_name
+        od['phone_number'] = up.phone_number
+        od['email'] = self.point_of_contact.email
+        od['sub'] = up.sub
         return od
 
     @property
@@ -680,7 +706,8 @@ class ValidPasswordResetKey(models.Model):
 
         # send an email with reset url
         if self.user.email:
-            send_password_reset_url_via_email(self.user, self.reset_password_key)
+            send_password_reset_url_via_email(
+                self.user, self.reset_password_key)
         if commit:
             super(ValidPasswordResetKey, self).save(**kwargs)
 

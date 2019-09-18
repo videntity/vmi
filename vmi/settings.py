@@ -470,3 +470,8 @@ LOGIN_RATELIMIT = env('LOGIN_RATELIMIT', '100/h')
 # Change these for production
 PASSPHRASE_SALT = env('PASSPHRASE_SALT', "FA6F747468657265616C706570706573")
 PASSPHRASE_ITERATIONS = int(env('PASSPHRASE_ITERATIONS', "200"))
+# These are added for portability to other cloud platforms.
+# Note that instead these values can be passed as an IAM role.
+# See https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', "set-your-own-id")
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', "set-your-own-key")
