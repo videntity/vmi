@@ -2,9 +2,10 @@
 import os
 import sys
 from vmi.ssmenv import EC2ParameterStore
+# import dotenv
 
 if __name__ == '__main__':
-
+    # dotenv.read_dotenv()
     try:
         parameter_store = EC2ParameterStore(region_name="us-east-1")
         # Automate env (dev)

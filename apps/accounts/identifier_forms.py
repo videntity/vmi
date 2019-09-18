@@ -9,4 +9,4 @@ class IndividualIdentifierForm(forms.ModelForm):
 
     class Meta:
         model = IndividualIdentifier
-        fields = ['name', 'value', 'type']
+        fields = ['type', 'value', 'country', 'subdivision', 'uri']

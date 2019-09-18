@@ -63,7 +63,9 @@
             <li><a href="{% url 'mfa-management' %}"> <i class="fa fa-key"></i> Multi-factor Authentication</a></li>
             <li><a href="{% url 'oauth2_provider:authorized-token-list' %}"> <i class="fa fa-legal"></i> Authorized Applications</a>
 		        <li><a href="{% url 'oauth2_provider:list' %}">  <i class="fa fa-key"></i> Developer Application Registration</a>
-            <li><a href="{% url 'reset_password' %}"><i class="fa fa-sync"></i> Change Password</a></li>
+            <li><a href="{% url 'password_recovery_passphrase_home' %}">  <i class="fa fa-key"></i> Password Recovery Passphrase</a>
+            
+            <li><a href="{% url 'reset_password' %}"><i class="fa fa-key"></i> Change Password</a></li>
             <li><a href="{% url 'delete_account' %}"><i class="fa fa-remove"></i> Delete Account</a></li>
           </ul>
         </li>

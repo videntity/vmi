@@ -101,6 +101,7 @@ def account_settings(request, subject=None):
             up.nickname = data['nickname']
             up.sex = data['sex']
             up.gender_identity = data['gender_identity']
+            up.middle_name = data['middle_name']
             up.birth_date = data['birth_date']
             up.save()
             messages.success(request,
@@ -126,6 +127,7 @@ def account_settings(request, subject=None):
             'gender_identity': up.gender_identity,
             'birth_date': up.birth_date,
             'nickname': up.nickname,
+            'middle_name': up.middle_name,
         }
     )
     return render(request,
