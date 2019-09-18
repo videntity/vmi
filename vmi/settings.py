@@ -367,7 +367,7 @@ INDIVIDUAL_ID_TYPE_CHOICES = (
     ('MEDICAID_ID', 'Medicaid ID Number'),
     ('MEDICARE_HICN', 'Medicare HICN (Legacy)'),
     ('MEDICARE_ID', 'Medicare ID Number'),
-    ('INDURANCE_ID', 'Insurance ID Number'),
+    ('INSURANCE_ID', 'Insurance ID Number'),
     ('IHE_ID', 'Health Information Exchange ID'),
     ('NPI', 'National Provider Identifier'),
     ('UHI', 'Universal Health Identifier'),
