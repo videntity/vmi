@@ -16,6 +16,9 @@ User = get_user_model()
 agree_tos_label = mark_safe(
     'Do you agree to the <a href="%s">terms of service</a>?' % (settings.TOS_URI))
 
+attest_training_completed_label = mark_safe(
+    'Yes, I attest I have completed the <a href=%s>training</a> and will abide by the code of conduct.' % (settings.TRAINING_URI))
+
 
 class StaffSignupForm(forms.Form):
     domain = forms.CharField(disabled=True, max_length=512, required=False,
@@ -37,6 +40,8 @@ class StaffSignupForm(forms.Form):
     password2 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password (again)*"))
     agree_tos = forms.BooleanField(label=_(agree_tos_label))
+    attest_training_completed = forms.BooleanField(
+        label=_(attest_training_completed_label))
     org_slug = forms.CharField(widget=forms.HiddenInput(),
                                max_length=128, required=True)
     domain = forms.CharField(widget=forms.HiddenInput(),
@@ -112,6 +117,14 @@ class StaffSignupForm(forms.Form):
     def clean_nickname(self):
         return self.cleaned_data.get("nickname", "").strip().upper()
 
+    def clean_attest_training_completed(self):
+        attest_training_completed = self.cleaned_data.get(
+            "attest_training_completed", False)
+        if not attest_training_completed:
+            raise forms.ValidationError(
+                _('You must complete the training before completing this form.'))
+        return attest_training_completed
+
     def save(self):
 
         new_user = User.objects.create_user(
@@ -129,6 +142,7 @@ class StaffSignupForm(forms.Form):
             middle_name=self.cleaned_data.get('middle_name', ""),
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
             agree_tos=settings.CURRENT_TOS_VERSION,
+            attest_training_completed=True,
             agree_privacy_policy=settings.CURRENT_PP_VERSION)
         up.save()
         organization_slug = self.cleaned_data['org_slug']
