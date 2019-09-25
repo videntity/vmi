@@ -282,6 +282,8 @@ POLICY_URI = env(
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
 TOS_URI = env('DJANGO_TOS_URI',
               'http://sharemy.health/terms-of-service1.0.html')
+TRAINING_URI = env('DJANGO_TRAINING_URI',
+                   'http://sharemy.health/training1.0.html')
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 EXPLAINATION_LINE = ('This is an instance of Verify My Identity, \
                      an open source OpenID Connect Identity Provider.')
@@ -472,6 +474,7 @@ PASSPHRASE_SALT = env('PASSPHRASE_SALT', "FA6F747468657265616C706570706573")
 PASSPHRASE_ITERATIONS = int(env('PASSPHRASE_ITERATIONS', "200"))
 # These are added for portability to other cloud platforms.
 # Note that instead these values can be passed as an IAM role.
-# See https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html
+# See
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', "set-your-own-id")
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', "set-your-own-key")

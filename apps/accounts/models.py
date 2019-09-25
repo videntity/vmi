@@ -357,6 +357,10 @@ class UserProfile(models.Model):
                                  help_text=_('Do you agree to the terms and conditions?'))
     agree_privacy_policy = models.CharField(max_length=64, default="", blank=True,
                                             help_text=_('Do you agree to the privacy policy?'))
+    attest_training_completed = models.BooleanField(default=False, blank=True,
+                                                    help_text=_("""Yes, I attest that I have completed the
+                                                        training for this system and will abide by
+                                                        the code of conduct."""))
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
