@@ -478,3 +478,7 @@ PASSPHRASE_ITERATIONS = int(env('PASSPHRASE_ITERATIONS', "200"))
 # https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', "set-your-own-id")
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', "set-your-own-key")
+AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION', 'us-east-1')
+
+# Blank means skip EC2.
+EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES = env('EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES', "EC2_PARAMSTORE")
