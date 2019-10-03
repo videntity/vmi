@@ -7,6 +7,7 @@ from .views import (account_settings,
                     reset_password, delete_account, password_reset_email_verified)
 
 from .staff_views import (create_org_account,
+                          find_org_to_create_account,
                           approve_org_affiliation,
                           deny_org_affiliation,
                           request_org_affiliation)
@@ -61,8 +62,7 @@ urlpatterns = [
         account_settings, name='account_settings_subject'),
     url(r'^settings', account_settings, name='account_settings'),
     url(r'^delete', delete_account, name='delete_account'),
-    url(r'^login/(?P<slug>[^/]+)', mfa_login, name='mfa_login_with_brand'),
-    url(r'^login', mfa_login, name='mfa_login'),
+    url(r'^login/(?P<slug>[^/]+)?', mfa_login, name='mfa_login'),
     url(r'^upload-profile-picture/(?P<subject>[^/]+)',
         upload_profile_picture, name='upload_profile_picture_subject'),
     url(r'^upload-profile-picture', upload_profile_picture,
@@ -79,6 +79,8 @@ urlpatterns = [
         mfa_code_confirm, name='mfa_code_confirm'),
 
     # Organization related
+    url(r'^find-org-to-create-account', find_org_to_create_account, name='find_org_to_create_account'),
+
     url(r'^create-org-account/(?P<organization_slug>[^/]+)/',
         create_org_account, name='create_org_account'),
 

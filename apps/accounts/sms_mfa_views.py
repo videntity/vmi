@@ -82,10 +82,10 @@ def mfa_login(request, slug=None):
         name = slug.replace('-', ' ')
 
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+        login_form = LoginForm(request.POST)
+        if login_form.is_valid():
+            username = login_form.cleaned_data['username']
+            password = login_form.cleaned_data['password']
             user = authenticate(username=username, password=password)
 
             if user is not None:
@@ -105,11 +105,11 @@ def mfa_login(request, slug=None):
                     messages.error(request,
                                    _('Please check your email for a link to '
                                      'activate your account.'))
-                    return render(request, login_template_name, {'form': form})
+                    return render(request, login_template_name, {'login_form': login_form})
             else:
                 messages.error(request, _('Invalid username or password.'))
-                return render(request, login_template_name, {'form': form, 'name': name})
+                return render(request, login_template_name, {'login_form': login_form, 'name': name})
         else:
-            return render(request, login_template_name, {'form': form, 'name': name})
+            return render(request, login_template_name, {'login_form': login_form, 'name': name})
     # this is a GET
-    return render(request, login_template_name, {'form': LoginForm(initial=request.GET), 'name': name})
+    return render(request, login_template_name, {'login_form': LoginForm(initial=request.GET), 'name': name})

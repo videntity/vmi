@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
 {% block Content %}
-<div class="container">
-    <form action="" method="post">
-        {% csrf_token %}
-        <label for="name">Name Your Key (registered at: {{ created_at }}): </label>
-        <input id="name" type="text" name="name" value="{{ name }}">
-        <input id="id" type="hidden" name="id" value="{{ id }}">
-        <input type="submit" value="OK" class="btn btn-primary">
-    </form>
-</div>
+            <div class="row">
+                <div class="col">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <label for="name">Name Your Key (registered at: {{ created_at }}): </label>
+                        <input id="name" type="text" name="name" value="{{ name }}">
+                        <input id="id" type="hidden" name="id" value="{{ id }}">
+                        <input type="submit" value="OK" class="btn btn-primary">
+                    </form>
+                </div>
+            </div>
 {% endblock %}

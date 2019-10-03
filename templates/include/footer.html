@@ -1,21 +1,41 @@
 {% load static %}
-<div class="row container-fluid">
-    <br><br>
-    <div class="row footer-wrapper panel-footer">
-
-        <div class="text-center row col-lg-12 h4 " >
-          <a target="_blank" href="https://github.com/TransparentHealth/vmi/issues">Report Bugs</a> |
-            <a target="_blank"  href="{{settings.TOS_URI}}">{{settings.TOS_TITLE}}</a> |
-            <a target="_blank"  href="{{settings.POLICY_URI}}">{{settings.POLICY_TITLE}}</a> |
-            <a target="_blank" href="https://github.com/TransparentHealth/vmi">Open Source</a>
+<div id="footer" class="container-fluid mt-5 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <nav id="footer-nav" class="navbar navbar-expand mb-5">
+                    <div class="row mx-auto">
+                        <div class="col-auto">
+                            <a href="https://github.com/TransparentHealth/vmi/issues" target="_blank" rel="noopener">
+                                Report Bugs
+                            </a>
+                        </div>
+                        |
+                        <div class="col-auto">
+                            <a  href="{{settings.TOS_URI}}" target="_blank" rel="noopener">
+                                {{settings.TOS_TITLE}}
+                            </a>
+                        </div>
+                        |
+                        <div class="col-auto">
+                            <a  href="{{settings.POLICY_URI}}" target="_blank" rel="noopener">
+                                {{settings.POLICY_TITLE}}
+                            </a>
+                        </div>
+                        |
+                        <div class="col-auto">
+                            <a href="https://github.com/TransparentHealth/vmi" target="_blank" rel="noopener">
+                                Open Source
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+                <div id="footer-info" class="row">
+                    <div class="col">
+                        {{ settings.APPLICATION_TITLE }} is operated by {{settings.ORGANIZATION_TITLE }}. {{settings.DISCLOSURE_TEXT}}
+                    </div>
+                </div>
+            </div>
         </div>
-
-         <div class="row-container-fluid" >
-            <p class="row-container-fluid footer-small well">
-            {{ settings.APPLICATION_TITLE }} is operated by {{settings.ORGANIZATION_TITLE }}. {{settings.DISCLOSURE_TEXT}}
-            </p>
-         </div>
-    </div> <!-- /.footer-wrapper -->
-        
-
-</div><!-- /.container-fluid -->
+    </div>
+</div>

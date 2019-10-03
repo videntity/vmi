@@ -1,38 +1,18 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li class="active"><a href="/">Home</a></li>
+                    </ol>
+{% endblock %}
 {% block Content %}
-
-<div class="container">
-
-    <div class="row">
-        <div class="col-lg-9">
-	      <ol class="breadcrumb">
-	        <li class="active"><a href="/">Home</a></li>
-	      </ol>
-        </div>
-     </div>
-
-
-    <div class="row">
-      <div class="col-lg-9">
-        {% include "include/messages.html" %}
-      </div>
-    </div>
-
- <div class="col-lg-9 well">
-    <div class="row text-center">
-        <div class="col-lg-9">
-
-    <a href="{% url 'user_search' %}"><button type="button" class="btn btn-primary">User Search</button></a>
- 
-    
-	    </div>
-		
-    </div> <!-- /.row -->
- </div> <!-- /.well -->
-</div><!-- /.container -->
-
-
+            <div class="row">
+                <div class="col">
+                    <a href="{% url 'user_search' %}">
+                        <button type="button" class="btn btn-primary">User Search</button>
+                    </a>
+                </div>
+            </div><!-- /.row -->
 {% endblock %}
 

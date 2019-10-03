@@ -1,83 +1,61 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li ><a href="/">Home</a></li>
+                        <li ><a href="{% url 'user_search' %}">Search</a></li>
+                        <li class="active"><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
+                    </ol>
+{% endblock %}
 {% block Content %}
 
-<div class="container">
-
-    <div class="row">
-        <div class="col-lg-12">
-	      <ol class="breadcrumb">
-	        <li ><a href="/">Home</a></li>
-         <li ><a href="{% url 'user_search' %}">Search</a></li>
-          <li class="active"><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
-	      </ol>
-        </div>
-     </div>
-
-    <div class="row">
-      <div class="col-lg-10">
-        {% include "include/messages.html" %}
-      </div>
-    </div>
-
-
-        <div style="width:300px">
-        <a href="{% url 'upload_profile_picture_subject' user.userprofile.subject %}"><img src="{{user.userprofile.picture_url}}" alt="image" style="max-width:100%";/></a>    
-        </div>
-
-
-       <p>{{user.userprofile}}</p>
-       <p>Account Number: {{user.userprofile.subject}}</p>
-       <p>Birthdate: {{user.userprofile.birthdate}}</p>
-       <p>Gender: {{user.userprofile.gender}}</p>
-       <p>Phone: {{user.userprofile.mobile_phone_number|default:"--"}}</p>
-       
-       
-       <p>Identity Level: {{user.userprofile.ial}}
-       
-       
-       {% if user.userprofile.ial == '1' %}
-       (<a href="{% url 'inperson_id_verify' user.userprofile.subject|default:"None" %}">
-    Verify Identity of {{user.userprofile}}
-       </a>)
-       {% elif user.userprofile.ial == '2' %}
-        (<a href="{% url 'ial_two_to_one_downgrade' user.userprofile.subject|default:"None" %}">
-       Downgrade Identity Level from 2-->1
-       </a>)
-        {% endif %}
-       </p>
-       
-       <p>
-         {% if user.userprofile.ial == '1' %}
-              <a href="{% url 'inperson_id_verify' user.userprofile.subject|default:"None" %}">
-     <button type="button" class="btn btn-warning"> Verify Identity </button> 
-       </a> 
-       
-       
-       {% endif %}
-       <a href="{% url 'account_settings_subject' user.userprofile.subject|default:"None" %}">
-     <button type="button" class="btn btn-default"> Add/Edit Basic Profile Information </button> 
-       </a> 
-        
-        
-        <a href="{% url 'display_addresses_subject' user.userprofile.subject|default:"None" %}">
-     <button type="button" class="btn btn-default"> Add/Edit/Delete Addresses </button> 
-
-       </a>
-        </p>
- 
-        <p>
-        <a href="{% url 'display_individual_identifiers_subject' user.userprofile.subject|default:"None" %}">
-    <button type="button" class="btn btn-default"> Add/Edit/Delete Identifiers </button> 
-       </a>
-        </p>
-	   
-   
-    
-    
-</div><!-- /.container -->
-
+            <div class="row">
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <a href="{% url 'upload_profile_picture_subject' user.userprofile.subject %}">
+                        <img src="{{user.userprofile.picture_url}}" alt="image" style="max-width:100%";/>
+                    </a>
+                </div>
+                <div class="col">
+                    <p>{{user.userprofile}}</p>
+                    <p>Account Number: {{user.userprofile.subject}}</p>
+                    <p>Birthdate: {{user.userprofile.birthdate}}</p>
+                    <p>Gender: {{user.userprofile.gender}}</p>
+                    <p>Phone: {{user.userprofile.mobile_phone_number|default:"--"}}</p>
+                    <p>
+                        Identity Level: {{user.userprofile.ial}}
+                        {% if user.userprofile.ial == '1' %}
+                            (<a href="{% url 'inperson_id_verify' user.userprofile.subject|default:'None' %}">Verify Identity of {{user.userprofile}}</a>)
+                        {% elif user.userprofile.ial == '2' %}
+                            (<a href="{% url 'ial_two_to_one_downgrade' user.userprofile.subject|default:'None' %}">Downgrade Identity Level from 2→1</a>)
+                        {% endif %}
+                    </p>
+                    <div class="row mt-2">
+                        {% if user.userprofile.ial == '1' %}
+                        <div class="col my-2">
+                            <a href="{% url 'inperson_id_verify' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-warning">Verify Identity</button>
+                            </a>
+                        </div>
+                        {% endif %}
+                        <div class="col my-2">
+                            <a href="{% url 'account_settings_subject' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-secondary">Add/Edit Basic Profile Information</button>
+                            </a>
+                        </div>
+                        <div class="col my-2">
+                            <a href="{% url 'display_addresses_subject' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-secondary">Add/Edit/Delete Addresses</button>
+                            </a>
+                        </div>
+                        <div class="col my-2">
+                            <a href="{% url 'display_individual_identifiers_subject' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-secondary">Add/Edit/Delete Identifiers</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 {% endblock %}
 

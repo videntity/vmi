@@ -1,0 +1,15 @@
+{% load i18n %}
+        <form method="POST" action="{% url 'find_org_to_create_account' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <select name="organization_slug">
+                    <option value=""></option>
+                    {% for o in organizations %}
+                    <option value="{{ o.slug }}">{{ o.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-lg btn-primary" value="{% trans 'Create Account' %}" />
+            </div>
+        </form>
