@@ -8,6 +8,8 @@ from django.urls import reverse
 # from django.contrib.auth.decorators import permission_required
 from .forms import UserSearchForm
 
+from apps.accounts.sms_mfa_forms import LoginForm
+
 # Copyright Videntity Systems, Inc.
 
 
@@ -78,7 +80,7 @@ def authenticated_home(request):
 
     # User is not logged in.
     organizations = Organization.objects.all()
-    context = {'name': name, 'organizations': organizations}
+    context = {'name': name, 'organizations': organizations, 'login_form': LoginForm(initial=request.GET)}
     template = 'index.html'
     return render(request, template, context)
 
@@ -92,7 +94,6 @@ def authenticated_enduser_home(request):
         profile = UserProfile.objects.create(user=request.user)
 
     if not profile.phone_verified:
-
         msg = """Your mobile phone has not been verified.
                 <a href="%s">Verify your Mobile phone number now.</a>""" % (reverse('mobile_phone'))
         messages.warning(request, msg)

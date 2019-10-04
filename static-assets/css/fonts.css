@@ -1,0 +1,41 @@
+@font-face {
+    font-family: "Brandon Grotesque";
+    font-style: normal;
+    font-weight: bold;
+    src: url('fonts/Brandon_bld.otf');
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: normal;
+    src: url('fonts/OpenSans-Regular.ttf');
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: italic;
+    font-weight: normal;
+    src: url('fonts/OpenSans-RegularItalic.ttf');
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: bold;
+    src: url('fonts/OpenSans-Bold.ttf');
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: italic;
+    font-weight: bold;
+    src: url('fonts/OpenSans-BoldItalic.ttf');
+}
+
+@font-face {
+    font-family: "Quicksand";
+    font-style: normal;
+    font-weight: bold;
+    src: url('fonts/Quicksand-Bold.ttf');
+}

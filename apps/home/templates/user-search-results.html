@@ -1,78 +1,54 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li ><a href="/">Home</a></li>
+                        <li class="active"><a href="{% url 'user_search' %}">Search</a></li>
+                    </ol>
+{% endblock %}
 {% block Content %}
-
-<div class="container">
-
-    <div class="row">
-        <div class="col-lg-12">
-	      <ol class="breadcrumb">
-	        <li ><a href="/">Home</a></li>
-         <li class="active"><a href="{% url 'user_search' %}">Search</a></li>
-	      </ol>
-        </div>
-     </div>
-
-    <div class="row">
-      <div class="col-lg-10">
-        {% include "include/messages.html" %}
-      </div>
-    </div>
-
-<div>
- <table class="table table-dark">
-  <thead>
-    <tr>
-      <th scope="col">User</th>
-      <th scope="col">Actions</th>
-    </tr>
-  </thead>
-   <tbody>
-    {% for up in search_results %}
-            
-      <tr>
-       <th scope="row">
-        <div style="width:100px">
-        <a href="{% url 'user_profile_subject' up.subject|default:"None" %}">
-           <img src="{{up.picture_url}}" alt="no image" style="max-width:100%";/>
-        </a>    
-        </div>
-       
-       <a href="{% url 'user_profile_subject' up.subject|default:"None" %}"> 
-       {{up}}</a><br>
-       Phone: {{up.mobile_phone_number|default:"--"}}<br>
-       Identity Level: {{up.ial}}
-       </th>
-       <td>
-        
-       {% if up.ial == '1' %}
-       
-       <a href="{% url 'inperson_id_verify' up.subject|default:"None" %}">
-           <button type="button" class="btn btn-warning"> Verify Identity</button> 
-      </a> 
-     
-       
-       {% endif %}
-        
-        
-        <a href="{% url 'user_profile_subject' up.subject|default:"None" %}">
-        <button type="button" class="btn btn-default"> View Profile </button> 
-       </a>
-
-       
-       </td>
-      </tr>     
-    {% endfor %}
-           
-  </tbody>
-     </table>
-	   
-   
-    
-    
-</div><!-- /.container -->
-
-
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">User</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for up in search_results %}
+                        <tr>
+                            <td scope="row">
+                                <div class="float-left mr-2" style="width:100px">
+                                    <a href="{% url 'user_profile_subject' up.subject|default:'None' %}">
+                                        <img src="{{up.picture_url}}" alt="no image" style="max-width:100%";/>
+                                    </a>
+                                </div>
+                                <p>
+                                    <a href="{% url 'user_profile_subject' up.subject|default:'None' %}">
+                                        <strong>{{up}}</strong>
+                                    </a>
+                                    <br/>
+                                    Phone: {{up.mobile_phone_number|default:"--"}}
+                                    <br/>
+                                    Identity Level: {{up.ial}}
+                                </p>
+                            </td>
+                            <td>
+                                {% if up.ial == '1' %}
+                                <a href="{% url 'inperson_id_verify' up.subject|default:'None' %}">
+                                    <button type="button" class="btn btn-warning">Verify Identity</button>
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'user_profile_subject' up.subject|default:'None' %}">
+                                    <button type="button" class="btn btn-secondary">View Profile</button>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div><!-- /.row -->
 {% endblock %}
 

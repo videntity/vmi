@@ -84,6 +84,15 @@ def request_org_affiliation(request, organization_slug):
     return HttpResponseRedirect(reverse('home'))
 
 
+def find_org_to_create_account(request):
+    """When the user posts the find_org_to_create_account form, redirect to that page"""
+    if request.method != 'POST' or not request.POST.get('organization_slug'):
+        return HttpResponseRedirect(reverse('home'))
+    else:
+        org_slug = request.POST.get('organization_slug')
+        return HttpResponseRedirect(reverse('create_org_account', args=[org_slug]))
+
+
 def create_org_account(request, organization_slug,
                        service_title=settings.APPLICATION_TITLE):
     org = get_object_or_404(Organization, slug=organization_slug)
