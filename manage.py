@@ -1,10 +1,11 @@
 #!/usr/bin/env python
+import logging
 import os
 import sys
 from vmi.ssmenv import EC2ParameterStore
 import dotenv
 from getenv import env
-from vmi.settings import EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES
+from vmi.settings import EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES, DEBUG
 
 
 AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION', 'us-east-1')
@@ -14,6 +15,12 @@ PARAMETER_STORE_PATH = "/%s/%s/" % (VPC_ENV, VPC_APP_NAME)
 
 
 if __name__ == '__main__':
+    # (in dev)
+    logging.basicConfig(
+        level=DEBUG and 10 or 20,
+        format="{asctime} {levelname} {name}:{lineno} | {message}",
+        style="{",
+    )
 
     # Defaulting to .env
     # Get this from .env file from your local development environment or

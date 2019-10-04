@@ -13,6 +13,8 @@
 </div>
 <form method="post" action="{% url 'mfa_login' %}" name="loginform">
 	{% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}"/>
+
 	{{ login_form|bootstrap }}
 
 	<div class="form-group">
