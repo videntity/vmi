@@ -270,7 +270,7 @@ APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE', "Share My Health Accounts")
 KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Share My Health')
 KILLER_APP_URI = env('KILLER_APP_URI', 'https://app.sharemy.health')
 
-TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'Verify My Identity')
+TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity')
 
 ORGANIZATION_TITLE = env(
     'DJANGO_ORGANIZATION_TITLE',
@@ -278,7 +278,9 @@ ORGANIZATION_TITLE = env(
 ORGANIZATION_URI = env('DJANGO_ORGANIZATION_URI', 'https://abhealth.us')
 POLICY_URI = env(
     'DJANGO_POLICY_URI',
-    'http://sharemy.health/privacy-policy1.0.html')
+    # 'http://sharemy.health/privacy-policy1.0.html'    # <== 404 Not Found
+    'http://sharemy.health/terms-of-service1.0.html'
+)
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
 TOS_URI = env('DJANGO_TOS_URI',
               'http://sharemy.health/terms-of-service1.0.html')

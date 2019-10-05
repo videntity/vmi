@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -14,6 +15,8 @@ from ratelimit.decorators import ratelimit
 
 __author__ = "Alan Viars"
 
+logger = logging.getLogger(__name__)
+
 
 def mfa_code_confirm(request, uid):
     mfac = get_object_or_404(MFACode, uid=uid)
@@ -28,18 +31,23 @@ def mfa_code_confirm(request, uid):
                 if mfac.tries_counter > 3:
                     messages.error(
                         request,
-                        _('Maximum tries reached.'
-                          'The authentication attempt has been invalidated.'))
+                        _(
+                            'Maximum tries reached.'
+                            'The authentication attempt has been invalidated.'
+                        ),
+                    )
                     mfac.delete()
                 else:
                     mfac.save()
                 messages.error(
                     request,
-                    _('The code supplied did not match what was sent.'
-                      'Please try again.'))
+                    _(
+                        'The code supplied did not match what was sent.'
+                        'Please try again.'
+                    ),
+                )
 
-                return render(
-                    request, 'generic/bootstrapform.html', {'form': form})
+                return render(request, 'generic/bootstrapform.html', {'form': form})
 
             if user.is_active:
                 # Fake backend here since its not needed.
@@ -57,18 +65,18 @@ def mfa_code_confirm(request, uid):
                 # The user exists but is_active=False
                 messages.error(
                     request,
-                    _('Your account has not been activated.'
-                      'Please check your email for a link to'
-                      'activate your account.'))
-                return render(
-                    request, 'generic/bootstrapform.html', {'form': form})
+                    _(
+                        'Your account has not been activated.'
+                        'Please check your email for a link to'
+                        'activate your account.'
+                    ),
+                )
+                return render(request, 'generic/bootstrapform.html', {'form': form})
 
         else:
-            return render(request, 'generic/bootstrapform.html',
-                          {'form': form})
+            return render(request, 'generic/bootstrapform.html', {'form': form})
     # this is a GET
-    return render(request, 'generic/bootstrapform.html',
-                  {'form': MFACodeForm()})
+    return render(request, 'generic/bootstrapform.html', {'form': MFACodeForm()})
 
 
 @never_cache
@@ -81,35 +89,43 @@ def mfa_login(request, slug=None):
         login_template_name = settings.LOGIN_TEMPLATE_PICKER[slug]
         name = slug.replace('-', ' ')
 
+    context = {
+        'name': name,
+        'next': request.GET.get('next', '') or request.POST.get('next', ''),
+        'login_form': LoginForm(initial=request.GET),
+    }
+
+    logger.debug('mfa_login(): context = %r', context)
+
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+        context['login_form'] = LoginForm(request.POST)
+        if context['login_form'].is_valid():
+            username = context['login_form'].cleaned_data['username']
+            password = context['login_form'].cleaned_data['password']
             user = authenticate(username=username, password=password)
 
             if user is not None:
-
                 if user.is_active:
                     # Get User profile
                     up, g_o_c = UserProfile.objects.get_or_create(user=user)
                     login(request, user)
-                    next_param = request.GET.get('next', '')
-                    if next_param:
-                        # If a next is in the URL, then go there
-                        return HttpResponseRedirect(next_param)
+                    if context['next']:
+                        logger.debug('redirect to %r' % context['next'])
+                        return HttpResponseRedirect(context['next'])
                     # otherwise just go to home.
+                    logger.debug('redirect to home')
                     return HttpResponseRedirect(reverse('home'))
                 else:
                     # The user exists but is_active=False
-                    messages.error(request,
-                                   _('Please check your email for a link to '
-                                     'activate your account.'))
-                    return render(request, login_template_name, {'form': form})
+                    messages.error(
+                        request,
+                        _(
+                            'Please check your email for a link to '
+                            'activate your account.'
+                        ),
+                    )
             else:
                 messages.error(request, _('Invalid username or password.'))
-                return render(request, login_template_name, {'form': form, 'name': name})
-        else:
-            return render(request, login_template_name, {'form': form, 'name': name})
-    # this is a GET
-    return render(request, login_template_name, {'form': LoginForm(initial=request.GET), 'name': name})
+
+    logger.debug('render login_form: %r %r', login_template_name, context)
+    return render(request, login_template_name, context)

@@ -1,53 +1,28 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li class="active"><a href="/">Home</a></li>
+                    </ol>
+{% endblock %}
 {% block Content %}
+            <div class="row">
+                <div class="col-lg-12 well">
+                    <div class="row text-center">
+                        <div class="col-lg-12">
+                            <h3>Hello {{request.user.first_name|title}}. Your account number is <span class="label label-default">{{profile.subject}}</span></h3>
 
-<div class="container">
-
-    <div class="row">
-        <div class="col-lg-12">
-	      <ol class="breadcrumb">
-	        <li class="active"><a href="/">Home</a></li>
-	      </ol>
-        </div>
-     </div>
-
-
-    <div class="row">
-      <div class="col-lg-10">
-        {% include "include/messages.html" %}
-      </div>
-    </div>
-
- <div class="col-lg-12 well">
-    <div class="row text-center">
-        <div class="col-lg-12">
-
-    
-    <h3>Hello {{request.user.first_name|title}}. Your account number is <span class="label label-default">{{profile.subject}}</span></h3>
-    
-    
-    {% ifequal profile.ial "1" %}
-     <p>We need to verify you identity before you can gain full access. Your identity level is <span class="label label-default">{{profile.ial}}</span>,
-     but most services require level <span class="label label-success">2</span>. Please see your point of contact so they can help you verify your identity.
-
-     
-     {% else %}
-     <h4>Your identity has been verified to level <span class="label label-success">{{profile.ial}}</span> and you may now access available information from here and
-     other parties relying on this service.
-    {% endifequal %}
-    
-
-   
-    </p>
-    
-	    </div>
-		
-    </div> <!-- /.row -->
- </div> <!-- /.well -->
-</div><!-- /.container -->
-
-
+                            {% ifequal profile.ial "1" %}
+                            <p>We need to verify you identity before you can gain full access. Your identity level is <span class="label label-default">{{profile.ial}}</span>,
+                            but most services require level <span class="label label-success">2</span>. Please see your point of contact so they can help you verify your identity.</p>
+                            {% else %}
+                            <h4>Your identity has been verified to level <span class="label label-success">{{profile.ial}}</span> and you may now access available information from here and
+                            other parties relying on this service.</h4>
+                            {% endifequal %}
+                        </div>
+                    </div> <!-- /.row -->
+                </div> <!-- /.well -->
+            </div><!-- /.row -->
 {% endblock %}
 
