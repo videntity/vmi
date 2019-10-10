@@ -25,29 +25,15 @@ from ..ial.models import IdentityAssuranceLevelDocumentation
 
 __author__ = "Alan Viars"
 
-SEX_CHOICES = (('female', 'Female'), ('male', 'Male'), ('', 'Unspecified'))
 
-GENDER_CHOICES = (('', 'Not specified'),
+SEX_CHOICES = (('female', 'Female'),
+               ('male', 'Male'),
+               ('other', 'Gender Neutral'),
+               ('',  'Left Blank'))
+
+GENDER_CHOICES = (('female', 'Female'),
                   ('male', 'Male'),
-                  ('female', 'Female'),
-                  ('transgender-male-to-female', 'Transgender Male to Female'),
-                  ('trangender-female-to-male', 'Transgender Female to Male'),
-                  ('unknown', 'Unknown'))
-
-
-# These are "mockups" for now.
-# class MemberOrganizationRelationship(models.Model):
-#     user = models.ForeignKey(get_user_model(), on_delete='PROTECT')
-#     organization = models.ForeignKey(Organization, on_delete='PROTECT', null=True)
-#     summary = models.TextField(blank=True, default='')
-#     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-#     created_date = models.DateField(auto_now_add=True, null=True, blank=True)
-#     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-#
-#     def __str__(self):
-#         return "%s relationship with %s since %s" % (self.user, sself.organization. self.created_at)
-#
-#
+                  ('custom', 'Custom'))
 
 
 class IndividualIdentifier(models.Model):
@@ -352,6 +338,10 @@ class UserProfile(models.Model):
                                        help_text=_(
                                            'Gender Identity is not necessarily the same as birth sex.'),
                                        )
+    gender_identity_custom_value = models.CharField(max_length=64, default="", blank=True,
+                                                    help_text=_(
+                                                        'Enter a custom value for gender_identity.'),
+                                                    )
     birth_date = models.DateField(blank=True, null=True)
     agree_tos = models.CharField(max_length=64, default="", blank=True,
                                  help_text=_('Do you agree to the terms and conditions?'))
@@ -436,7 +426,7 @@ class UserProfile(models.Model):
         return str(level)
 
     @property
-    def verified_person_data(self):
+    def verified_claims(self):
         vpa_list = []
         ialds = IdentityAssuranceLevelDocumentation.objects.filter(
             subject_user=self.user)
@@ -446,15 +436,15 @@ class UserProfile(models.Model):
                 subject_user=self.user)
             ialds = IdentityAssuranceLevelDocumentation.objects.filter(
                 subject_user=self.user)
-        for i in ialds:
 
-            od = OrderedDict()
-            od["verification"] = OrderedDict()
-            od["verification"]["trust_framework"] = "us_nist_800_63_3"
-            od["verification"]["method"] = i.evidence
-            od["verification"]["ial"] = str(i.level)
-            od["verification"]["method"] = i.evidence
-            od["verification"]["date"] = str(i.verification_date)
+        od = OrderedDict()
+        od["verification"] = OrderedDict()
+        od["verification"]["trust_framework"] = "nist_800_63A_ial_2"
+        od["verification"]["time"] = str(self.updated_at)
+        od["verification"]["evidence"] = []
+
+        for i in ialds:
+            od["verification"]["evidence"].append(i.oidc_ia_evidence)
             od["verification"]["claims"] = OrderedDict()
             od["verification"]["claims"]["given_name"] = self.given_name
             od["verification"]["claims"]["family_name"] = self.family_name
