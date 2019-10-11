@@ -181,6 +181,10 @@ class PersonToPersonRelationship(models.Model):
 
 class Organization(models.Model):
     name = models.CharField(max_length=250, default='', blank=True)
+    number_str_include = models.CharField(
+        max_length=10, blank=True, default="",
+        verbose_name="Pick Your Own ID",
+        help_text=_('Choose up to 10 number to be included in your account number.'))
     slug = models.SlugField(max_length=250, blank=True, default='',
                             db_index=True, unique=True, editable=False)
     subject = models.CharField(max_length=64, default='', blank=True,
@@ -285,7 +289,7 @@ class Organization(models.Model):
                                                        starts_with="2",
                                                        number_str_include=self.number_str_include)
                     if not UserProfile.objects.filter(subject=self.subject).exists():
-                        break;
+                        break
         if commit:
             super(Organization, self).save(*args, **kwargs)
 
