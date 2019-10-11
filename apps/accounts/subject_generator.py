@@ -6,15 +6,23 @@ __author__ = "Alan Viars"
 
 
 def random_number(y=10):
-    return ''.join(random.choice('123456789') for x in range(y))
+    return ''.join(random.choice('1234567890') for x in range(y))
 
 
-def generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX, number_1="", number_2=""):
-    if not number_1 or len(number_1) != 10:
-        number_1 = random_number(10)
-    if not number_2 or len(number_2) != 4:
-        number_2 = random_number(4)
-    number = "%s%s" % (number_1, number_2)
+def generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX, starts_with="1",  number_str_include=""):
+    # Generate a subject according to https://github.com/TransparentHealth/uhi
+    # Supply up to 10 numbers you want in the resulting number.
+    max_allowed_pickable_nums = 10
+    size_of_between_number = 13
+    if not number_str_include.isnumeric():
+        number_str_include = ""
+    # numbers can be any length from 0 - 13
+    len_numbers = len(number_str_include)
+    if len_numbers > max_allowed_pickable_nums:
+        number_str_include = number_str_include[0:max_allowed_pickable_nums]
+    remaining = size_of_between_number - len(number_str_include)
+    padding = random_number(remaining)
+    number = "%s%s%s" % (starts_with, number_str_include, padding)
     prefixed_number = "%s%s" % (prefix, number)
     luhn_checksum = generate(prefixed_number)
     return "%s%s" % (number, luhn_checksum)
