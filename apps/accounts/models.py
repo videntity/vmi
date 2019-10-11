@@ -272,9 +272,20 @@ class Organization(models.Model):
     def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
         if not self.subject:
-            self.subject = generate_subject_id()
+            self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
+                                               starts_with="2",
+                                               number_str_include=self.number_str_include)
 
-        ()
+            # Make sure the Subject has not been assigned to someone else.
+            up_exist = Organization.objects.filter(
+                subject=self.subject).exists()
+            if up_exist:
+                while True:
+                    self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
+                                                       starts_with="2",
+                                                       number_str_include=self.number_str_include)
+                    if not UserProfile.objects.filter(subject=self.subject).exists():
+                        break;
         if commit:
             super(Organization, self).save(*args, **kwargs)
 
