@@ -183,7 +183,7 @@ class Organization(models.Model):
     name = models.CharField(max_length=250, default='', blank=True)
     slug = models.SlugField(max_length=250, blank=True, default='',
                             db_index=True, unique=True, editable=False)
-    subject = models.CharField(max_length=64, default=generate_subject_id(), blank=True,
+    subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject ID',
                                db_index=True)
     picture = models.ImageField(
@@ -271,6 +271,10 @@ class Organization(models.Model):
 
     def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
+        if not self.subject:
+            self.subject = generate_subject_id()
+
+        ()
         if commit:
             super(Organization, self).save(*args, **kwargs)
 
@@ -326,9 +330,11 @@ class UserProfile(models.Model):
     mobile_phone_number_verified = models.BooleanField(
         blank=True, default=False)
 
-    four_digit_suffix = models.CharField(
-        max_length=4, blank=True, default="",
-        help_text=_('If populated, this field must contain exactly four numbers.'),)
+    number_str_include = models.CharField(
+        max_length=10, blank=True, default="",
+        verbose_name="Pick Your Own ID",
+        help_text=_('Choose up to 10 number to be included in your account number.'))
+
     sex = models.CharField(choices=SEX_CHOICES,
                            max_length=6, default="", blank=True,
                            help_text=_('Specify sex, not gender identity.')
@@ -357,8 +363,18 @@ class UserProfile(models.Model):
     def save(self, commit=True, **kwargs):
         if not self.subject:
             self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
-                                               number_1=self.mobile_phone_number,
-                                               number_2=self.four_digit_suffix)
+                                               number_str_include=self.number_str_include)
+
+            # Make sure the Subject has not been assigned to someone else.
+            up_exist = UserProfile.objects.filter(
+                subject=self.subject).exists()
+            if up_exist:
+                while True:
+                    self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
+                                                       number_str_include=self.number_str_include)
+                    if not UserProfile.objects.filter(subject=self.subject).exists():
+                        break
+
         if commit:
             super(UserProfile, self).save(**kwargs)
 

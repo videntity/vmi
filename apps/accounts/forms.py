@@ -50,6 +50,8 @@ class PasswordResetForm(forms.Form):
 class SignupForm(forms.Form):
     username = forms.CharField(max_length=30, label=_(
         "User Name*"), help_text="Your desired user name or handle.")
+    pick_your_account_number = forms.CharField(max_length=10, label=_(
+        "Choose Your Own Account Number"), help_text="Pick up to 10 numbers to be included in your account number.")
     first_name = forms.CharField(max_length=100, label=_("First/Given Name*"))
     last_name = forms.CharField(max_length=100, label=_("Last/Family Name*"))
     middle_name = forms.CharField(
@@ -63,6 +65,8 @@ class SignupForm(forms.Form):
                             help_text="Enter sex, not gender identity.")
     gender_identity = forms.ChoiceField(choices=GENDER_CHOICES, required=False,
                                         help_text="Gender identity is not necessarily the same as birth sex.")
+    gender_identity_custom_value = forms.ChoiceField(required=False,
+                                                     help_text="If gender identity is custom, include your gender here.")
     birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=YEARS),
                                  required=False)
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
@@ -123,13 +127,14 @@ class SignupForm(forms.Form):
 
         return username
 
-    def clean_four_digit_suffix(self):
-        four_digit_suffix = self.cleaned_data.get('four_digit_suffix')
-        if four_digit_suffix:
-            if not RepresentsPositiveInt(four_digit_suffix, length=4):
+    def clean_pick_your_account_number(self):
+        pick_your_account_number = self.cleaned_data.get(
+            'pick_your_account_number')
+        if pick_your_account_number:
+            if not RepresentsPositiveInt(pick_your_account_number):
                 raise forms.ValidationError(
-                    _('Your for digit suffix must be exactly 4 digits'))
-        return four_digit_suffix
+                    _('This value must only include numbers.'))
+        return pick_your_account_number
 
     def save(self):
 
@@ -143,11 +148,15 @@ class SignupForm(forms.Form):
 
         UserProfile.objects.create(
             user=new_user,
+            number_str_include=self.cleaned_data.get(
+                'pick_your_account_number', ""),
             middle_name=self.cleaned_data.get('middle_name', ""),
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
             nickname=self.cleaned_data.get('nickname', ""),
             sex=self.cleaned_data.get('sex', ""),
             gender_identity=self.cleaned_data.get('gender_identity', ""),
+            gender_identity_custom_value=self.cleaned_data.get(
+                'gender_identity_custom_value', ""),
             birth_date=self.cleaned_data.get('birth_date', ""),
             agree_tos=settings.CURRENT_TOS_VERSION,
             agree_privacy_policy=settings.CURRENT_PP_VERSION)
@@ -176,6 +185,8 @@ class AccountSettingsForm(forms.Form):
                             help_text="Enter sex, not gender identity.")
     gender_identity = forms.ChoiceField(choices=GENDER_CHOICES, required=False,
                                         help_text="Gender identity is not necessarily the same as birth sex.")
+    gender_identity_custom_value = forms.ChoiceField(required=False,
+                                                     help_text="If gender identity is custom, include your gender here.")
     birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=YEARS),
                                  required=False)
     required_css_class = 'required'
@@ -221,15 +232,17 @@ class AccountSettingsForm(forms.Form):
         up.middle_name = self.cleaned_data.get('middle_name', "")
         up.sex = self.cleaned_data.get('sex', ""),
         up.gender_identity = self.cleaned_data.get('gender_identity', ""),
+        up.gender_identity_custom_value = self.cleaned_data.get(
+            'gender_identity_custom_value', ""),
         up.birth_date = self.cleaned_data.get('birth_date', ""),
         up.save()
         return user
 
 
-def RepresentsPositiveInt(s, length=10):
+def RepresentsPositiveInt(s):
     try:
         i = int(s)
-        if i > 0 and len(s) == length:
+        if i > 0:
             return True
         return False
     except ValueError:
