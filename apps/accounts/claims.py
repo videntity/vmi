@@ -39,10 +39,11 @@ class MembershipClaimProvider(BaseProvider):
 
 class VerifiedPersonDataClaimProvider(BaseProvider):
 
-    def claim_verified_person_data(self):
+    def claim_verified_claims(self):
         try:
-            return self.user.userprofile.verified_person_data
-        except Exception:
+            return self.user.userprofile.verified_claims
+        except Exception as e:
+            print(e)
             return None
 
 

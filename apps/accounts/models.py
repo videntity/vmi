@@ -25,29 +25,15 @@ from ..ial.models import IdentityAssuranceLevelDocumentation
 
 __author__ = "Alan Viars"
 
-SEX_CHOICES = (('female', 'Female'), ('male', 'Male'), ('', 'Unspecified'))
 
-GENDER_CHOICES = (('', 'Not specified'),
+SEX_CHOICES = (('female', 'Female'),
+               ('male', 'Male'),
+               ('other', 'Gender Neutral'),
+               ('',  'Left Blank'))
+
+GENDER_CHOICES = (('female', 'Female'),
                   ('male', 'Male'),
-                  ('female', 'Female'),
-                  ('transgender-male-to-female', 'Transgender Male to Female'),
-                  ('trangender-female-to-male', 'Transgender Female to Male'),
-                  ('unknown', 'Unknown'))
-
-
-# These are "mockups" for now.
-# class MemberOrganizationRelationship(models.Model):
-#     user = models.ForeignKey(get_user_model(), on_delete='PROTECT')
-#     organization = models.ForeignKey(Organization, on_delete='PROTECT', null=True)
-#     summary = models.TextField(blank=True, default='')
-#     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-#     created_date = models.DateField(auto_now_add=True, null=True, blank=True)
-#     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-#
-#     def __str__(self):
-#         return "%s relationship with %s since %s" % (self.user, sself.organization. self.created_at)
-#
-#
+                  ('custom', 'Custom'))
 
 
 class IndividualIdentifier(models.Model):
@@ -195,9 +181,13 @@ class PersonToPersonRelationship(models.Model):
 
 class Organization(models.Model):
     name = models.CharField(max_length=250, default='', blank=True)
+    number_str_include = models.CharField(
+        max_length=10, blank=True, default="",
+        verbose_name="Pick Your Own ID",
+        help_text=_('Choose up to 10 number to be included in your account number.'))
     slug = models.SlugField(max_length=250, blank=True, default='',
                             db_index=True, unique=True, editable=False)
-    subject = models.CharField(max_length=64, default=generate_subject_id(), blank=True,
+    subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject ID',
                                db_index=True)
     picture = models.ImageField(
@@ -285,6 +275,21 @@ class Organization(models.Model):
 
     def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
+        if not self.subject:
+            self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
+                                               starts_with="2",
+                                               number_str_include=self.number_str_include)
+
+            # Make sure the Subject has not been assigned to someone else.
+            up_exist = Organization.objects.filter(
+                subject=self.subject).exists()
+            if up_exist:
+                while True:
+                    self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
+                                                       starts_with="2",
+                                                       number_str_include=self.number_str_include)
+                    if not UserProfile.objects.filter(subject=self.subject).exists():
+                        break
         if commit:
             super(Organization, self).save(*args, **kwargs)
 
@@ -340,9 +345,11 @@ class UserProfile(models.Model):
     mobile_phone_number_verified = models.BooleanField(
         blank=True, default=False)
 
-    four_digit_suffix = models.CharField(
-        max_length=4, blank=True, default="",
-        help_text=_('If populated, this field must contain exactly four numbers.'),)
+    number_str_include = models.CharField(
+        max_length=10, blank=True, default="",
+        verbose_name="Pick Your Own ID",
+        help_text=_('Choose up to 10 number to be included in your account number.'))
+
     sex = models.CharField(choices=SEX_CHOICES,
                            max_length=6, default="", blank=True,
                            help_text=_('Specify sex, not gender identity.')
@@ -352,6 +359,10 @@ class UserProfile(models.Model):
                                        help_text=_(
                                            'Gender Identity is not necessarily the same as birth sex.'),
                                        )
+    gender_identity_custom_value = models.CharField(max_length=64, default="", blank=True,
+                                                    help_text=_(
+                                                        'Enter a custom value for gender_identity.'),
+                                                    )
     birth_date = models.DateField(blank=True, null=True)
     agree_tos = models.CharField(max_length=64, default="", blank=True,
                                  help_text=_('Do you agree to the terms and conditions?'))
@@ -367,8 +378,18 @@ class UserProfile(models.Model):
     def save(self, commit=True, **kwargs):
         if not self.subject:
             self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
-                                               number_1=self.mobile_phone_number,
-                                               number_2=self.four_digit_suffix)
+                                               number_str_include=self.number_str_include)
+
+            # Make sure the Subject has not been assigned to someone else.
+            up_exist = UserProfile.objects.filter(
+                subject=self.subject).exists()
+            if up_exist:
+                while True:
+                    self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
+                                                       number_str_include=self.number_str_include)
+                    if not UserProfile.objects.filter(subject=self.subject).exists():
+                        break
+
         if commit:
             super(UserProfile, self).save(**kwargs)
 
@@ -436,7 +457,7 @@ class UserProfile(models.Model):
         return str(level)
 
     @property
-    def verified_person_data(self):
+    def verified_claims(self):
         vpa_list = []
         ialds = IdentityAssuranceLevelDocumentation.objects.filter(
             subject_user=self.user)
@@ -446,15 +467,15 @@ class UserProfile(models.Model):
                 subject_user=self.user)
             ialds = IdentityAssuranceLevelDocumentation.objects.filter(
                 subject_user=self.user)
-        for i in ialds:
 
-            od = OrderedDict()
-            od["verification"] = OrderedDict()
-            od["verification"]["trust_framework"] = "us_nist_800_63_3"
-            od["verification"]["method"] = i.evidence
-            od["verification"]["ial"] = str(i.level)
-            od["verification"]["method"] = i.evidence
-            od["verification"]["date"] = str(i.verification_date)
+        od = OrderedDict()
+        od["verification"] = OrderedDict()
+        od["verification"]["trust_framework"] = "nist_800_63A_ial_2"
+        od["verification"]["time"] = str(self.updated_at)
+        od["verification"]["evidence"] = []
+
+        for i in ialds:
+            od["verification"]["evidence"].append(i.oidc_ia_evidence)
             od["verification"]["claims"] = OrderedDict()
             od["verification"]["claims"]["given_name"] = self.given_name
             od["verification"]["claims"]["family_name"] = self.family_name

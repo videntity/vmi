@@ -1,0 +1,72 @@
+# from django.contrib.auth import get_user_model
+# from .models import UserProfile, Address
+# from collections import OrderedDict
+# 
+# 
+# 
+# class ProfileClaimProvider():
+#     
+#     def __init__(user):
+#         claims_od = OrderedDict()
+#     def claims():
+#       up, created = UserProfile.get_or_create(user=self.user)
+#       self.claims_od["sub"] = up.subject
+#       self.claims_od["given_name"] = up.given_name
+#       self.claims_od["family_name"] = up.family_name
+#       self.claims_od["name"] = up.name
+#       self.claims_od["nickname"] = up.nickname
+#       self.claims_od["preferred_username"] = user.username
+#       self.claims_od["nickname"] = up.nickname
+#       self.claims_od["updated_at"] = up.updated_at
+#       return self.claims_od
+# 
+# 
+# class BirthDateClaimProvider():
+#     
+#     def __init__(user):
+#         claims_od = OrderedDict()
+# 
+#     def claims():
+#       up, created = UserProfile.get_or_create(user=self.user) 
+#       self.claims_od['birthdate'] = up.birthdate
+#       return self.claims_od
+#     
+# 
+# class AddressClaimProvider():
+#     
+#     def __init__(user):
+#         claims_od = OrderedDict()
+# 
+#     def claims():
+#       addresses = Address.objects.filter(user=user)
+#       formatted_addresses = []
+#       for a in addresses:
+#         formatted_address.append(a.address_od)
+#       self.claims_od['address'] = formatted_addresses
+#       return self.claims_od
+# 
+# 
+# 
+# class PhoneNumberClaimProvider():
+#     
+#     def __init__(user):
+#         claims_od = OrderedDict()
+# 
+#     def claims():
+#       up, created = UserProfile.get_or_create(user=self.user) 
+#       self.claims_od['phone_number'] = up.phone_number
+#       self.claims_od['phone_number_verified'] = up.phone_number_verified
+#       return self.claims_od
+#     
+# 
+# class EmailClaimProvider():
+#     
+#     def __init__(user):
+#         claims_od = OrderedDict()
+# 
+#     def claims():
+#       up, created = UserProfile.get_or_create(user=self.user) 
+#       self.claims_od['email'] = user.email
+#       self.claims_od['email_verified'] = up.email_verified
+#       return self.claims_od
+#       

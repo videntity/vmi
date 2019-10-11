@@ -7,6 +7,7 @@ from django.contrib.auth.password_validation import validate_password
 from .models import UserProfile, create_activation_key, Organization, OrganizationAffiliationRequest
 from django.conf import settings
 from django.utils.safestring import mark_safe
+from .forms import RepresentsPositiveInt
 
 # Copyright Videntity Systems Inc.
 YEARS = [x for x in range(1901, 2000)]
@@ -24,6 +25,8 @@ class StaffSignupForm(forms.Form):
     domain = forms.CharField(disabled=True, max_length=512, required=False,
                              help_text="You must register using this email domain.")
     username = forms.CharField(max_length=30, label=_("User name*"))
+    pick_your_account_number = forms.CharField(max_length=10, label=_(
+        "Choose Your Own Account Number"), help_text="Pick up to 10 numbers to be included in your account number.")
     email = forms.EmailField(max_length=150, label=_("Email*"), required=True)
     mobile_phone_number = forms.CharField(required=True,
                                           label=_("Mobile Phone Number*"),
@@ -125,6 +128,15 @@ class StaffSignupForm(forms.Form):
                 _('You must complete the training before completing this form.'))
         return attest_training_completed
 
+    def clean_pick_your_account_number(self):
+        pick_your_account_number = self.cleaned_data.get(
+            'pick_your_account_number')
+        if pick_your_account_number:
+            if not RepresentsPositiveInt(pick_your_account_number):
+                raise forms.ValidationError(
+                    _('This value must only include numbers.'))
+        return pick_your_account_number
+
     def save(self):
 
         new_user = User.objects.create_user(
@@ -138,6 +150,8 @@ class StaffSignupForm(forms.Form):
 
         up = UserProfile.objects.create(
             user=new_user,
+            number_str_include=self.cleaned_data.get(
+                'pick_your_account_number', ""),
             nickname=self.cleaned_data.get('nickname', ''),
             middle_name=self.cleaned_data.get('middle_name', ""),
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
