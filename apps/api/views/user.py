@@ -61,7 +61,7 @@ class UserSerializer(serializers.Serializer):
         if User.objects.filter(username=user_data['username']).exists():
             raise ValidationError(
                 'Could not create user with that username. Please choose another.', code=400)
-        
+
         # Force upper/lower cases
         user_data['first_name'] = user_data.get('first_name').upper().strip()
         user_data['last_name'] = user_data.get('last_name').upper().strip()
