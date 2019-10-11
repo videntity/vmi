@@ -14,6 +14,7 @@ from apps.accounts.models import (
     SEX_CHOICES,
 )
 from apps.oidc.claims import get_claims_provider
+from vmi import settings
 
 logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
@@ -49,7 +50,7 @@ class UserSerializer(serializers.Serializer):
         max_length=255, write_only=True, source='user.password')
     birthdate = serializers.DateField(source='birth_date')
     nickname = serializers.CharField(max_length=255)
-    email = serializers.EmailField(max_length=255, source='user.email')
+    email = serializers.EmailField(max_length=255, source='user.email', required=False)
     phone_number = serializers.CharField(
         max_length=255, source='mobile_phone_number', required=False)
     picture = serializers.ImageField(required=False)
@@ -60,15 +61,19 @@ class UserSerializer(serializers.Serializer):
         if User.objects.filter(username=user_data['username']).exists():
             raise ValidationError(
                 'Could not create user with that username. Please choose another.', code=400)
-        # Force upper/lover cases
-        first_name = user_data.get('first_name').upper().strip()
-        last_name = user_data.get('last_name').upper().strip()
-        username = user_data.get('username').lower().strip()
-        email = user_data.get('email').lower().strip()
-        user_data['first_name'] = first_name
-        user_data['last_name'] = last_name
-        user_data['email'] = email
-        user_data['username'] = username
+        
+        # Force upper/lower cases
+        user_data['first_name'] = user_data.get('first_name').upper().strip()
+        user_data['last_name'] = user_data.get('last_name').upper().strip()
+        user_data['username'] = user_data.get('username').lower().strip()
+
+        # User.email is required, so generate a temporary one if not given
+        if user_data.get('email'):
+            user_data['email'] = user_data['email'].lower().strip()
+            email_generated = False
+        else:
+            user_data['email'] = '@'.join([user_data['username'], user_data['username']])
+            email_generated = True
 
         user = User.objects.create(**user_data)
 
@@ -77,7 +82,15 @@ class UserSerializer(serializers.Serializer):
         user.save()
 
         validated_data['user'] = user
-        return UserProfile.objects.create(**validated_data)
+        profile = UserProfile.objects.create(**validated_data)
+
+        if email_generated:
+            # Fix the generated email: subject@hostname rather than username@username
+            hostname = settings.HOSTNAME_URL.split('//')[-1].split('/')[0].split(':')[0]
+            user.email = '@'.join([profile.subject, hostname])
+            user.save()
+
+        return profile
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', {})
