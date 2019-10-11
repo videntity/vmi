@@ -122,6 +122,10 @@ body {
     padding: 0.5em 1.5em;
 }
 
+.close {
+    cursor: pointer;
+}
+
 .dropdown-menu {
     background-color: rgb(239,243,245);
     border: 1px solid rgb(70,70,70);
@@ -140,7 +144,6 @@ body {
     border-radius: 0;
     font-size: 1.2rem;
     line-height: 1.25;
-    padding: 1.0em;
 }
 
 select {
