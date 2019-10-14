@@ -84,10 +84,11 @@ Create the database:
     python manage.py migrate
 
 
-Create initial Groups and Permissions
+Create initial Groups and Permissions, and Organizations
 
 
     python manage.py create_default_groups
+    python manage.py create_sample_organizations
 
 
 
