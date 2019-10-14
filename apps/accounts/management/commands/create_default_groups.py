@@ -4,18 +4,21 @@ from django.contrib.contenttypes.models import ContentType
 
 __author__ = "Alan Viars"
 
+groups = ["Member",
+          "OrganizationPointOfContact",
+          "OrganizationalAgent",
+          "IdentityAssuranceTrustedReferee",
+          "OrganizationAdministrator"]
+
 
 def create_groups():
-    groups = ["Member",
-              "OrganizationPointOfContact",
-              "OrganizationalAgent",
-              "TrustedReferee",
-              "OrganizationAdministrator"]
+
     created_groups = []
     for group in groups:
         g, created = Group.objects.get_or_create(name=group)
         created_groups.append(g)
 
+        # Give POC Permissions
         if group == "OrganizationPointOfContact":
             # Add permissions to group
             content_type = ContentType.objects.get(
@@ -24,11 +27,14 @@ def create_groups():
                                                             content_type=content_type)
             g.permissions.add(can_approve_permission)
             g.save()
+
     return dict(zip(groups, created_groups))
 
 
 class Command(BaseCommand):
-    help = 'Create Groups. Run only 1x at initial setup.'
+    help = 'Create default groups %s ' % (groups)
 
     def handle(self, *args, **options):
-        create_groups()
+        
+        g = create_groups()
+        print("Groups %s created" % (g))
