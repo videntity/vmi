@@ -35,6 +35,6 @@ class Command(BaseCommand):
     help = 'Create default groups %s ' % (groups)
 
     def handle(self, *args, **options):
-        
+
         g = create_groups()
         print("Groups %s created" % (g))
