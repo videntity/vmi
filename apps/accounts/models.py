@@ -186,7 +186,7 @@ class Organization(models.Model):
         verbose_name="Pick Your Own ID",
         help_text=_('Choose up to 10 number to be included in your account number.'))
     slug = models.SlugField(max_length=250, blank=True, default='',
-                            db_index=True, unique=True, editable=False)
+                            db_index=True, editable=False)
     subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject ID',
                                db_index=True)
@@ -323,7 +323,7 @@ class UserProfile(models.Model):
                                db_index=True)
     middle_name = models.CharField(max_length=255, default='', blank=True,
                                    help_text='Middle Name',)
-    picture = models.ImageField(upload_to='profile-picture/', null=True)
+    picture = models.ImageField(upload_to='profile-picture/', null=True, blank=True)
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
                                 db_index=True, null=False)
 
