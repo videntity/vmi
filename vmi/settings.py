@@ -482,5 +482,9 @@ AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', "set-your-own-id")
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', "set-your-own-key")
 AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION', 'us-east-1')
 
+# Set to True when using in a reverse proxy such as Gunicorn and Nginx
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = bool_env(
+    env('SOCIAL_AUTH_REDIRECT_IS_HTTPS', False))
+
 # Blank means skip EC2.
 EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES = env('EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES', "EC2_PARAMSTORE")
