@@ -40,7 +40,7 @@ Add some entries to your `/etc/hosts` file.
 
 If running this OIDC server in conjunction with `smh_app` or `sharemyhealth` (OAuth2 server)
 on the same machine for development, then we recommend setting up names for each server host in `/etc/hosts`.
-You might add lines like the following to that file:
+You might add lines like the following to `/etc/hosts` file:
 
 
      127.0.0.1       verifymyidentity
@@ -68,7 +68,7 @@ Setup some local environment variables.
 
 
 
-The `EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES` setting says to look for envvars in a file called `.env`.
+The `EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES` setting says to look for env vars in a file called `.env`.
 If this string is `EC2_PARAMSTORE`, the anything in `.env` will be overridden with parameters in
 an AWS EC2 Parameter store. There are a number of variables that can be set based on your
 specific environment and setup.  This is how you can brand the project to your needs.
