@@ -101,6 +101,7 @@ def account_settings(request, subject=None):
             up.nickname = data['nickname']
             up.sex = data['sex']
             up.gender_identity = data['gender_identity']
+            up.gender_identity_custom_value = data['gender_identity_custom_value']
             up.middle_name = data['middle_name']
             up.birth_date = data['birth_date']
             up.save()
@@ -125,6 +126,7 @@ def account_settings(request, subject=None):
             'mobile_phone_number': up.mobile_phone_number,
             'sex': up.sex,
             'gender_identity': up.gender_identity,
+            'gender_identity_custom_value': up.gender_identity_custom_value,
             'birth_date': up.birth_date,
             'nickname': up.nickname,
             'middle_name': up.middle_name,

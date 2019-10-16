@@ -26,14 +26,17 @@ from ..ial.models import IdentityAssuranceLevelDocumentation
 __author__ = "Alan Viars"
 
 
-SEX_CHOICES = (('female', 'Female'),
+SEX_CHOICES = (('',  'Blank'),
+               ('female', 'Female'),
                ('male', 'Male'),
                ('other', 'Gender Neutral'),
-               ('',  'Left Blank'))
+               )
 
-GENDER_CHOICES = (('female', 'Female'),
+GENDER_CHOICES = (('', 'Blank'),
+                  ('female', 'Female'),
                   ('male', 'Male'),
-                  ('custom', 'Custom'))
+                  ('custom', 'Custom')
+                  )
 
 
 class IndividualIdentifier(models.Model):
@@ -220,8 +223,8 @@ class Organization(models.Model):
         help_text="This field is a placeholder and is not supported in this version.")
 
     users = models.ManyToManyField(
-        get_user_model(), blank=True, related_name='org_staff', verbose_name="Organization Agent",
-        help_text="Employees or contractors acting on behalf of the organization.")
+        get_user_model(), blank=True, related_name='org_staff', verbose_name="Organizational Agent",
+        help_text="Employees or contractors acting on behalf of the Organization.")
 
     auto_ial_2_for_agents = models.BooleanField(default=True, blank=True)
     auto_ial_2_for_agents_description = models.TextField(default=settings.AUTO_IAL_2_DESCRIPTION,
@@ -323,7 +326,7 @@ class UserProfile(models.Model):
                                db_index=True)
     middle_name = models.CharField(max_length=255, default='', blank=True,
                                    help_text='Middle Name',)
-    picture = models.ImageField(upload_to='profile-picture/', null=True, blank=True)
+    picture = models.ImageField(upload_to='profile-picture/', null=True)
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
                                 db_index=True, null=False)
 
@@ -352,9 +355,10 @@ class UserProfile(models.Model):
 
     sex = models.CharField(choices=SEX_CHOICES,
                            max_length=6, default="", blank=True,
-                           help_text=_('Specify sex, not gender identity.')
+                           help_text=_('Specify birth sex, not gender identity.')
                            )
     gender_identity = models.CharField(choices=GENDER_CHOICES,
+                                       verbose_name="Gender",
                                        max_length=64, default="", blank=True,
                                        help_text=_(
                                            'Gender Identity is not necessarily the same as birth sex.'),
