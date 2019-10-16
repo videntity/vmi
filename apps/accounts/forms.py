@@ -62,15 +62,18 @@ class SignupForm(forms.Form):
                                                "Mobile Phone Number"))
     email = forms.EmailField(max_length=75, required=False)
     sex = forms.ChoiceField(choices=SEX_CHOICES, required=False,
-                            help_text="Enter sex, not gender identity.")
+                            help_text="Enter birth sex.")
     gender_identity = forms.ChoiceField(choices=GENDER_CHOICES, required=False,
-                                        help_text="Gender identity is not necessarily the same as birth sex.")
-    gender_identity_custom_value = forms.ChoiceField(required=False,
-                                                     help_text="If gender identity is custom, include your gender here.")
+                                        label=_("Gender"),
+                                        help_text="""Gender identity is not necessarily the same
+                                                     as birth sex and a custom value may be supplied.""")
+    gender_identity_custom_value = forms.CharField(required=False,
+                                                   help_text="If gender identity is custom, include your gender here.")
     birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=YEARS),
                                  required=False)
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
-                                label=_("Password"))
+                                label=_("Password"),
+                                help_text=_("Passwords must be at least 8 characters and not be too common."))
     password2 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password (again)"))
     agree_tos = forms.BooleanField(label=_(agree_tos_label))
@@ -181,12 +184,14 @@ class AccountSettingsForm(forms.Form):
         max_length=255, label=_("Middle Name"), required=False)
     nickname = forms.CharField(max_length=100, required=False)
     email = forms.EmailField(label=_('Email'), required=False)
-    sex = forms.ChoiceField(choices=SEX_CHOICES, required=False,
+    sex = forms.ChoiceField(choices=SEX_CHOICES,
+                            required=False,
                             help_text="Enter sex, not gender identity.")
     gender_identity = forms.ChoiceField(choices=GENDER_CHOICES, required=False,
+                                        label=_("Gender"),
                                         help_text="Gender identity is not necessarily the same as birth sex.")
-    gender_identity_custom_value = forms.ChoiceField(required=False,
-                                                     help_text="If gender identity is custom, include your gender here.")
+    gender_identity_custom_value = forms.CharField(required=False,
+                                                   help_text="If gender identity is custom, include your gender here.")
     birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=YEARS),
                                  required=False)
     required_css_class = 'required'

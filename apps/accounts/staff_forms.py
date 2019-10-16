@@ -39,7 +39,8 @@ class StaffSignupForm(forms.Form):
         max_length=100, label=_("Nickname"), required=False)
 
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
-                                label=_("Password*"))
+                                label=_("Password*"),
+                                help_text=_("Passwords must be at least 8 characters and not be too common."))
     password2 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password (again)*"))
     agree_tos = forms.BooleanField(label=_(agree_tos_label))
