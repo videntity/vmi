@@ -139,7 +139,7 @@ def logout_user(request):
     delete_all_sessions_for_user(user)
     data = {"status": "ok",
             "message": "%s sessions removed. Remote logout." % (user)}
-    logger.info("$s logged out remotely.", user)
+    logger.info("%s logged out remotely.", user)
     return JsonResponse(data)
 
 
