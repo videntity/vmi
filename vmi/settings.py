@@ -268,7 +268,7 @@ OIDC_PROVIDER = {
 SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
 APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE', "Share My Health Accounts")
 KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Share My Health')
-KILLER_APP_URI = env('KILLER_APP_URI', 'https://app.sharemy.health')
+KILLER_APP_URI = env('KILLER_APP_URI', 'http://smhapp:8002')
 
 TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity')
 
@@ -288,20 +288,19 @@ TRAINING_URI = env('DJANGO_TRAINING_URI',
                    'http://sharemy.health/training1.0.html')
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 EXPLAINATION_LINE = ('This is an instance of Verify My Identity, \
-                     an open source OpenID Connect Identity Provider.')
+                     a standards-based OpenID Connect Identity Provider.')
 EXPLAINATION_LINE = env('DJANGO_EXPLAINATION_LINE ', EXPLAINATION_LINE)
 USER_DOCS_URI = "https://abhealth.us"
 USER_DOCS_TITLE = "User Documentation"
 USER_DOCS = "User Docs"
+
 # LINKS TO DOCS
-DEVELOPER_DOCS_URI = "https:/abhealth.us"
-DEVELOPER_DOCS_TITLE = "Developer Documentation"
+DEVELOPER_DOCS_URI = "https://github.com/TransparentHealth/vmi"
 DEVELOPER_DOCS = "Developer Docs"
 DEFAULT_DISCLOSURE_TEXT = """
-    Unauthorized or improper use of this
-    system or its data may result in disciplinary action, as well as civil
-    and criminal penalties. This system may be monitored, recorded and is
-    subject to audit.
+    Unauthorized or improper use of this system or its data may result
+    in disciplinary action, as well as civil and criminal penalties.
+    This system may be monitored, recorded, and subject to audit.
     """
 
 DISCLOSURE_TEXT = env('DJANGO_PRIVACY_POLICY_URI', DEFAULT_DISCLOSURE_TEXT)
@@ -321,7 +320,6 @@ SETTINGS_EXPORT = [
     'STATIC_URL',
     'STATIC_ROOT',
     'DEVELOPER_DOCS_URI',
-    'DEVELOPER_DOCS_TITLE',
     'ORGANIZATION_TITLE',
     'POLICY_URI',
     'POLICY_TITLE',

@@ -51,7 +51,8 @@ class SignupForm(forms.Form):
     username = forms.CharField(max_length=30, label=_(
         "User Name*"), help_text="Your desired user name or handle.")
     pick_your_account_number = forms.CharField(max_length=10, label=_(
-        "Choose Your Own Account Number"), help_text="Pick up to 10 numbers to be included in your account number.")
+        "Choose Your Own Account Number"), help_text="Pick up to 10 numbers to be included in your account number.",
+        required=False)
     first_name = forms.CharField(max_length=100, label=_("First/Given Name*"))
     last_name = forms.CharField(max_length=100, label=_("Last/Family Name*"))
     middle_name = forms.CharField(

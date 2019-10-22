@@ -22,11 +22,15 @@ attest_training_completed_label = mark_safe(
 
 
 class StaffSignupForm(forms.Form):
+
+    # Org Agent Signup Form.
     domain = forms.CharField(disabled=True, max_length=512, required=False,
                              help_text="You must register using this email domain.")
     username = forms.CharField(max_length=30, label=_("User name*"))
     pick_your_account_number = forms.CharField(max_length=10, label=_(
-        "Choose Your Own Account Number"), help_text="Pick up to 10 numbers to be included in your account number.")
+        "Customize Your Own Account Number"), help_text="""Pick up to 10 numbers to be included in your
+                                               account number. If left blank, numbers will be used.""",
+        required=False)
     email = forms.EmailField(max_length=150, label=_("Email*"), required=True)
     mobile_phone_number = forms.CharField(required=True,
                                           label=_("Mobile Phone Number*"),
@@ -146,8 +150,7 @@ class StaffSignupForm(forms.Form):
             last_name=self.cleaned_data['last_name'],
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'],
-            is_active=True,
-            is_staff=True)
+            is_active=False)
 
         up = UserProfile.objects.create(
             user=new_user,
@@ -165,6 +168,7 @@ class StaffSignupForm(forms.Form):
 
         OrganizationAffiliationRequest.objects.create(
             organization=org, user=new_user)
-        # Send a verification email
+
+        # Verify EmailSend a verification email
         create_activation_key(new_user)
         return new_user

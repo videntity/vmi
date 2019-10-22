@@ -223,7 +223,7 @@ class Organization(models.Model):
         help_text="This field is a placeholder and is not supported in this version.")
 
     users = models.ManyToManyField(
-        get_user_model(), blank=True, related_name='org_staff', verbose_name="Organizational Agent",
+        get_user_model(), blank=True, related_name='org_staff', verbose_name="Organizational Agents",
         help_text="Employees or contractors acting on behalf of the Organization.")
 
     auto_ial_2_for_agents = models.BooleanField(default=True, blank=True)
@@ -293,8 +293,12 @@ class Organization(models.Model):
                                                        number_str_include=self.number_str_include)
                     if not UserProfile.objects.filter(subject=self.subject).exists():
                         break
+
         if commit:
+            self.users.add(self.point_of_contact)
+            print(self.users.all())
             super(Organization, self).save(*args, **kwargs)
+            # If the POC is not an org agent, then make them one.
 
 
 class OrganizationAffiliationRequest(models.Model):
@@ -312,9 +316,12 @@ class OrganizationAffiliationRequest(models.Model):
 
     def save(self, commit=True, **kwargs):
         if commit:
+            print("send to", self.organization.point_of_contact.email)
             send_new_org_account_approval_email(
                 to_user=self.organization.point_of_contact,
-                about_user=self.user)
+                about_user=self.user,
+                organization=self.organization)
+
             super(OrganizationAffiliationRequest, self).save(**kwargs)
 
 
@@ -355,7 +362,8 @@ class UserProfile(models.Model):
 
     sex = models.CharField(choices=SEX_CHOICES,
                            max_length=6, default="", blank=True,
-                           help_text=_('Specify birth sex, not gender identity.')
+                           help_text=_(
+                               'Specify birth sex, not gender identity.')
                            )
     gender_identity = models.CharField(choices=GENDER_CHOICES,
                                        verbose_name="Gender",

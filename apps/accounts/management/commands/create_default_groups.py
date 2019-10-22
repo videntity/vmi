@@ -28,7 +28,14 @@ def create_groups():
                                                             content_type=content_type)
             view = Permission.objects.get(codename='view_organizationaffiliationrequest',
                                           content_type=content_type)
-            g.permissions.add(can_approve_permission, view)
+            change = Permission.objects.get(codename='change_organizationaffiliationrequest',
+                                            content_type=content_type)
+            delete = Permission.objects.get(codename='delete_organizationaffiliationrequest',
+                                            content_type=content_type)
+            add = Permission.objects.get(codename='add_organizationaffiliationrequest',
+                                         content_type=content_type)
+            g.permissions.add(can_approve_permission,
+                              view, add, change, delete)
             g.save()
 
             # Allow view of Organizations
@@ -93,7 +100,11 @@ def create_groups():
                 app_label='auth', model='user')
             view = Permission.objects.get(codename='view_user',
                                           content_type=content_type)
-            g.permissions.add(view)
+            change = Permission.objects.get(codename='change_user',
+                                            content_type=content_type)
+            add = Permission.objects.get(codename='add_user',
+                                         content_type=content_type)
+            g.permissions.add(view, change, add)
             g.save()
 
             # Allow view/change of user profile
