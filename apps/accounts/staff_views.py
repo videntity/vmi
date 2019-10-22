@@ -20,7 +20,7 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
 
 @login_required
-@permission_required('organization_affiliation_request.can_approve_affiliation')
+@permission_required('accounts.can_approve_affiliation')
 def approve_org_affiliation(request, organization_slug, username):
 
     org = get_object_or_404(Organization, slug=organization_slug)
@@ -35,10 +35,13 @@ def approve_org_affiliation(request, organization_slug, username):
     org.users.add(user)
     org.save()
     oar.delete()
-    msg = _("""%s %s is now affiliated with %s.""") % (user.first_name,
-                                                       user.last_name,
-                                                       org.name)
-    send_org_account_approved_email(user)
+    # Allow user to log in.
+    user.is_active = True
+    user.save()
+    msg = _("""%s %s is now affiliated with %s and may log in.""") % (user.first_name,
+                                                                      user.last_name,
+                                                                      org.name)
+    send_org_account_approved_email(user, org)
     messages.success(request, msg)
 
     # Add IAL2 if option is selected.
@@ -57,7 +60,7 @@ def approve_org_affiliation(request, organization_slug, username):
 
 
 @login_required
-@permission_required('organization_affiliation_request.can_approve_affiliation')
+@permission_required('accounts.can_approve_affiliation')
 def deny_org_affiliation(request, organization_slug, username):
     org = get_object_or_404(Organization, slug=organization_slug)
     user = get_object_or_404(get_user_model(), username=username)
@@ -106,15 +109,13 @@ def create_org_account(request, organization_slug,
                                  _("Please "
                                    "check your email to confirm your email "
                                    "address."))
-
             messages.warning(
                 request, _(
-                    "Your affiliation with %s must be approved "
-                    "prior to gaining access to certain functionality. A message has "
-                    "been sent to your organization's "
-                    "point of contact." %
-                    (org.name)))
-
+                    """Your affiliation with %s must be approved by %s %s
+                    before you may log in.
+                    You will receive an email when approved.""" %
+                    (org.name, org.point_of_contact.first_name,
+                     org.point_of_contact.last_name)))
             return HttpResponseRedirect(reverse('home'))
         else:
             # return the bound form with errors

@@ -32,7 +32,7 @@ def user_profile(request, subject=None):
 
 @login_required
 def authenticated_organization_home(request):
-
+    up, created = UserProfile.objects.get_or_create(user=request.user)
     orgs_for_poc = Organization.objects.filter(point_of_contact=request.user)
     for o in orgs_for_poc:
         affiliation_requests = OrganizationAffiliationRequest.objects.filter(
@@ -56,7 +56,8 @@ def authenticated_organization_home(request):
                                                 oar.user.username)))
             messages.info(request, msg)
 
-    context = {'organizations': request.user.userprofile.organizations}
+    context = {'organizations': request.user.userprofile.organizations,
+               'profile': up}
     template = 'organization-user-dashboard.html'
     return render(request, template, context)
 
@@ -106,7 +107,7 @@ def authenticated_enduser_home(request):
 @login_required
 def user_search(request):
 
-    name = _('People Search')
+    name = _('User Search')
     context = {'name': name}
 
     if request.method == 'POST':

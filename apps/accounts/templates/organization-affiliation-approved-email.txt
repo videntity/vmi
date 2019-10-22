@@ -1,8 +1,16 @@
-Hi {{TO_FIRST_NAME}} {{TO_LAST_NAME}},
+Hello {{TO_FIRST_NAME}} {{TO_LAST_NAME}},
 
-Your account was successfully affiliated with {{ORGANIZATION_NAME}}.
+Your account was successfully affiliated with {{ ORGANIZATION_NAME }}.
 
+
+You can now login to {{KILLER_APP_URI}}.
+
+Manage all your account related settings here:
+
+{{settinga.HOSTNAME_URL}}
+
+For enhanced security you should enable multi-factor authentication.
 
 Thanks,
 
-The {{APPLICATION_TITLE}} Team
+{{ ORGANIZATION_NAME }} and the {{settings.APPLICATION_TITLE}} Team

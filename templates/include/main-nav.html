@@ -16,7 +16,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li class="col"><a href="{% url 'home' %}"> Home</a></li>
 
-                       
+                       {% if request.user|has_group:"OrganizationalAgent" %}
                         <li class="dropdown col">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 Organizations<b class="caret"></b>
@@ -29,6 +29,22 @@
                             {% endfor %}
                             </ul>
                         </li>
+                        {% endif %}
+
+                       {% if request.user|has_group:"ApplicationDeveloper" %}
+                        <li class="dropdown col">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Developer<b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                            
+                                <li>
+                                    <a href="{% url 'oauth2_provider:list' %}">Developer Application Registration</a>
+                                </li>
+                           
+                            </ul>
+                        </li>
+                        {% endif %}
 
                         {% if user.is_authenticated %}
                         <li class="dropdown col">
@@ -56,9 +72,6 @@
                                 </li>
                                 <li>
                                     <a href="{% url 'oauth2_provider:authorized-token-list' %}">Authorized Applications</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'oauth2_provider:list' %}">Developer Application Registration</a>
                                 </li>
                                 <li>
                                     <a href="{% url 'password_recovery_passphrase_home' %}">Password Recovery Passphrase</a>
