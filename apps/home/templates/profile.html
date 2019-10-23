@@ -19,7 +19,7 @@
                             </a>
                         </div>
                     </div>
-                    {% if user.userprofile.ial == '1' %}
+                    {% if user.userprofile.ial == '1' and user != request.user %}
                     <div class="row">
                         <div class="col my-3">
                             <a href="{% url 'inperson_id_verify' user.userprofile.subject|default:'None' %}">
@@ -38,7 +38,7 @@
                     <p>Phone: {{user.userprofile.mobile_phone_number|default:"—"}}</p>
                     <p>
                         Identity Level: {{user.userprofile.ial}}
-                        {% if user.userprofile.ial == '1' %}
+                        {% if user.userprofile.ial == '1' and user != request.user %}
                             (<a href="{% url 'inperson_id_verify' user.userprofile.subject|default:'None' %}">Verify Identity of {{user.userprofile}}</a>)
                         {% elif user.userprofile.ial == '2' %}
                             (<a href="{% url 'ial_two_to_one_downgrade' user.userprofile.subject|default:'None' %}">Downgrade Identity Level from 2→1</a>)
