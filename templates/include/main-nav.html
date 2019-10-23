@@ -14,9 +14,8 @@
 
                 <div class="navbar-expand">
                     <ul class="nav navbar-nav navbar-right">
-                        {# unauthenticated users only see the home page anyway #}
-                        {% if request.user.is_authenticated %}
-                        <li class="col"><a href="{% url 'home' %}"> Home</a></li>
+                        {% if request.path != '/' %}
+                        <li class="col"><a href="{% url 'home' %}">Home</a></li>
                         {% endif %}
 
                        {% if request.user|has_group:"OrganizationalAgent" %}
