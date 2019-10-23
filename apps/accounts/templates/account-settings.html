@@ -19,13 +19,15 @@
 
             <div class="hero-unit">
                 <div class="row">
-                    <form class="well" method="post" action="" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ form|bootstrap }}
-                        <input type="submit" class="btn btn-primary"  value="{% trans 'Continue' %}" />
-                        <br/>
-                        <a href="javascript:history.go(-1)">{% trans "Go Back" %}</a>
-                    </form>
+                    <div class="col-12">
+                        <form class="well" method="post" action="" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|bootstrap }}
+                            <input type="submit" class="btn btn-primary"  value="{% trans 'Continue' %}" />
+                            <br/>
+                            <a href="javascript:history.go(-1)">{% trans "Go Back" %}</a>
+                        </form>
+                    </div>
                 </div>
             </div>
 {% endblock %}

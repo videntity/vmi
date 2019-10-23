@@ -12,21 +12,21 @@
                 <div class="col">
                      <h3>Hello {{request.user.first_name|title}} {{request.user.last_name|title}}.</h3>
                      <p>Your account number is <span class="label label-default">{{ profile.subject }}</span>
-                     and your identity assurance level <span class="label label-success">{{profile.ial}}</span>.</p> 
-                     
+                     and your identity assurance level <span class="label label-success">{{profile.ial}}</span>.</p>
+
                      <h3> User search allows you find accounts and update certain details.</h3>
                     {% if request.user|has_group:"IdentityAssuranceTrustedReferee" %}
                     <a href="{% url 'user_search' %}">
                         <button type="button" class="btn btn-primary">User Search</button>
                     </a>
                     {% endif %}
-                    
+
                      <h3>Looking for {{settings.KILLER_APP_TITLE}}. Login to that application using the link below.</h3>
-                    
+
                    <a href="{{settings.KILLER_APP_URI}}">
                         <button type="button" class="btn btn-primary">Login to the {{settings.KILLER_APP_TITLE}} Application</button>
                     </a>
-                    
+
                 </div>
             </div><!-- /.row -->
 {% endblock %}

@@ -177,3 +177,14 @@ h2 {
 h3 {
     font-size: 1.2rem;
 }
+
+.org-logo__block {
+    height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.org-logo__img {
+    object-fit: contain; 
+    height: 100%;
+}
