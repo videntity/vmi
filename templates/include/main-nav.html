@@ -14,7 +14,10 @@
 
                 <div class="navbar-expand">
                     <ul class="nav navbar-nav navbar-right">
+                        {# unauthenticated users only see the home page anyway #}
+                        {% if request.user.is_authenticated %}
                         <li class="col"><a href="{% url 'home' %}"> Home</a></li>
+                        {% endif %}
 
                        {% if request.user|has_group:"OrganizationalAgent" %}
                         <li class="dropdown col">
@@ -37,16 +40,16 @@
                                 Developer<b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                            
+
                                 <li>
                                     <a href="{% url 'oauth2_provider:list' %}">Developer Application Registration</a>
                                 </li>
-                           
+
                             </ul>
                         </li>
                         {% endif %}
 
-                        {% if user.is_authenticated %}
+                        {% if request.user.is_authenticated %}
                         <li class="dropdown col">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 Settings<b class="caret"></b>
@@ -84,11 +87,9 @@
                                 </li>
                             </ul>
                         </li>
-                        {% else %}
-                        <li><a href="{% url 'mfa_login' %}">Login</a></li>
                         {% endif %}
 
-                        {% if user.is_authenticated %}
+                        {% if request.user.is_authenticated %}
                         <li><a href="{% url 'mylogout' %}">Logout</a></li>
                         {% endif %}
                     </ul>
