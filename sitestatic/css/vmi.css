@@ -136,7 +136,7 @@ body {
 .dropdown-menu li {
     z-index: 0;
     font-size: 0.9em;
-    margin-top: 0.25em;
+    margin-top: 0.5em;
 }
 
 .form-control {
