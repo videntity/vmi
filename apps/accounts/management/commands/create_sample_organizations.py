@@ -14,22 +14,22 @@ default_groups_for_org_agents = [
     'OrganizationalAgent', 'IdentityAssuranceTrustedReferee']
 
 
+def create_user(username, password, email, first_name, last_name):
+    try:
+        u = User.objects.get(username=username)
+    except User.DoesNotExist:
+        # Otherwise we instantiate the super user
+        u = User(username=username, first_name=first_name, last_name=last_name,
+                 email=email)
+    u.set_password(password)
+    u.save()
+    return True
+
+
+
 def create_sample_organizations():
-
-    created_orgs = []
-    for organization in organizations:
-
-        o, created = Organization.objects.get_or_create(name=organization['name'],
-                                                        slug=organization['slug'])
-
-        for g in default_groups_for_org_agents:
-            group, created = Group.objects.get_or_create(name=g)
-            o.default_groups_for_agents.add(group)
-            o.save()
-
-        created_orgs.append(o)
-
-    return created_orgs
+    # Pass - removing this is problematic and unnecessary.
+    return []
 
 
 class Command(BaseCommand):
