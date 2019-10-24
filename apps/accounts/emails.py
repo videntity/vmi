@@ -3,7 +3,9 @@ from django.conf import settings
 from django.urls import reverse
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
+
 # Copyright Videntity Systems Inc.
+__author__ = "Alan Viars"
 
 
 def random_secret(y=40):
@@ -55,7 +57,7 @@ def send_password_reset_url_via_email(user, reset_key):
                      reverse('password_reset_email_verified',
                              args=(reset_key,)))
     html_content = """'
-    <P>
+    <p>
     Click on the link to reset your password.<br>
     <a href='%s'> %s</a>
     </p>
@@ -63,10 +65,10 @@ def send_password_reset_url_via_email(user, reset_key):
     Thank you,
     </p>
     <p>
-    The Team
+    The %s Team
 
-    </P>
-    """ % (link, link)
+    </p>
+    """ % (link, link, settings.ORGANIZATION_NAME)
 
     text_content = """
     Click on the link to reset your password.
@@ -75,18 +77,17 @@ def send_password_reset_url_via_email(user, reset_key):
 
     Thank you,
 
-    The Team
+    The %s Team
 
-    """ % (link)
+    """ % (link, settings.ORGANIZATION_NAME)
     msg = EmailMultiAlternatives(subject, text_content, from_email, [to, ])
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
-    print("SENT")
 
 
 def send_activation_key_via_email(user, signup_key):
     """Do not call this directly.  Instead use create_signup_key in utils."""
-    subject = '[%s]Verify your email.' % (settings.ORGANIZATION_NAME)
+    subject = '[%s]Verify your email address' % (settings.ORGANIZATION_NAME)
     from_email = settings.DEFAULT_FROM_EMAIL
     to = [user.email, ]
     activation_link = '%s%s' % (settings.HOSTNAME_URL,
@@ -95,25 +96,26 @@ def send_activation_key_via_email(user, signup_key):
 
     html_content = """
        <p>
-       Hello %s. Please click the link to activate your account.<br>
+       Hello %s %s. Please verify your email address.<br>
        <a href=%s a> %s</a><br>
 
        Thank you,<br>
 
-       The Team
+       The %s Team
        </p>
-       """ % (user.first_name, activation_link, activation_link)
+       """ % (user.first_name, user.last_name, activation_link, activation_link,
+              settings.ORGANIZATION_NAME)
 
     text_content = """
-       Hello %s. Please click the link to activate your account.
+       Hello %s %s. Please verify your email address.
 
         %s
 
        Thank you,
 
-       The Team
+       The %s Team
 
-       """ % (user.first_name, activation_link)
+       """ % (user.first_name, user.last_name, activation_link, settings.ORGANIZATION_NAME)
 
     msg = EmailMultiAlternatives(subject=subject, body=text_content,
                                  to=to, from_email=from_email)
@@ -121,18 +123,20 @@ def send_activation_key_via_email(user, signup_key):
     msg.send()
 
 
-def send_new_org_account_approval_email(to_user, about_user):
+def send_new_org_account_approval_email(to_user, about_user, organization):
     plaintext = get_template('approve-organization-affiliation-email.txt')
     htmly = get_template('approve-organization-affiliation-email.txt')
     context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
                "TO_FIRST_NAME": to_user.first_name,
                "TO_LAST_NAME": to_user.last_name,
-               "FROM_FIRST_NAME": about_user.first_name,
-               "FROM_LAST_NAME": about_user.last_name
+               "ABOUT_FIRST_NAME": about_user.first_name,
+               "ABOUT_LAST_NAME": about_user.last_name,
+               "HOSTNAME_URL": settings.HOSTNAME_URL,
+               "ORGANIZATION_NAME": organization.name,
                }
 
-    subject = """[%s]A New user account has been created for your organization that requires your approval.""" % (
-        settings.ORGANIZATION_NAME)
+    subject = """[%s]New agent account for %s requires your approval.""" % (
+        settings.ORGANIZATION_NAME, organization.name)
     from_email = settings.DEFAULT_FROM_EMAIL
     to = [to_user.email, ]
 
@@ -145,16 +149,19 @@ def send_new_org_account_approval_email(to_user, about_user):
     msg.send()
 
 
-def send_org_account_approved_email(to_user):
+def send_org_account_approved_email(to_user, organization):
     plaintext = get_template('organization-affiliation-approved-email.txt')
     htmly = get_template('organization-affiliation-approved-email.html')
     context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
                "TO_FIRST_NAME": to_user.first_name,
                "TO_LAST_NAME": to_user.last_name,
+               "HOSTNAME_URL": settings.HOSTNAME_URL,
+               "ORGANIZATION_NAME": organization.name,
+               "KILLER_APP_URI": settings.KILLER_APP_URI
                }
 
-    subject = """[%s]Your account has been approved by your organization's point of contact""" % (
-        settings.ORGANIZATION_NAME)
+    subject = """[%s]Your account has been approved by %s's point of contact""" % (
+        settings.ORGANIZATION_NAME, organization.name)
     from_email = settings.DEFAULT_FROM_EMAIL
     to = [to_user.email, ]
 
@@ -164,5 +171,4 @@ def send_org_account_approved_email(to_user):
     msg = EmailMultiAlternatives(subject=subject, body=text_content,
                                  to=to, from_email=from_email)
     msg.attach_alternative(html_content, 'text/html')
-    print("HERE!")
     msg.send()

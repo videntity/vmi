@@ -10,25 +10,30 @@
 {% block Content %}
             <div class="row">
                 <div class="col well">
+                    <div class="row">
+                        <div class="col">
+                            <h1 class="page-title text-center">{{organization.name}}</h1>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="org-logo__block">
+                            <img src="{{organization.picture_url}}" alt="image" class="org-logo__img"/>
+                        </div>
+                    </div>
                     <div class="row text-center">
                         <div class="col">
-                            <h1 class="page-title">{{organization.name}}</h1>
-                            <div>
-                                <img src="{{organization.picture_url}}" alt="image" style="max-width:100%";/>
-                            </div>
-
                             <h2>Signup URL<h2>
-                            <pre>{{ signup_url }}</pre>
+                            <pre style="overflow: visible;"><a href="{{signup_url}}">{{ signup_url }}</a></pre>
 
                             <h2>Point of Contact<h2>
-                            <h4><a href="{% url 'user_profile_subject' organization.point_of_contact.userprofile.sub  %}"">{{organization.point_of_contact.first_name|title}}  {{organization.point_of_contact.last_name|title}}</a></h4>
+                            <h4>{{organization.point_of_contact.first_name|title}}  {{organization.point_of_contact.last_name|title}}</h4>
 
                             <h2>Agents:</h2>
                             {% for a in organization.users.all %}
                             <h4>
-                                <a href="{% url 'user_profile_subject' a.userprofile.sub  %}">
+
                                     {{a.first_name|title}} {{a.last_name|title}}
-                                </a>
+
                                 {% if organization.point_of_contact == request.user %}
                                 |
                                 <a href={% url 'remove_agent_from_organization' organization.slug a.id  %}>Remove</a>
@@ -36,7 +41,7 @@
                             </h4>
                             {% endfor %}
                         </div>
-                    </div> <!-- /.row -->
+                    </div>
                 </div> <!-- /.col.well -->
             </div> <!-- /.row -->
 {% endblock %}

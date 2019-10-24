@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 from django.contrib import messages
 from ..accounts.models import UserProfile, Organization, OrganizationAffiliationRequest
 from django.contrib.auth.decorators import login_required
@@ -25,14 +26,14 @@ def user_profile(request, subject=None):
                 and not request.user.has_perm('accounts.view_userprofile')):
             raise Http404()
         user = up.user
-    context = {'user': user}
+    context = {'user': user, 'settings': settings}
     template = 'profile.html'
     return render(request, template, context)
 
 
 @login_required
 def authenticated_organization_home(request):
-
+    up, created = UserProfile.objects.get_or_create(user=request.user)
     orgs_for_poc = Organization.objects.filter(point_of_contact=request.user)
     for o in orgs_for_poc:
         affiliation_requests = OrganizationAffiliationRequest.objects.filter(
@@ -56,7 +57,8 @@ def authenticated_organization_home(request):
                                                 oar.user.username)))
             messages.info(request, msg)
 
-    context = {'organizations': request.user.userprofile.organizations}
+    context = {'organizations': request.user.userprofile.organizations,
+               'profile': up}
     template = 'organization-user-dashboard.html'
     return render(request, template, context)
 
@@ -106,7 +108,7 @@ def authenticated_enduser_home(request):
 @login_required
 def user_search(request):
 
-    name = _('People Search')
+    name = _('User Search')
     context = {'name': name}
 
     if request.method == 'POST':
