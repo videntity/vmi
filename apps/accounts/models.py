@@ -689,7 +689,8 @@ class PhoneVerifyCode(models.Model):
                 number = "%s" % (up.mobile_phone_number)
                 sns.publish(
                     PhoneNumber=number,
-                    Message="Your code is : %s" % (self.code),
+                    Message="Your verification code for %s is : %s" % (self.settings.ORGANIZATION_NAME,
+                                                                       self.code),
                     MessageAttributes={
                         'AWS.SNS.SMS.SenderID': {
                             'DataType': 'String',
