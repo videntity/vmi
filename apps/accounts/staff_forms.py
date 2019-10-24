@@ -26,9 +26,9 @@ class StaffSignupForm(forms.Form):
     # Org Agent Signup Form.
     domain = forms.CharField(disabled=True, max_length=512, required=False,
                              help_text=_("You must register using this email domain."))
-    
+
     picture = forms.ImageField(required=False,
-                                help_text=_("""Upload your profile picture."""))
+                               help_text=_("""Upload your profile picture."""))
     username = forms.CharField(max_length=30, label=_("Username*"))
     pick_your_account_number = forms.CharField(max_length=10, label=_(
         "Customize Your Own Account Number"), help_text=_("""Pick up to 10 numbers to be included in your
@@ -96,7 +96,6 @@ class StaffSignupForm(forms.Form):
             return picture
         else:
             raise ValidationError(_("Couldn't read uploaded image"))
-
 
     def clean_email(self):
         email = self.cleaned_data.get('email', "").strip().lower()
