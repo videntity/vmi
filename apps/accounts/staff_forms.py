@@ -97,10 +97,7 @@ class StaffSignupForm(forms.Form):
         else:
             raise ValidationError(_("Couldn't read uploaded image"))
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 48505c08a5ad1917a2cb2160e7ced9c64b530912
     def clean_email(self):
         email = self.cleaned_data.get('email', "").strip().lower()
 
