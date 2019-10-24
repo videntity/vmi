@@ -4,7 +4,6 @@
 {% block breadcrumbs %}
                     <ol class="breadcrumb">
                         <li ><a href="/">Home</a></li>
-                        <li ><a href="{% url 'user_search' %}">Search</a></li>
                         <li><a href="{% url 'user_profile_subject' up.subject %}">{{user.userprofile}}</a></li>
                         <li class="active"><a href="{% url 'account_settings_subject' up.subject|default:'None' %}">Edit Profile</a></li>
                     </ol>
@@ -19,13 +18,14 @@
 
             <div class="hero-unit">
                 <div class="row">
-                    <form class="well" method="post" action="" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ form|bootstrap }}
-                        <input type="submit" class="btn btn-primary"  value="{% trans 'Continue' %}" />
-                        <br/>
-                        <a href="javascript:history.go(-1)">{% trans "Go Back" %}</a>
-                    </form>
+                    <div class="col-12">
+                        <form class="well" method="post" action="" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|bootstrap }}
+                        <p><input type="submit" class="btn btn-primary"  value="{% trans 'Continue' %}" /></p>
+                        <p><a href="javascript:history.go(-1)">{% trans "Go Back" %}</a></p>
+                        </form>
+                    </div>
                 </div>
             </div>
 {% endblock %}

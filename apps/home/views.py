@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 from django.contrib import messages
 from ..accounts.models import UserProfile, Organization, OrganizationAffiliationRequest
 from django.contrib.auth.decorators import login_required
@@ -25,7 +26,7 @@ def user_profile(request, subject=None):
                 and not request.user.has_perm('accounts.view_userprofile')):
             raise Http404()
         user = up.user
-    context = {'user': user}
+    context = {'user': user, 'settings': settings}
     template = 'profile.html'
     return render(request, template, context)
 
