@@ -70,7 +70,7 @@ class SignupForm(forms.Form):
                                                      as birth sex and a custom value may be supplied.""")
     gender_identity_custom_value = forms.CharField(required=False,
                                                    help_text="If gender identity is custom, include your gender here.")
-    birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=YEARS),
+    birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=settings.BIRTHDATE_YEARS),
                                  required=False)
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password"),
