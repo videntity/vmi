@@ -25,11 +25,14 @@ class StaffSignupForm(forms.Form):
 
     # Org Agent Signup Form.
     domain = forms.CharField(disabled=True, max_length=512, required=False,
-                             help_text="You must register using this email domain.")
-    username = forms.CharField(max_length=30, label=_("User name*"))
+                             help_text=_("You must register using this email domain."))
+    
+    picture = forms.ImageField(required=False,
+                                help_text=_("""Upload your profile picture."""))
+    username = forms.CharField(max_length=30, label=_("Username*"))
     pick_your_account_number = forms.CharField(max_length=10, label=_(
-        "Customize Your Own Account Number"), help_text="""Pick up to 10 numbers to be included in your
-                                               account number. If left blank, numbers will be used.""",
+        "Customize Your Own Account Number"), help_text=_("""Pick up to 10 numbers to be included in your
+                                               account number. If left blank, numbers will be used."""),
         required=False)
     email = forms.EmailField(max_length=150, label=_("Email*"), required=True)
     mobile_phone_number = forms.CharField(required=True,
@@ -84,6 +87,16 @@ class StaffSignupForm(forms.Form):
             raise forms.ValidationError(err.error_list[0])
 
         return self.cleaned_data
+
+    def clean_picture(self):
+        picture = self.cleaned_data.get('picture', False)
+        if picture:
+            if picture.size > int(settings.MAX_PROFILE_PICTURE_SIZE):
+                raise ValidationError(_("Image file too large."))
+            return picture
+        else:
+            raise ValidationError(_("Couldn't read uploaded image"))
+
 
     def clean_email(self):
         email = self.cleaned_data.get('email', "").strip().lower()
@@ -158,6 +171,7 @@ class StaffSignupForm(forms.Form):
                 'pick_your_account_number', ""),
             nickname=self.cleaned_data.get('nickname', ''),
             middle_name=self.cleaned_data.get('middle_name', ""),
+            picture=self.cleaned_data.get('picture'),
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
             agree_tos=settings.CURRENT_TOS_VERSION,
             attest_training_completed=True,

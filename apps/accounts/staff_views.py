@@ -101,7 +101,7 @@ def create_org_account(request, organization_slug,
     org = get_object_or_404(Organization, slug=organization_slug)
     name = _("Staff Signup for %s") % (org.name)
     if request.method == 'POST':
-        form = StaffSignupForm(request.POST)
+        form = StaffSignupForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
             if user.email:
