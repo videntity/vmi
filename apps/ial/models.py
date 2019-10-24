@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from datetime import date
 from collections import OrderedDict
 from django.conf import settings
-
+from django.utils.translation import ugettext_lazy as _
 __author__ = "Alan Viars"
 
 ID_DOCUMENT_TYPES = (('idcard', """ID Card"""),
@@ -18,9 +18,8 @@ ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES = (("pipp", "Physical In-Person Pro
                                                 ("eid", "Online verification of an electronic ID card"),
                                                 ("", "Blank"))
 
-EVIDENCE_TYPE_CHOICES = (('id_document', 'Verification based on any kind of government issued identity document'),
-                         ('utility_bill', 'Verification based on a utility bill'),
-                         ('qes', 'Verification based on a eIDAS Qualified Electronic Signature'))
+EVIDENCE_TYPE_CHOICES = (('id_document', _('Verification based on any kind of government issued identity document')),
+                         ('utility_bill', _('Verification based on a utility bill')))
 
 
 class IdentityAssuranceLevelDocumentation(models.Model):
@@ -49,7 +48,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
     evidence_type = models.CharField(
         choices=EVIDENCE_TYPE_CHOICES, max_length=64, default='', blank=True)
 
-    claims = models.TextField(help_text="A whitespace delimited list of claims supported by this evidence.",
+    claims = models.TextField(help_text=_("A whitespace delimited list of claims supported by this evidence."),
                               blank=True, default='')
 
     id_document_type = models.CharField(choices=ID_DOCUMENT_TYPES,
@@ -66,7 +65,8 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         max_length=250, blank=True, default='')
     id_document_issuer_date_of_issuance = models.DateField(
         blank=True, null=True)
-    id_document_issuer_date_of_expiry = models.DateField(blank=True, null=True)
+    id_document_issuer_date_of_expiry = models.DateField(blank=True, null=True,
+                                                         help_text=_("Format YYYY-MM-DD"))
 
     utility_bill_provider_name = models.CharField(
         max_length=250, blank=True, default='')
@@ -92,11 +92,11 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         max_length=6,
         default='',
         blank=False)
-    evidence = models.CharField(
-        choices=settings.IAL_EVIDENCE_CLASSIFICATIONS,
-        max_length=256,
-        default='',
-        blank=True)
+    evidence = models.CharField(verbose_name=_('Identity Assurance Classification'),
+                                choices=settings.IAL_EVIDENCE_CLASSIFICATIONS,
+                                max_length=256,
+                                default='',
+                                blank=True)
 
     evidence_subclassification = models.CharField(
         choices=settings.IAL_EVIDENCE_SUBCLASSIFICATIONS,
@@ -105,13 +105,13 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         blank=True)
 
     id_verify_description = models.TextField(blank=True, default='',
-                                             help_text="""Describe the evidence given to assure this person's
-                                                identity has been verified.""")
+                                             help_text=_("""Describe the evidence given to assure this person's
+                                                identity has been verified."""))
 
     id_assurance_downgrade_description = models.TextField(
         blank=True,
         default='',
-        help_text="""Complete this description when downgrading the ID assurance level.""")
+        help_text=_("Complete this description when downgrading the ID assurance level."))
 
     note = models.TextField(
         blank=True,
@@ -123,7 +123,11 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         default="""{"subject_user":null, "history":[]}""",
         help_text="JSON Object")
 
-    expires_at = models.DateField(blank=True, null=True)
+    expires_at = models.DateField(verbose_name="Invalidate Identity Assurance Date",
+                                  blank=True, null=True,
+                                  help_text=_("""Format YYYY-MM-DD.
+                                              If left blank the Identity assurance level of 2
+                                              will not expire."""))
     verification_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -190,6 +194,18 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         history['updated_at'] = str(self.updated_at)
         # append the history
         metadata['history'].append(history)
+
+        # Sent the expire
+
+        # TODO Potential enhancement add to Github to discuss. May want to be a settting,
+        #    if self.id_document_issuer_date_of_expiry and not self.expires_at:
+        #      self.expires_at = self.id_document_issuer_date_of_expiry
+
+        # Set the ID description if blank
+        if not self.id_verify_description:
+            self.id_verify_description = "%s\n%s\n%s" % (self.id_documentation_verification_method_type,
+                                                         self.evidence_type,
+                                                         self.id_document_type)
 
         if commit:
             self.metadata = json.dumps(metadata)
