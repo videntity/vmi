@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import datetime
 import dj_database_url
 from django.contrib.messages import constants as messages
 from getenv import env
@@ -24,7 +25,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', '@+tmixefm9-bu1eknb4k^5dj(f2z0^97c$zan9akdr^4s8cc55')
+SECRET_KEY = env(
+    'SECRET_KEY', '@+tmixefm9-bu1eknb4k^5dj(f2z0^97c$zan9akdr^4s8cc55')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool_env(env('DEBUG', True))
@@ -485,4 +487,16 @@ SOCIAL_AUTH_REDIRECT_IS_HTTPS = bool_env(
     env('SOCIAL_AUTH_REDIRECT_IS_HTTPS', False))
 
 # Blank means skip EC2.
-EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES = env('EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES', "EC2_PARAMSTORE")
+EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES = env(
+    'EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES', "EC2_PARAMSTORE")
+
+# Set an acceptable age range for birthdays, registering,
+
+now = datetime.datetime.now()
+MINIMUM_AGE = int(env('MINIMUM_AGE', '18'))
+MINIMUM_BIRTH_YEAR = now.year - MINIMUM_AGE
+
+BIRTHDATE_YEARS = [x for x in range(1900, MINIMUM_BIRTH_YEAR)]
+
+# Set possible expiration for identity documents e.g. driver's license).
+EXPIRY_DATE_ACCEPTABLE_YEARS = [x for x in range(now.year, 2050)]
