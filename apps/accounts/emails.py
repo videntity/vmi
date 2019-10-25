@@ -57,7 +57,7 @@ def send_activation_key_via_email(user, signup_key):
     htmly = get_template('verify-your-email-email.html')
 
     subject = '[%s]Verify your email address' % (settings.ORGANIZATION_NAME)
-        
+
     from_email = settings.DEFAULT_FROM_EMAIL
     to = [user.email, ]
     activation_link = '%s%s' % (settings.HOSTNAME_URL,
@@ -67,7 +67,7 @@ def send_activation_key_via_email(user, signup_key):
     context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
                "FIRST_NAME": user.first_name,
                "LAST_NAME": user.last_name,
-               "ACTIVATION_LINK": activation_link,           
+               "ACTIVATION_LINK": activation_link,
                }
 
     text_content = plaintext.render(context)

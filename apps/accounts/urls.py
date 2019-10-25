@@ -45,10 +45,10 @@ urlpatterns = [
         name='reset_password_with_recovery_passphrase'),
     url(r'^password-recovery-passphrase/reset-after-passphrase-verified/(?P<username>[^/]+)/(?P<reset_password_key>[^/]+)/$',
         reset_password_after_passphrase_verified, name='reset_password_after_passphrase_verified'),
-    
-    
-    
-    
+
+
+
+
     url(r"^organization/(?P<organization_slug>[^/]+)/remove-agent/(?P<user_id>[^/]+)",
         remove_agent_from_organization,
         name='remove_agent_from_organization'),
@@ -78,7 +78,8 @@ urlpatterns = [
 
 
     # Organization related
-    url(r'^find-org-to-create-account', find_org_to_create_account, name='find_org_to_create_account'),
+    url(r'^find-org-to-create-account', find_org_to_create_account,
+        name='find_org_to_create_account'),
 
     url(r'^create-org-account/(?P<organization_slug>[^/]+)/',
         create_org_account, name='create_org_account'),

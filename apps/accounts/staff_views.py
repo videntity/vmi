@@ -107,8 +107,8 @@ def create_org_account(request, organization_slug,
             if user.email:
                 messages.success(request, _("Your account was created."))
                 messages.info(request, _("Please "
-                                   "check your email to confirm your email "
-                                   "address."))
+                                         "check your email to confirm your email "
+                                         "address."))
             messages.warning(
                 request, _(
                     """Your affiliation with %s must be approved by %s %s

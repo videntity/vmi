@@ -18,16 +18,17 @@ agree_tos_label = mark_safe(
     'Do you agree to the <a href="%s" target="_blank">terms of service</a>?' % (settings.TOS_URI))
 
 attest_training_completed_label = mark_safe(
-    'Yes, I attest I have completed the <a href="%s" target="_blank">training</a> and will abide by the code of conduct.' % (settings.TRAINING_URI))
+    """Yes, I attest I have completed the <a href="%s" target="_blank">training</a>
+    and will abide by the code of conduct.""" % (settings.TRAINING_URI))
 
 
 class StaffSignupForm(forms.Form):
     # Org Agent Signup Form.
     domain = forms.CharField(disabled=True, max_length=512, required=False,
                              help_text=_("You must register using this email domain."))
-    
+
     picture = forms.ImageField(required=False,
-                                help_text=_("""Upload your profile picture."""))
+                               help_text=_("""Upload your profile picture."""))
     username = forms.CharField(max_length=30, label=_("Username*"))
     pick_your_account_number = forms.CharField(max_length=10, label=_(
         "Customize Your Own Account Number"), help_text=_("""Pick up to 10 numbers to be included in your
@@ -93,7 +94,6 @@ class StaffSignupForm(forms.Form):
             if picture.size > int(settings.MAX_PROFILE_PICTURE_SIZE):
                 raise ValidationError(_("Image file too large."))
         return picture
-
 
     def clean_email(self):
         email = self.cleaned_data.get('email', "").strip().lower()
