@@ -11,7 +11,7 @@ from .staff_views import (create_org_account,
                           approve_org_affiliation,
                           deny_org_affiliation,
                           request_org_affiliation)
-from .sms_mfa_views import mfa_login, mfa_code_confirm
+from .sms_mfa_views import mfa_login
 from .mfa_views import (
     DisableSMSMFAView,
     EnableSMSMFAView,
@@ -36,7 +36,7 @@ __author__ = "Alan Viars"
 
 urlpatterns = [
     url(r'^logout', mylogout, name='mylogout'),
-
+    url(r'^login/(?P<slug>[^/]+)?', mfa_login, name='mfa_login'),
     url(r'^password-recovery-passphrase/$', password_recovery_passphrase_home,
         name='password_recovery_passphrase_home'),
     url(r'^password-recovery-passphrase/generate', generate_password_recovery_passphrase,
@@ -45,9 +45,10 @@ urlpatterns = [
         name='reset_password_with_recovery_passphrase'),
     url(r'^password-recovery-passphrase/reset-after-passphrase-verified/(?P<username>[^/]+)/(?P<reset_password_key>[^/]+)/$',
         reset_password_after_passphrase_verified, name='reset_password_after_passphrase_verified'),
-
-
-    url(r'^p', mylogout, name='mylogout'),
+    
+    
+    
+    
     url(r"^organization/(?P<organization_slug>[^/]+)/remove-agent/(?P<user_id>[^/]+)",
         remove_agent_from_organization,
         name='remove_agent_from_organization'),
@@ -62,7 +63,7 @@ urlpatterns = [
         account_settings, name='account_settings_subject'),
     url(r'^settings', account_settings, name='account_settings'),
     url(r'^delete', delete_account, name='delete_account'),
-    url(r'^login/(?P<slug>[^/]+)?', mfa_login, name='mfa_login'),
+
     url(r'^upload-profile-picture/(?P<subject>[^/]+)',
         upload_profile_picture, name='upload_profile_picture_subject'),
     url(r'^upload-profile-picture', upload_profile_picture,
@@ -74,9 +75,7 @@ urlpatterns = [
         activation_verify, name='activation_verify'),
     url(r'^forgot-password', forgot_password, name='forgot_password'),
     url(r'^reset-password', reset_password, name='reset_password'),
-    # Confirm MFA ------------------------
-    url(r'mfa/confirm/(?P<uid>[^/]+)/',
-        mfa_code_confirm, name='mfa_code_confirm'),
+
 
     # Organization related
     url(r'^find-org-to-create-account', find_org_to_create_account, name='find_org_to_create_account'),
