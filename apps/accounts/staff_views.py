@@ -105,15 +105,15 @@ def create_org_account(request, organization_slug,
         if form.is_valid():
             user = form.save()
             if user.email:
-                messages.success(request,
-                                 _("Please "
-                                   "check your email to confirm your email "
-                                   "address."))
+                messages.success(request, _("Your account was created."))
+                messages.info(request, _("Please "
+                                         "check your email to confirm your email "
+                                         "address."))
             messages.warning(
                 request, _(
                     """Your affiliation with %s must be approved by %s %s
                     before you may log in.
-                    You will receive an email when approved.""" %
+                    You will receive an email when your account is approved.""" %
                     (org.name, org.point_of_contact.first_name,
                      org.point_of_contact.last_name)))
             return HttpResponseRedirect(reverse('home'))
