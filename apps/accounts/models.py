@@ -14,7 +14,6 @@ import boto3
 from phonenumber_field.modelfields import PhoneNumberField
 from .emails import (send_password_reset_url_via_email,
                      send_activation_key_via_email,
-                     mfa_via_email,
                      send_new_org_account_approval_email)
 from .subject_generator import generate_subject_id
 from collections import OrderedDict
@@ -336,7 +335,6 @@ class UserProfile(models.Model):
     picture = models.ImageField(upload_to='profile-picture/', null=True)
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
                                 db_index=True, null=False)
-
     nickname = models.CharField(
         max_length=255,
         default='',
@@ -586,74 +584,6 @@ MFA_CHOICES = (
     ('FIDO', "FIDO U2F"),
     ('SMS', "Text Message (SMS)"),
 )
-
-
-class MFACode(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    uid = models.CharField(blank=True,
-                           default=uuid.uuid4,
-                           max_length=36, editable=False)
-    tries_counter = models.IntegerField(default=0, editable=False)
-    code = models.CharField(blank=True, max_length=4, editable=False)
-    mode = models.CharField(max_length=5, default="",
-                            choices=MFA_CHOICES)
-    valid = models.BooleanField(default=True)
-    expires = models.DateTimeField(blank=True)
-    added = models.DateField(auto_now_add=True)
-
-    def __str__(self):
-        name = 'To %s via %s' % (self.user,
-                                 self.mode)
-        return name
-
-    @property
-    def endpoint(self):
-        e = ""
-        up = UserProfile.objects.get(user=self.user)
-        if self.mode == "SMS" and up.mobile_phone_number:
-            e = up.mobile_phone_number
-        if self.mode == "EMAIL" and self.user.email:
-            e = self.user.email
-        return e
-
-    def save(self, commit=True, **kwargs):
-        if not self.id:
-            now = pytz.utc.localize(datetime.utcnow())
-            expires = now + timedelta(days=1)
-            self.expires = expires
-            self.code = str(random.randint(1000, 9999))
-            up = UserProfile.objects.get(user=self.user)
-            if self.mode == "SMS" and \
-               up.mobile_phone_number:
-                # Send SMS to up.mobile_phone_number
-                sns = boto3.client(
-                    'sns',
-                    # aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                    # aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                    region_name='us-east-1')
-                number = "%s" % (up.mobile_phone_number)
-                sns.publish(
-                    PhoneNumber=number,
-                    Message="Your code is : %s" % (self.code),
-                    MessageAttributes={
-                        'AWS.SNS.SMS.SenderID': {
-                            'DataType': 'String',
-                            'StringValue': 'MySenderID'
-                        }
-                    }
-                )
-            elif self.mode == "SMS" and not up.mobile_phone_number:
-                print("Cannot send SMS. No phone number on file.")
-            elif self.mode == "EMAIL" and self.user.email:
-                # "Send SMS to self.user.email
-                mfa_via_email(self.user, self.code)
-            elif self.mode == "EMAIL" and not self.user.email:
-                print("Cannot send email. No email_on_file.")
-            else:
-                """No MFA code sent"""
-                pass
-        if commit:
-            super(MFACode, self).save(**kwargs)
 
 
 class PhoneVerifyCode(models.Model):

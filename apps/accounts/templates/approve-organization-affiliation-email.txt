@@ -1,7 +1,7 @@
 Hi {{TO_FIRST_NAME}} {{TO_LAST_NAME}},
 
 A new user {{ABOUT_FIRST_NAME}} {{ABOUT_LAST_NAME}} registered for your organization {{ORGANIZATION_NAME}}
-and requires your approval. Please log in to you account to approve or delete the new account.
+and requires your approval. Please log in to you account to approve or deny the request.
 
 Login here: {{HOSTNAME_URL}}
 

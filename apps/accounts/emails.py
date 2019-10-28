@@ -14,40 +14,6 @@ def random_secret(y=40):
                                  '0123456789') for x in range(y))
 
 
-def mfa_via_email(user, code):
-
-    subject = '[%s] Your code for access to' % (settings.APPLICATION_TITLE)
-    from_email = settings.DEFAULT_FROM_EMAIL
-    to = user.email
-
-    html_content = """'
-    <P>
-    Provide this code on the authentication screen in your browser:<br>
-     %s
-    </p>
-    <p>
-    Thank you,
-    </p>
-    <p>
-    The Team
-
-    </P>
-    """ % (code)
-
-    text_content = """
-    Provide this code on the authentication screen in your browser:
-    %s
-
-    Thank you,
-
-    The Team
-
-    """ % (code)
-    msg = EmailMultiAlternatives(subject, text_content, from_email, [to, ])
-    msg.attach_alternative(html_content, 'text/html')
-    msg.send()
-
-
 def send_password_reset_url_via_email(user, reset_key):
     subject = '[%s]Your password ' \
               'reset request' % (settings.ORGANIZATION_NAME)
@@ -87,36 +53,25 @@ def send_password_reset_url_via_email(user, reset_key):
 
 def send_activation_key_via_email(user, signup_key):
     """Do not call this directly.  Instead use create_signup_key in utils."""
+    plaintext = get_template('verify-your-email-email.txt')
+    htmly = get_template('verify-your-email-email.html')
+
     subject = '[%s]Verify your email address' % (settings.ORGANIZATION_NAME)
+
     from_email = settings.DEFAULT_FROM_EMAIL
     to = [user.email, ]
     activation_link = '%s%s' % (settings.HOSTNAME_URL,
                                 reverse('activation_verify',
                                         args=(signup_key,)))
 
-    html_content = """
-       <p>
-       Hello %s %s. Please verify your email address.<br>
-       <a href=%s a> %s</a><br>
+    context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
+               "FIRST_NAME": user.first_name,
+               "LAST_NAME": user.last_name,
+               "ACTIVATION_LINK": activation_link,
+               }
 
-       Thank you,<br>
-
-       The %s Team
-       </p>
-       """ % (user.first_name, user.last_name, activation_link, activation_link,
-              settings.ORGANIZATION_NAME)
-
-    text_content = """
-       Hello %s %s. Please verify your email address.
-
-        %s
-
-       Thank you,
-
-       The %s Team
-
-       """ % (user.first_name, user.last_name, activation_link, settings.ORGANIZATION_NAME)
-
+    text_content = plaintext.render(context)
+    html_content = htmly.render(context)
     msg = EmailMultiAlternatives(subject=subject, body=text_content,
                                  to=to, from_email=from_email)
     msg.attach_alternative(html_content, 'text/html')
@@ -125,17 +80,15 @@ def send_activation_key_via_email(user, signup_key):
 
 def send_new_org_account_approval_email(to_user, about_user, organization):
     plaintext = get_template('approve-organization-affiliation-email.txt')
-    htmly = get_template('approve-organization-affiliation-email.txt')
+    htmly = get_template('approve-organization-affiliation-email.html')
     context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
                "TO_FIRST_NAME": to_user.first_name,
                "TO_LAST_NAME": to_user.last_name,
                "ABOUT_FIRST_NAME": about_user.first_name,
                "ABOUT_LAST_NAME": about_user.last_name,
-               "HOSTNAME_URL": settings.HOSTNAME_URL,
-               "ORGANIZATION_NAME": organization.name,
                }
 
-    subject = """[%s]New agent account for %s requires your approval.""" % (
+    subject = """[%s]A New organizational account for %s requires your approval.""" % (
         settings.ORGANIZATION_NAME, organization.name)
     from_email = settings.DEFAULT_FROM_EMAIL
     to = [to_user.email, ]

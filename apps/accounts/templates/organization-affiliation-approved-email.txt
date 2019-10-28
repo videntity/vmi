@@ -9,7 +9,6 @@ Manage all your account related settings here:
 
 {{settinga.HOSTNAME_URL}}
 
-For enhanced security you should enable multi-factor authentication.
 
 Thanks,
 

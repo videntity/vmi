@@ -15,14 +15,14 @@ YEARS = [x for x in range(1901, 2000)]
 User = get_user_model()
 
 agree_tos_label = mark_safe(
-    'Do you agree to the <a href="%s">terms of service</a>?' % (settings.TOS_URI))
+    'Do you agree to the <a href="%s" target="_blank">terms of service</a>?' % (settings.TOS_URI))
 
 attest_training_completed_label = mark_safe(
-    'Yes, I attest I have completed the <a href=%s>training</a> and will abide by the code of conduct.' % (settings.TRAINING_URI))
+    """Yes, I attest I have completed the <a href="%s" target="_blank">training</a>
+    and will abide by the code of conduct.""" % (settings.TRAINING_URI))
 
 
 class StaffSignupForm(forms.Form):
-
     # Org Agent Signup Form.
     domain = forms.CharField(disabled=True, max_length=512, required=False,
                              help_text=_("You must register using this email domain."))
@@ -93,9 +93,7 @@ class StaffSignupForm(forms.Form):
         if picture:
             if picture.size > int(settings.MAX_PROFILE_PICTURE_SIZE):
                 raise ValidationError(_("Image file too large."))
-            return picture
-        else:
-            raise ValidationError(_("Couldn't read uploaded image"))
+        return picture
 
 
     def clean_email(self):
