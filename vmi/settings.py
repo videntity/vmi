@@ -278,14 +278,12 @@ ORGANIZATION_TITLE = env(
     'DJANGO_ORGANIZATION_TITLE',
     'Alliance for Better Health')
 ORGANIZATION_URI = env('DJANGO_ORGANIZATION_URI', 'https://abhealth.us')
-POLICY_URI = env(
-    'DJANGO_POLICY_URI',
-    # 'http://sharemy.health/privacy-policy1.0.html'    # <== 404 Not Found
-    'http://sharemy.health/terms-of-service1.0.html'
-)
+POLICY_URI = env('DJANGO_POLICY_URI',
+                 'http://sharemy.health/privacy-policy-1.0.html')
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
 TOS_URI = env('DJANGO_TOS_URI',
-              'http://sharemy.health/terms-of-service1.0.html')
+              'http://sharemy.health/terms-of-service-1.0.html')
+TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 TRAINING_URI = env('DJANGO_TRAINING_URI',
                    'http://sharemy.health/training1.0.html')
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
