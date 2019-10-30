@@ -10,7 +10,9 @@ urlpatterns = [
         inperson_id_verify, name='inperson_id_verify'),
 
 
-    url(r'^administrative-downgrade/(?P<subject>[^/]+)',
+
+    url(r'^administrative-downgrade/(?P<subject>[^/]+)/(?P<pk>[^/]+)',
         two_to_one_downgrade, name='ial_two_to_one_downgrade'),
+
 
 ]

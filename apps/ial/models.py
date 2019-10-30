@@ -29,6 +29,20 @@ class IdentityAssuranceLevelDocumentation(models.Model):
     # Evidence classifications are defined/customizable in settings.
     """
     uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)
+    action = models.CharField(
+        choices=(
+            ('', _('Create a record with an IAL of 1 (Default)')),
+            ('1-TO-2',
+             _('Verify Identity: Change the Identity assurance Level from 1 to 2')),
+            ('2-TO-1',
+             _('Administrative Downgrade of this identity Assurance documentation. IAL 2 --> 1 for this piece of evidence')),
+            ('UPDATE',
+             _('Update details only.'))
+        ),
+        max_length=6,
+        default='',
+        blank=True)
+
     subject_user = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
@@ -36,10 +50,11 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         related_name="subject_user")
     verifying_user = models.ForeignKey(
         get_user_model(),
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         db_index=True,
         null=True,
-        related_name="verifying_user")
+        related_name="verifying_user",
+        blank=True)
 
     id_documentation_verification_method_type = models.CharField(choices=ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES,
                                                                  max_length=16,
@@ -80,18 +95,6 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         max_length=20, blank=True, default='')
     utility_bill_provider_country = models.CharField(max_length=2, blank=True,
                                                      default=settings.DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS)
-
-    action = models.CharField(
-        choices=(
-            ('',
-             'No Action (Detail Update)'),
-            ('1-TO-2',
-             'Verify Identity: Change the Identity assurance Level from 1 to 2'),
-            ('2-TO-1',
-             'Administrative Downgrade: Change the Identity Assurance Level (IAL) from 2 to 1 from IAL 2 to 1.')),
-        max_length=6,
-        default='',
-        blank=False)
     evidence = models.CharField(verbose_name=_('Identity Assurance Classification'),
                                 choices=settings.IAL_EVIDENCE_CLASSIFICATIONS,
                                 max_length=256,
