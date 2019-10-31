@@ -4,6 +4,7 @@ from django.test.client import Client
 from django.urls import reverse
 from ..accounts.models import UserProfile
 from django.contrib.auth.models import Permission
+from .models import IdentityAssuranceLevelDocumentation
 
 
 class IALUpgradeTestCase(TestCase):
@@ -96,14 +97,15 @@ class IALUDowngradeTestCase(TestCase):
 
         self.other_user = self._create_user('alice', 'wonder', first_name='Alice',
                                             last_name='Wonderland', email='alice@example.com')
-
+        self.iald = IdentityAssuranceLevelDocumentation.objects.create(
+            subject_user=self.other_user)
         self.up = UserProfile.objects.create(user=self.user)
         self.other_user_up = UserProfile.objects.create(user=self.other_user)
         self.other_user_subject = self.other_user_up.subject
         self.client = Client()
         self.client.login(username="bob", password="barker")
         self.url = reverse('ial_two_to_one_downgrade',
-                           args=(self.other_user_subject,))
+                           args=(self.other_user_subject, self.iald.pk))
 
     def test_untrursted_wo_permission_cannot_raise_ial(self):
         """

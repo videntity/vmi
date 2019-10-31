@@ -404,8 +404,8 @@ class UserProfile(models.Model):
             super(UserProfile, self).save(**kwargs)
 
     def __str__(self):
-        display = '%s %s (%s)' % (self.user.first_name,
-                                  self.user.last_name,
+        display = '%s %s (%s)' % (self.user.first_name.title(),
+                                  self.user.last_name.title(),
                                   self.user.username)
         return display
 
