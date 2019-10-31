@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 @never_cache
+@ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='GET', block=True)
 @ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='POST', block=True)
 def mfa_login(request, slug=None):
     if not slug:
