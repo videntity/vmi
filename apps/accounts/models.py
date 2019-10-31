@@ -330,7 +330,7 @@ class UserProfile(models.Model):
                                db_index=True)
     middle_name = models.CharField(max_length=255, default='', blank=True,
                                    help_text='Middle Name',)
-    picture = models.ImageField(upload_to='profile-picture/', null=True)
+    picture = models.ImageField(upload_to='profile-picture/', null=True, blank=True)
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
                                 db_index=True, null=False)
     nickname = models.CharField(
@@ -617,7 +617,7 @@ class PhoneVerifyCode(models.Model):
                 number = "%s" % (up.mobile_phone_number)
                 sns.publish(
                     PhoneNumber=number,
-                    Message="Your verification code for %s is : %s" % (self.settings.ORGANIZATION_NAME,
+                    Message="Your verification code for %s is : %s" % (settings.ORGANIZATION_NAME,
                                                                        self.code),
                     MessageAttributes={
                         'AWS.SNS.SMS.SenderID': {
