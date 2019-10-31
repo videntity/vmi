@@ -10,11 +10,11 @@
             <div class="row">
                 <div class="col">
                     <h1 class="page-title">
-                        {% include "include/share-my-health.html" %}
-                        Accounts
+                       Welcome to
+                        <b>{{settings.APPLICATION_TITLE }}</b>
                     </h1 class="page-title">
                     <p> Already have an account? Maybe you want to login to
-                        <a href="{{settings.KILLER_APP_URI}}">{{settings.KILLER_APP_TITLE}}</a>
+                        <a href="{{settings.KILLER_APP_URI}}">{{settings.KILLER_APP_TITLE}}</a>.
                     </p>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="col-lg-6 my-4">
-                    <h2>Create New Account</h2>
+                    <h2>Create New Agent Account</h2>
                     <h3>Find your organization</h3>
                     {% include "include/find-org-to-create-account.html" %}
 
