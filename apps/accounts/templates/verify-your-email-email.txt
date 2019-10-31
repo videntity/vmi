@@ -1,4 +1,4 @@
-Hello {{FIRST_NAME}} {{LAST_NAME}}:
+Hello {{FIRST_NAME|title}} {{LAST_NAME|title}}:
 
 Please verify your email with this link:
                 

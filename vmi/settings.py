@@ -269,7 +269,7 @@ OIDC_PROVIDER = {
 # This can help identify genuine subject ids and indicate provenance.
 SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
 APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE', "Share My Health Accounts")
-KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Share My Health')
+KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Share My Health Web Application')
 KILLER_APP_URI = env('KILLER_APP_URI', 'http://smhapp:8002')
 
 TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity')

@@ -8,11 +8,11 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from .forms import (PasswordResetForm, PasswordResetRequestForm)
-from .models import UserProfile, ValidPasswordResetKey
+from .models import UserProfile, ValidPasswordResetKey, ActivationKey
 from .forms import (AccountSettingsForm,
                     SignupForm, DeleteAccountForm)
 
-from .utils import validate_activation_key
+from .utils import validate_email_verify_key
 from django.conf import settings
 
 
@@ -35,7 +35,7 @@ def reset_password(request):
                                     username=request.user.username,
                                     password=data['password1'])
                 login(request, user)
-                messages.success(request, 'Your password was updated.')
+                messages.success(request, _('Your password was updated.'))
                 return HttpResponseRedirect(reverse('account_settings'))
             else:
                 return render(request, 'generic/bootstrapform.html',
@@ -101,7 +101,8 @@ def account_settings(request, subject=None):
             up.nickname = data['nickname']
             up.sex = data['sex']
             up.gender_identity = data['gender_identity']
-            up.gender_identity_custom_value = data['gender_identity_custom_value']
+            up.gender_identity_custom_value = data[
+                'gender_identity_custom_value']
             up.middle_name = data['middle_name']
             up.birth_date = data['birth_date']
             up.save()
@@ -196,13 +197,26 @@ def password_reset_email_verified(request, reset_password_key=None):
 
 
 def activation_verify(request, activation_key):
-    if validate_activation_key(activation_key):
+    try:
+        vc = ActivationKey.objects.get(key=activation_key)
+        user = vc.user
+    except ActivationKey.DoesNotExist:
+        user = None
+
+    if validate_email_verify_key(activation_key):
         messages.success(request,
-                         'Your email has been verified.')
+                         _('Your email has been verified.'))
+        if user:
+            if not user.is_active:
+                messages.warning(request,
+                                 _("""Your account is not active so you may not log
+                           in at this time. Your account may require approval before logging in or
+                         your account has been administratively deactivated."""))
+
     else:
         messages.error(request,
                        'This key does not exist or has already been used.')
-    return HttpResponseRedirect(reverse('mfa_login'))
+    return HttpResponseRedirect(reverse('home'))
 
 
 def forgot_password(request):
