@@ -7,6 +7,7 @@ from django.contrib.auth.password_validation import validate_password
 from .models import UserProfile, create_activation_key, Organization, OrganizationAffiliationRequest
 from django.conf import settings
 from django.utils.safestring import mark_safe
+from phonenumber_field.formfields import PhoneNumberField
 from .forms import RepresentsPositiveInt
 
 # Copyright Videntity Systems Inc.
@@ -35,9 +36,9 @@ class StaffSignupForm(forms.Form):
                                                account number. If left blank, numbers will be used."""),
         required=False)
     email = forms.EmailField(max_length=150, label=_("Email*"), required=True)
-    mobile_phone_number = forms.CharField(required=True,
-                                          label=_("Mobile Phone Number*"),
-                                          max_length=10)
+    mobile_phone_number = PhoneNumberField(required=True,
+                                           label=_(
+                                               "Mobile Phone Number"))
     first_name = forms.CharField(max_length=100, label=_("First Name*"))
     last_name = forms.CharField(max_length=100, label=_("Last Name*"))
     middle_name = forms.CharField(
