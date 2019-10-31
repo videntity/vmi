@@ -294,8 +294,6 @@ class Organization(models.Model):
                         break
 
         if commit:
-            self.users.add(self.point_of_contact)
-            print(self.users.all())
             super(Organization, self).save(*args, **kwargs)
             # If the POC is not an org agent, then make them one.
 
