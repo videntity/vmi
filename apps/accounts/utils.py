@@ -1,11 +1,11 @@
 import pytz
 from datetime import datetime
-from .models import ActivationKey
+from .models import ActivationKey, UserProfile
 
 # Copyright Videntity Systems Inc.
 
 
-def validate_activation_key(activation_key):
+def validate_email_verify_key(activation_key):
     utc = pytz.UTC
     try:
         vc = ActivationKey.objects.get(key=activation_key)
@@ -20,7 +20,8 @@ def validate_activation_key(activation_key):
         # The key does not exist
         return False
     # The key exists and has not expired.
-    vc.user.is_active = True
-    vc.user.save()
+    up = UserProfile.objects.get(user=vc.user)
+    up.email_verified = True
+    up.save()
     vc.delete()
     return True
