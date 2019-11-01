@@ -119,6 +119,7 @@ def create_org_account(request, organization_slug,
             return HttpResponseRedirect(reverse('home'))
         else:
             # return the bound form with errors
+            messages.error(request, _("The form contained errors."))
             return render(request,
                           'generic/bootstrapform.html',
                           {'name': name, 'form': form,
