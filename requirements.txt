@@ -6,7 +6,8 @@ chardet==3.0.4
 coverage==4.0.3
 dj-database-url==0.5.0
 Django==2.2.4
-django-bootstrap-form==3.4
+#django-bootstrap-form==3.4
+-e git+https://github.com/TransparentHealth/django-bootstrap-form.git@master#egg=django-bootstrap-form
 django-phonenumber-field==2.1.0
 django-getenv==1.3.2
 django-localflavor==2.1
