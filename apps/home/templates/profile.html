@@ -27,23 +27,44 @@
                             </a>
                         </div>
                     </div>
+                    {% else %}
+                    <div class="row">
+                        <div class="col my-3">
+                           
+                            <h2><span class="badge badge-success">Identity Verified</span></h2>
+                        </div>
+                    </div>
+                    
                     {% endif %}
                 </div>
                 <div class="col">
                     <p>User: {{user.userprofile}} {% if user.userprofile.nickname %}(“{{ user.userprofile.nickname }}”){% endif %}</p>
                     <p>Subject ID: {{user.userprofile.subject}}</p>
-                    <p>Email: {{ user.email }}</p>
+                    <p>Email: {{ user.email|default:"—" }}</p>
                     <p>Birthdate: {{user.userprofile.birthdate}}</p>
-                    <p>Gender: {{user.userprofile.gender|default:"—"}}</p>
+                    <p>Sex: {{user.userprofile.get_display_sex|default:"—"}}</p>
+                    <p>Gender: {{user.userprofile.get_gender_display|default:"—"}}</p>
                     <p>Phone: {{user.userprofile.mobile_phone_number|default:"—"}}</p>
                     <p>
-                        Identity Level: {{user.userprofile.ial}}
+                        Identity Level: {{user.userprofile.ial|default:"-"}}
                         {% if user.userprofile.ial == '1' and user != request.user %}
                             (<a href="{% url 'inperson_id_verify' user.userprofile.subject|default:'None' %}">Verify Identity of {{user.userprofile}}</a>)
-                        {% elif user.userprofile.ial == '2' %}
-                            (<a href="{% url 'ial_two_to_one_downgrade' user.userprofile.subject|default:'None' %}">Downgrade Identity Level from 2→1</a>)
                         {% endif %}
                     </p>
+                    <p>
+                        Identity Evidence:
+                        {% for ial in ials %}
+                        {% if ial.level == "2" %}
+                              {{ial.get_id_documentation_verification_method_type_display|default:"Evidence"}}
+                    (<a href="{% url 'ial_two_to_one_downgrade' user.userprofile.subject|default:'None' ial.pk %}">Downgrade Identity Level from 2→1</a>)
+                    </p>
+                        {% endif %}
+                        
+                        
+                        
+                        {% endfor %}
+                    </p>
+                    
 
                     {% if user.address_set.exists %}
                     <p>Addresses:</p>

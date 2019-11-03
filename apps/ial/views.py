@@ -23,10 +23,9 @@ def inperson_id_verify(request, subject):
     if request.user == up.user:
         raise Http404("You cannot upgrade your own identity assurance level.")
 
-    ial_d, created = IdentityAssuranceLevelDocumentation.objects.get_or_create(
+    ial_d = IdentityAssuranceLevelDocumentation.objects.create(
         subject_user=up.user)
-    name = _("Verify Identity for %s %s (%s)") % (up.user.first_name, up.user.last_name,
-                                                  up.subject)
+    name = _("Verify Identity for %s (%s)") % (up, up.subject)
     if request.method == 'POST':
         form = InPersonIdVerifyForm(request.POST, instance=ial_d)
         if form.is_valid():
@@ -55,13 +54,12 @@ def inperson_id_verify(request, subject):
 
 @login_required
 @permission_required('ial.change_identityassuranceleveldocumentation')
-def two_to_one_downgrade(request, subject):
+def two_to_one_downgrade(request, subject, pk):
     up = get_object_or_404(UserProfile, subject=subject)
     if request.user == up.user:
         raise Http404(
             "You cannot downgrade your own identity assurance level.")
-    ial_d, created = IdentityAssuranceLevelDocumentation.objects.get_or_create(
-        subject_user=up.user)
+    ial_d = IdentityAssuranceLevelDocumentation.objects.get(pk=pk)
     name = _("Verify Identity for %s %s (%s)") % (up.user.first_name, up.user.last_name,
                                                   up.subject)
     if request.method == 'POST':
@@ -75,9 +73,7 @@ def two_to_one_downgrade(request, subject):
             ial_doc.save()
             messages.success(
                 request, _(
-                    "You downgraded the identity assurance level to 1 for %s %s (%s)." % (up.user.first_name,
-                                                                                          up.user.last_name,
-                                                                                          up.subject)))
+                    "You downgraded the identity assurance level of this piece of evidence to 1 for %s." % (up)))
             return HttpResponseRedirect(reverse('user_profile_subject', args=(up.subject,)))
         else:
             # return the bound form with errors

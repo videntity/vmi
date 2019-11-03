@@ -1,16 +1,7 @@
 {% load static %}
 {% load bootstrap %}
 {% load i18n %}
-<div class="form-group">
-    Forgot your password?
-    <a href="{% url 'forgot_password' %}" class="ForgetPwd" value="Login">
-        Recover with email
-    </a>
-    or
-    <a href="{% url 'reset_password_with_recovery_passphrase' %}" class="ForgetPwd" value="Login">
-        with a passphrase
-    </a>
-</div>
+
 <form method="post" action="{% url 'mfa_login' %}" name="loginform">
 	{% csrf_token %}
     <input type="hidden" name="next" value="{{ next }}"/>
@@ -21,3 +12,13 @@
 		<input type="submit" class="btn btn-lg btn-primary" value="{% trans 'Login' %}" />
 	</div>
 </form>
+<div class="form-group">
+    Forgot your password?
+    <a href="{% url 'forgot_password' %}" class="ForgetPwd" value="Login">
+        Recover with an email
+    </a>
+    or
+    <a href="{% url 'reset_password_with_recovery_passphrase' %}" class="ForgetPwd" value="Login">
+        with a recovery passphrase.
+    </a>
+</div>

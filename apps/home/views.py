@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib import messages
 from ..accounts.models import UserProfile, Organization, OrganizationAffiliationRequest
+from ..ial.models import IdentityAssuranceLevelDocumentation
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 # from django.contrib.auth.decorators import permission_required
@@ -26,7 +27,8 @@ def user_profile(request, subject=None):
                 and not request.user.has_perm('accounts.view_userprofile')):
             raise Http404()
         user = up.user
-    context = {'user': user, 'settings': settings}
+    ials = IdentityAssuranceLevelDocumentation.objects.filter(subject_user=user)
+    context = {'user': user, 'settings': settings, "ials": ials}
     template = 'profile.html'
     return render(request, template, context)
 

@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from .models import UserProfile
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from .sms_mfa_forms import LoginForm
 from django.views.decorators.cache import never_cache
@@ -19,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 @never_cache
+@ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='GET', block=True)
 @ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='POST', block=True)
 def mfa_login(request, slug=None):
     if not slug:
@@ -42,6 +44,18 @@ def mfa_login(request, slug=None):
             username = context['login_form'].cleaned_data['username']
             password = context['login_form'].cleaned_data['password']
             user = authenticate(username=username, password=password)
+            try:
+                User = get_user_model()
+                myuser = User.objects.get(username=username)
+            except User.DoesNotExist:
+                myuser = None
+
+            if myuser:
+                if not myuser.is_active:
+                    messages.error(request, _("""Your account is not active so you may not log
+                           in at this time. Your account may require approval before logging in or
+                         your account has been administratively deactivated."""))
+                    return HttpResponseRedirect(reverse('home'))
 
             if user is not None:
                 if user.is_active:

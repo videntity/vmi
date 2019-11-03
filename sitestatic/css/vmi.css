@@ -188,3 +188,7 @@ h3 {
     object-fit: contain; 
     height: 100%;
 }
+
+.help-block-invalid {
+    color: red;
+}
