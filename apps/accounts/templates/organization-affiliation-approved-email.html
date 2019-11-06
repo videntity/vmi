@@ -6,21 +6,25 @@
         <div class="container">
             <div class="row">
               <div class="col-lg-12">
-                <h1 class="page-header">Hi {{TO_FIRST_NAME}} {{TO_LAST_NAME}}</h1>
+                <h3 class="page-header">Hello {{TO_FIRST_NAME}} {{TO_LAST_NAME|title}}</h3>
               </div>
             </div>
             
              <div class="row">
               <div class="col-lg-12">
-                Your account was successfully affiliated with  {{ORGANIZATION_NAME}}. You still may need to ask your point of contact to add additional roles to your account.
-                </div>
+                Your account was successfully affiliated with {{ORGANIZATION_NAME}}.
+                You can now <a href="{{ KILLER_APP_URI }}">login to {{ KILLER_APP_URI }}</a>.
+                <p>
+                Manage all your account settings at <a href="{{settings.HOSTNAME_URL}}">{{settings.HOSTNAME_URL}}</a>.
+                </p>
+              </div>
               </div>
             
             <div class="row">
               <div class="col-lg-12">
                <br/>
-               <p>Thanks, </p>
-               <p>The {{ APPLICATION_TITLE }} Team </p>
+               <p>Thanks,</p>
+               <p>{{ORGANIZATION_NAME}} and the {{ APPLICATION_TITLE }} Team</p>
               </div>
             </div>
         </div><!-- /.container -->  

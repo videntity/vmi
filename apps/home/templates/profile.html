@@ -1,83 +1,120 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li ><a href="/">Home</a></li>
+                        <li class="active"><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
+                    </ol>
+{% endblock %}
 {% block Content %}
 
-<div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="row">
+                        <div class="col">
+                            <a href="{% url 'upload_profile_picture_subject' user.userprofile.subject %}">
+                                <img alt="image" style="max-width:100%;"
+                                    src="{% if user.userprofile.picture_url %}{{ user.userprofile.picture_url }}{% else %}{% static '/img/avatar_default.png' %}{% endif %}"/>
+                            </a>
+                        </div>
+                    </div>
+                    {% if user.userprofile.ial == '1' and user != request.user %}
+                    <div class="row">
+                        <div class="col my-3">
+                            <a href="{% url 'inperson_id_verify' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-warning btn-lg"><b>Verify Identity</b></button>
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="row">
+                        <div class="col my-3">
+                           
+                            <h2><span class="badge badge-success">Identity Verified</span></h2>
+                        </div>
+                    </div>
+                    
+                    {% endif %}
+                </div>
+                <div class="col">
+                    <p>User: {{user.userprofile}} {% if user.userprofile.nickname %}(“{{ user.userprofile.nickname }}”){% endif %}</p>
+                    <p>Subject ID: {{user.userprofile.subject}}</p>
+                    <p>Email: {{ user.email|default:"—" }}</p>
+                    <p>Birthdate: {{user.userprofile.birthdate}}</p>
+                    <p>Sex: {{user.userprofile.get_display_sex|default:"—"}}</p>
+                    <p>Gender: {{user.userprofile.get_gender_display|default:"—"}}</p>
+                    <p>Phone: {{user.userprofile.mobile_phone_number|default:"—"}}</p>
+                    <p>
+                        Identity Level: {{user.userprofile.ial|default:"-"}}
+                        {% if user.userprofile.ial == '1' and user != request.user %}
+                            (<a href="{% url 'inperson_id_verify' user.userprofile.subject|default:'None' %}">Verify Identity of {{user.userprofile}}</a>)
+                        {% endif %}
+                    </p>
+                    <p>
+                        Identity Evidence:
+                        {% for ial in ials %}
+                        {% if ial.level == "2" %}
+                              {{ial.get_id_documentation_verification_method_type_display|default:"Evidence"}}
+                    (<a href="{% url 'ial_two_to_one_downgrade' user.userprofile.subject|default:'None' ial.pk %}">Downgrade Identity Level from 2→1</a>)
+                    </p>
+                        {% endif %}
+                        
+                        
+                        
+                        {% endfor %}
+                    </p>
+                    
 
-    <div class="row">
-        <div class="col-lg-12">
-	      <ol class="breadcrumb">
-	        <li ><a href="/">Home</a></li>
-         <li ><a href="{% url 'user_search' %}">Search</a></li>
-          <li class="active"><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
-	      </ol>
-        </div>
-     </div>
+                    {% if user.address_set.exists %}
+                    <p>Addresses:</p>
+                    <table class="table table-borderless table-sm ml-2">
+                        {% for address in user.address_set.all %}
+                        <tr><td>{{ address }}</td></tr>
+                        {% endfor %}
+                    </table>
+                    {% endif %}
 
-    <div class="row">
-      <div class="col-lg-10">
-        {% include "include/messages.html" %}
-      </div>
-    </div>
+                    {% if user.individualidentifier_set.exists %}
+                    <p>Identifiers:</p>
+                    <table class="table table-borderless table-sm ml-2">
+                    {% for identifier in user.individualidentifier_set.all %}
+                        <tr>
+                            <td>
+                                {% for key, val in settings.INDIVIDUAL_ID_TYPE_CHOICES %}{% if identifier.type == key %}{{ val }}{% endif %}{% endfor %}
+                                {% if identifier.country or identifier.subdivision %}
+                                ({{ identifier.subdivision }}{% if identifier.country and identifier.subdivision %}, {% endif %}{{ identifier.country }})
+                            </td>
+                            <td>
+                                {% if identifier.uri %}<a href="{{ identifier.uri }}" target="_blank" rel="noreferer noopener">{% endif %}
+                                {{ identifier.value }}
+                                {% if identifier.uri %}</a>{% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                    {% endif %}
 
-
-        <div style="width:300px">
-        <a href="{% url 'upload_profile_picture_subject' user.userprofile.subject %}"><img src="{{user.userprofile.picture_url}}" alt="image" style="max-width:100%";/></a>    
-        </div>
-
-
-       <p>{{user.userprofile}}</p>
-       <p>Account Number: {{user.userprofile.subject}}</p>
-       <p>Birthdate: {{user.userprofile.birthdate}}</p>
-       <p>Gender: {{user.userprofile.gender}}</p>
-       <p>Phone: {{user.userprofile.mobile_phone_number|default:"--"}}</p>
-       
-       
-       <p>Identity Level: {{user.userprofile.ial}}
-       
-       
-       {% if user.userprofile.ial == '1' %}
-       (<a href="{% url 'inperson_id_verify' user.userprofile.subject|default:"None" %}">
-    Verify Identity of {{user.userprofile}}
-       </a>)
-       {% elif user.userprofile.ial == '2' %}
-        (<a href="{% url 'ial_two_to_one_downgrade' user.userprofile.subject|default:"None" %}">
-       Downgrade Identity Level from 2-->1
-       </a>)
-        {% endif %}
-       </p>
-       
-       <p>
-         {% if user.userprofile.ial == '1' %}
-              <a href="{% url 'inperson_id_verify' user.userprofile.subject|default:"None" %}">
-     <button type="button" class="btn btn-warning"> Verify Identity </button> 
-       </a> 
-       
-       
-       {% endif %}
-       <a href="{% url 'account_settings_subject' user.userprofile.subject|default:"None" %}">
-     <button type="button" class="btn btn-default"> Add/Edit Basic Profile Information </button> 
-       </a> 
-        
-        
-        <a href="{% url 'display_addresses_subject' user.userprofile.subject|default:"None" %}">
-     <button type="button" class="btn btn-default"> Add/Edit/Delete Addresses </button> 
-
-       </a>
-        </p>
- 
-        <p>
-        <a href="{% url 'display_individual_identifiers_subject' user.userprofile.subject|default:"None" %}">
-    <button type="button" class="btn btn-default"> Add/Edit/Delete Identifiers </button> 
-       </a>
-        </p>
-	   
-   
-    
-    
-</div><!-- /.container -->
-
+                    <div class="row my-4">
+                        <div class="col">
+                            <a href="{% url 'account_settings_subject' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-secondary">Add/Edit Basic Profile Information</button>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="{% url 'display_addresses_subject' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-secondary">Add/Edit/Delete Addresses</button>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="{% url 'display_individual_identifiers_subject' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-secondary">Add/Edit/Delete Identifiers</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 {% endblock %}
 

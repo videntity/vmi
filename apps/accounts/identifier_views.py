@@ -17,7 +17,6 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 @login_required
 def display_individual_identifiers(request, subject=None):
     name = _('Identifiers')
-    print("Subject", subject)
     if not subject:
         # Looking at your own record.
         user = request.user

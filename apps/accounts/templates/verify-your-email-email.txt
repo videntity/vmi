@@ -1,0 +1,9 @@
+Hello {{FIRST_NAME|title}} {{LAST_NAME|title}}:
+
+Please verify your email with this link:
+                
+{{ ACTIVATION_LINK }}             
+            
+Thanks,
+
+The {{ APPLICATION_TITLE }} Team

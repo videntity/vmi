@@ -1,0 +1,95 @@
+{% load static %}{% load i18n %}{% load has_group %}
+        <nav id="main-nav" class="navbar" role="navigation">
+            <div class="container">
+                <div class="row">
+                    <a href="{% url 'home' %}">
+                        <div id="logo-box" class="navbar-brand col-auto d-flex">
+                            <img id="logo-img" src="{% static 'img/logo.svg' %}"/>
+                            <span id="logo-type" class="my-auto mx-4">
+                                {{ settings.TOP_LEFT_TITLE }}
+                            </span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="navbar-expand">
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if request.path != '/' %}
+                        <li class="col"><a href="{% url 'home' %}">Home</a></li>
+                        {% endif %}
+
+                       {% if request.user|has_group:"OrganizationalAgent" %}
+                        <li class="dropdown col">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Organizations<b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                            {% for org in request.user.userprofile.organizations %}
+                                <li>
+                                    <a href="{% url 'display_organization' org.slug %}">{{org.name}}</a>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </li>
+                        {% endif %}
+
+                       {% if request.user|has_group:"ApplicationDeveloper" %}
+                        <li class="dropdown col">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Developer<b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{% url 'oauth2_provider:list' %}">Register Application</a>
+                                </li>
+                            </ul>
+                        </li>
+                        {% endif %}
+
+                        {% if request.user.is_authenticated %}
+                        <li class="dropdown col">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Settings<b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{% url 'account_settings' %}">Basic Information</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'upload_profile_picture' %}">Profile Picture</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'display_individual_identifiers' %}">Identifiers</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'display_addresses' %}">Addresses</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'mobile_phone' %}">Mobile Phone</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'mfa-management' %}">Multi-Factor Authentication</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'oauth2_provider:authorized-token-list' %}">Authorized Applications</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'password_recovery_passphrase_home' %}">Password Recovery Passphrase</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'reset_password' %}">Change Password</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'delete_account' %}">Delete Account</a>
+                                </li>
+                            </ul>
+                        </li>
+                        {% endif %}
+
+                        {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'mylogout' %}">Logout</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>

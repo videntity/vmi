@@ -3,10 +3,13 @@
 {% load static %}
 
 {% block Content %}
-<div class="container">
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit" class="btn btn-primary">
-    </form>
-</div>
+            <div class="row">
+                <form method="post">{% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="Submit" class="btn btn-primary">
+                </form>
+            </div>
+{% endblock %}
+{% block ExtraJSFoot %}
+<script type="application/javascript">$("#id_code").focus();</script>
 {% endblock %}

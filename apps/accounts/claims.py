@@ -28,22 +28,22 @@ class OrganizationAgentClaimProvider(BaseProvider):
             return None
 
 
-# TODO
-class MemberClaimProvider(BaseProvider):
+class MembershipClaimProvider(BaseProvider):
 
-    def claim_member(self):
+    def claim_memberships(self):
         try:
-            return self.user.userprofile.organization_membership
+            return self.user.userprofile.memberships
         except Exception:
             return None
 
 
 class VerifiedPersonDataClaimProvider(BaseProvider):
 
-    def claim_verified_person_data(self):
+    def claim_verified_claims(self):
         try:
-            return self.user.userprofile.verified_person_data
-        except Exception:
+            return self.user.userprofile.verified_claims
+        except Exception as e:
+            print(e)
             return None
 
 
@@ -65,6 +65,12 @@ class UserProfileClaimProvider(BaseProvider):
     def claim_family_name(self):
         try:
             return self.user.userprofile.family_name
+        except Exception:
+            return None
+
+    def claim_middle_name(self):
+        try:
+            return self.user.userprofile.middle_name
         except Exception:
             return None
 
@@ -94,6 +100,12 @@ class UserProfileClaimProvider(BaseProvider):
                 return "male"
             if gender == "female":
                 return "female"
+        except Exception:
+            return None
+
+    def claim_gender_identity(self):
+        try:
+            return self.user.userprofile.gender_identity
         except Exception:
             return None
 

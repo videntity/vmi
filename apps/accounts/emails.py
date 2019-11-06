@@ -3,47 +3,15 @@ from django.conf import settings
 from django.urls import reverse
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
+
 # Copyright Videntity Systems Inc.
+__author__ = "Alan Viars"
 
 
 def random_secret(y=40):
     return ''.join(random.choice('abcdefghijklmnopqrstuvwxyz'
                                  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
                                  '0123456789') for x in range(y))
-
-
-def mfa_via_email(user, code):
-
-    subject = '[%s] Your code for access to' % (settings.APPLICATION_TITLE)
-    from_email = settings.DEFAULT_FROM_EMAIL
-    to = user.email
-
-    html_content = """'
-    <P>
-    Provide this code on the authentication screen in your browser:<br>
-     %s
-    </p>
-    <p>
-    Thank you,
-    </p>
-    <p>
-    The Team
-
-    </P>
-    """ % (code)
-
-    text_content = """
-    Provide this code on the authentication screen in your browser:
-    %s
-
-    Thank you,
-
-    The Team
-
-    """ % (code)
-    msg = EmailMultiAlternatives(subject, text_content, from_email, [to, ])
-    msg.attach_alternative(html_content, 'text/html')
-    msg.send()
 
 
 def send_password_reset_url_via_email(user, reset_key):
@@ -55,7 +23,7 @@ def send_password_reset_url_via_email(user, reset_key):
                      reverse('password_reset_email_verified',
                              args=(reset_key,)))
     html_content = """'
-    <P>
+    <p>
     Click on the link to reset your password.<br>
     <a href='%s'> %s</a>
     </p>
@@ -63,10 +31,10 @@ def send_password_reset_url_via_email(user, reset_key):
     Thank you,
     </p>
     <p>
-    The Team
+    The %s Team
 
-    </P>
-    """ % (link, link)
+    </p>
+    """ % (link, link, settings.ORGANIZATION_NAME)
 
     text_content = """
     Click on the link to reset your password.
@@ -75,64 +43,55 @@ def send_password_reset_url_via_email(user, reset_key):
 
     Thank you,
 
-    The Team
+    The %s Team
 
-    """ % (link)
+    """ % (link, settings.ORGANIZATION_NAME)
     msg = EmailMultiAlternatives(subject, text_content, from_email, [to, ])
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
-    print("SENT")
 
 
 def send_activation_key_via_email(user, signup_key):
     """Do not call this directly.  Instead use create_signup_key in utils."""
-    subject = '[%s]Verify your email.' % (settings.ORGANIZATION_NAME)
+    plaintext = get_template('verify-your-email-email.txt')
+    htmly = get_template('verify-your-email-email.html')
+
+    subject = '[%s]Verify your email address' % (settings.ORGANIZATION_NAME)
+
     from_email = settings.DEFAULT_FROM_EMAIL
     to = [user.email, ]
     activation_link = '%s%s' % (settings.HOSTNAME_URL,
                                 reverse('activation_verify',
                                         args=(signup_key,)))
 
-    html_content = """
-       <p>
-       Hello %s. Please click the link to activate your account.<br>
-       <a href=%s a> %s</a><br>
+    context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
+               "FIRST_NAME": user.first_name,
+               "LAST_NAME": user.last_name,
+               "ACTIVATION_LINK": activation_link,
+               }
 
-       Thank you,<br>
-
-       The Team
-       </p>
-       """ % (user.first_name, activation_link, activation_link)
-
-    text_content = """
-       Hello %s. Please click the link to activate your account.
-
-        %s
-
-       Thank you,
-
-       The Team
-
-       """ % (user.first_name, activation_link)
-
+    text_content = plaintext.render(context)
+    html_content = htmly.render(context)
     msg = EmailMultiAlternatives(subject=subject, body=text_content,
                                  to=to, from_email=from_email)
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
 
 
-def send_new_org_account_approval_email(to_user, about_user):
+def send_new_org_account_approval_email(to_user, about_user, organization):
     plaintext = get_template('approve-organization-affiliation-email.txt')
-    htmly = get_template('approve-organization-affiliation-email.txt')
+    htmly = get_template('approve-organization-affiliation-email.html')
     context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
                "TO_FIRST_NAME": to_user.first_name,
                "TO_LAST_NAME": to_user.last_name,
-               "FROM_FIRST_NAME": about_user.first_name,
-               "FROM_LAST_NAME": about_user.last_name
+               "ABOUT_FIRST_NAME": about_user.first_name,
+               "ABOUT_LAST_NAME": about_user.last_name,
+               "ORGANIZATION_NAME": organization.name,
+               "HOSTNAME_URL": settings.HOSTNAME_URL,
                }
 
-    subject = """[%s]A New user account has been created for your organization that requires your approval.""" % (
-        settings.ORGANIZATION_NAME)
+    subject = """[%s]A New organizational account for %s requires your approval.""" % (
+        settings.ORGANIZATION_NAME, organization.name)
     from_email = settings.DEFAULT_FROM_EMAIL
     to = [to_user.email, ]
 
@@ -145,16 +104,19 @@ def send_new_org_account_approval_email(to_user, about_user):
     msg.send()
 
 
-def send_org_account_approved_email(to_user):
+def send_org_account_approved_email(to_user, organization):
     plaintext = get_template('organization-affiliation-approved-email.txt')
-    htmly = get_template('organization-affiliation-approved-email.txt')
+    htmly = get_template('organization-affiliation-approved-email.html')
     context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
                "TO_FIRST_NAME": to_user.first_name,
                "TO_LAST_NAME": to_user.last_name,
+               "HOSTNAME_URL": settings.HOSTNAME_URL,
+               "ORGANIZATION_NAME": organization.name,
+               "KILLER_APP_URI": settings.KILLER_APP_URI
                }
 
-    subject = """[%s]Your account has been approved by your organization's point of contact""" % (
-        settings.ORGANIZATION_NAME)
+    subject = """[%s]Your account has been approved by %s's point of contact""" % (
+        settings.ORGANIZATION_NAME, organization.name)
     from_email = settings.DEFAULT_FROM_EMAIL
     to = [to_user.email, ]
 

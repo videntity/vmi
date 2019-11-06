@@ -1,7 +1,5 @@
-from apps.ial.models import (
-    IdentityAssuranceLevelDocumentation,
-    EVIDENCE_CLASSIFICATIONS)
-
+from apps.ial.models import IdentityAssuranceLevelDocumentation
+from django.conf import settings
 from rest_framework import serializers, viewsets, permissions
 from oauth2_provider.contrib.rest_framework import authentication
 from django.contrib.auth import get_user_model
@@ -19,7 +17,7 @@ User = get_user_model()
 
 
 class IdentifierSerializer(serializers.ModelSerializer):
-    classification = serializers.ChoiceField(required=False, source="evidence", choices=EVIDENCE_CLASSIFICATIONS)
+    classification = serializers.ChoiceField(required=False, source="evidence", choices=settings.IAL_EVIDENCE_CLASSIFICATIONS)
     description = serializers.CharField(required=False, source="id_verify_description")
     exp = serializers.DateField(required=False, source='expires_at')
     verifier_subject = serializers.CharField(source="verifying_user.userprofile.subject", read_only=True)

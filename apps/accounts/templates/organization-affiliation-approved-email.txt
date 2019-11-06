@@ -1,7 +1,15 @@
-Hi {{TO_FIRST_NAME}} {{TO_LAST_NAME}},
+Hello {{TO_FIRST_NAME}} {{TO_LAST_NAME}},
 
-Your account was successfully affiliated with  {{ORGANIZATION_NAME}}. You still may need to ask your point of contact to add additional roles to your account.
+Your account was successfully affiliated with {{ ORGANIZATION_NAME }}.
+
+
+You can now login to {{KILLER_APP_URI}}.
+
+Manage all your account related settings here:
+
+{{settinga.HOSTNAME_URL}}
+
 
 Thanks,
 
-The {{APPLICATION_TITLE}} Team
+{{ ORGANIZATION_NAME }} and the {{settings.APPLICATION_TITLE}} Team

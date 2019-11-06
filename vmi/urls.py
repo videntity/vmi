@@ -29,6 +29,11 @@ from apps.home.views import authenticated_home, user_search, user_profile
 from django.conf import settings
 from django.conf.urls.static import static
 
+
+admin.site.site_header = "Verify My Identity Admin"
+admin.site.site_title = "Verify My Identity Admin Portal"
+admin.site.index_title = "OpenID Connect Site Administration"
+
 oauth2_base_urlpatterns = [
     url(r"^authorize/$",
         oidc_views.AuthorizationView.as_view(),

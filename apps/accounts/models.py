@@ -7,60 +7,63 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 import boto3
 from phonenumber_field.modelfields import PhoneNumberField
 from .emails import (send_password_reset_url_via_email,
                      send_activation_key_via_email,
-                     mfa_via_email,
                      send_new_org_account_approval_email)
 from .subject_generator import generate_subject_id
 from collections import OrderedDict
 from ..ial.models import IdentityAssuranceLevelDocumentation
+
 
 # Copyright Videntity Systems Inc.
 
 __author__ = "Alan Viars"
 
 
-SEX_CHOICES = (('female', 'Female'), ('male', 'Male'), ('', 'Unspecified'))
+SEX_CHOICES = (('',  'Blank'),
+               ('female', 'Female'),
+               ('male', 'Male'),
+               ('other', 'Gender Neutral'),
+               )
 
-GENDER_CHOICES = (('M', 'Male'),
-                  ('F', 'Female'),
-                  ('TMF', 'Transgender Male to Female'),
-                  ('TFM', 'Transgender Female to Male'),
-                  ('U', 'Unknown'))
-
-
-# These are "mockups" for now.
-# class MemberOrganizationRelationship(models.Model):
-#     user = models.ForeignKey(get_user_model(), on_delete='PROTECT')
-#     organization = models.ForeignKey(Organization, on_delete='PROTECT', null=True)
-#     summary = models.TextField(blank=True, default='')
-#     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-#     created_date = models.DateField(auto_now_add=True, null=True, blank=True)
-#     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-#
-#     def __str__(self):
-#         return "%s relationship with %s since %s" % (self.user, sself.organization. self.created_at)
-#
-#
+GENDER_CHOICES = (('', 'Blank'),
+                  ('female', 'Female'),
+                  ('male', 'Male'),
+                  ('custom', 'Custom')
+                  )
 
 
 class IndividualIdentifier(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete='PROTECT', null=True)
-    name = models.SlugField(max_length=250, blank=True,
+    user = models.ForeignKey(
+        get_user_model(), on_delete=models.PROTECT, null=True)
+    type = models.CharField(choices=settings.INDIVIDUAL_ID_TYPE_CHOICES,
+                            max_length=255, blank=True, default='', db_index=True)
+    name = models.SlugField(max_length=255, blank=True,
                             default='', db_index=True)
-    value = models.CharField(
-        max_length=250,
-        blank=True,
-        default='', db_index=True)
+    # ISO 3166-1
+    country = models.CharField(max_length=2, blank=True,
+                               default=settings.DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS, db_index=True,
+                               help_text="e.g., a two letter country code in ISO 3166 format.")
+
+    # ISO 3166-2
+    subdivision = models.CharField(max_length=2, blank=True, default='',
+                                   verbose_name="State",
+                                   help_text="e.g., a country's subdivision such as a state or province.")
+
+    value = models.CharField(max_length=250, blank=True,
+                             default='', db_index=True)
+
+    uri = models.TextField(blank=True, default='', db_index=True)
+
     metadata = models.TextField(
         blank=True,
         default='',
         help_text="JSON Object")
-    type = models.CharField(max_length=16, blank=True, default='')
 
     def __str__(self):
         return self.value
@@ -71,6 +74,30 @@ class IndividualIdentifier(models.Model):
         od['type'] = self.type
         od['num'] = self.value
         return od
+
+    @property
+    def region(self):
+        return self.subdivision
+
+    @property
+    def state(self):
+        return self.subdivision
+
+    @property
+    def doc_oidc_format_enhanced(self):
+        od = self.doc_oidc_format
+        od['country'] = self.country
+        od['subdivision'] = self.subdivision
+        od['type'] = self.type
+        od['uri'] = self.uri
+        return od
+
+    def save(self, commit=True, *args, **kwargs):
+        self.slug = slugify(self.name)
+        if commit:
+            if not self.name:
+                self.name = self.type
+            super(IndividualIdentifier, self).save(*args, **kwargs)
 
 
 class OrganizationIdentifier(models.Model):
@@ -92,7 +119,8 @@ class OrganizationIdentifier(models.Model):
 
 class Address(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, db_index=True, editable=False)
-    user = models.ForeignKey(get_user_model(), on_delete='PROTECT', null=True)
+    user = models.ForeignKey(
+        get_user_model(), on_delete=models.PROTECT, null=True)
     street_1 = models.CharField(max_length=250, blank=True, default='')
     street_2 = models.CharField(max_length=250, blank=True, default='')
     city = models.CharField(max_length=250, blank=True, default='')
@@ -138,15 +166,34 @@ class Address(models.Model):
         return od
 
 
+class PersonToPersonRelationship(models.Model):
+    grantor = models.ForeignKey(
+        get_user_model(), on_delete=models.PROTECT, null=True,
+        related_name="persontoperson_grantor")
+    grantee = models.ForeignKey(
+        get_user_model(), on_delete=models.PROTECT, null=True,
+        related_name="persontoperson_grantee")
+    description = models.TextField(blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+
+    class Meta:
+        unique_together = [['grantor', 'grantee']]
+
+
 class Organization(models.Model):
     name = models.CharField(max_length=250, default='', blank=True)
+    number_str_include = models.CharField(
+        max_length=10, blank=True, default="",
+        verbose_name="Pick Your Own ID",
+        help_text=_('Choose up to 10 number to be included in your account number.'))
     slug = models.SlugField(max_length=250, blank=True, default='',
-                            db_index=True, unique=True)
-    subject = models.CharField(max_length=64, default=generate_subject_id(), blank=True,
+                            db_index=True, editable=False)
+    subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject ID',
                                db_index=True)
     picture = models.ImageField(
-        upload_to='organization-logo/', default='organization-logo/None/no-img.jpg')
+        upload_to='organization-logo/', null=True, blank=True)
 
     registration_code = models.CharField(max_length=100,
                                          default='',
@@ -155,7 +202,8 @@ class Organization(models.Model):
         max_length=512,
         blank=True,
         default='',
-        help_text="If populated, restrict email registration to this address.")
+        verbose_name='Email Domain(s)',
+        help_text="A list of domains separated by white space. If populated, restrict email registration to these domains.")
     website = models.CharField(max_length=512, blank=True, default='')
     phone_number = models.CharField(max_length=15, blank=True, default='')
     agree_tos = models.CharField(max_length=64, default="", blank=True,
@@ -164,23 +212,34 @@ class Organization(models.Model):
                                             help_text=_('Do you agree to the privacy policy?'))
 
     point_of_contact = models.ForeignKey(
-        get_user_model(), on_delete='PROTECT', null=True,
+        get_user_model(), on_delete=models.CASCADE, null=True,
         related_name="organization_point_of_contact")
     addresses = models.ManyToManyField(
         Address, blank=True, related_name="organization_addresses")
+
+    members = models.ManyToManyField(
+        get_user_model(), blank=True, related_name='org_members',
+        help_text="This field is a placeholder and is not supported in this version.")
+
     users = models.ManyToManyField(
-        get_user_model(), blank=True, related_name='org_staff')
+        get_user_model(), blank=True, related_name='org_staff', verbose_name="Organizational Agents",
+        help_text="Employees or contractors acting on behalf of the Organization.")
+
+    auto_ial_2_for_agents = models.BooleanField(default=True, blank=True)
+    auto_ial_2_for_agents_description = models.TextField(default=settings.AUTO_IAL_2_DESCRIPTION,
+                                                         blank=True)
+
+    default_groups_for_agents = models.ManyToManyField(Group, blank=True,
+                                                       help_text="All new agents will be in these groups by default.")
+
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-
-    # identifiers = models.ManyToManyField(OrganizationIdentifier, blank=True,
-    #                                     related_name='org_identifiers')
 
     def __str__(self):
         return self.name
 
     @property
-    def signnup_url(self):
+    def signup_url(self):
         return "%s%s" % (settings.HOSTNAME_URL, reverse(
             'create_org_account', args=(self.slug,)))
 
@@ -193,24 +252,55 @@ class Organization(models.Model):
         od['picture'] = self.picture_url
         od['website'] = self.website
         od['phone_number'] = self.phone_number
+        od['point_of_contact'] = self.point_of_contact_dict
+        return od
+
+    @property
+    def point_of_contact_dict(self):
+        od = OrderedDict()
+        self.point_of_contact
+        up = UserProfile.objects.get(user=self.point_of_contact)
+        od['first_name'] = self.point_of_contact.first_name
+        od['last_name'] = self.point_of_contact.last_name
+        od['phone_number'] = up.phone_number
+        od['email'] = self.point_of_contact.email
+        od['sub'] = up.sub
         return od
 
     @property
     def picture_url(self):
-        p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
-        if p.count('http') == 2:
-            return self.picture.url
-        return p
+        if self.picture:
+            p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
+            if p.count('http') == 2:
+                return self.picture.url
+            return p
 
     def save(self, commit=True, *args, **kwargs):
         self.slug = slugify(self.name)
+        if not self.subject:
+            self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
+                                               starts_with="2",
+                                               number_str_include=self.number_str_include)
+
+            # Make sure the Subject has not been assigned to someone else.
+            up_exist = Organization.objects.filter(
+                subject=self.subject).exists()
+            if up_exist:
+                while True:
+                    self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
+                                                       starts_with="2",
+                                                       number_str_include=self.number_str_include)
+                    if not UserProfile.objects.filter(subject=self.subject).exists():
+                        break
+
         if commit:
             super(Organization, self).save(*args, **kwargs)
+            # If the POC is not an org agent, then make them one.
 
 
 class OrganizationAffiliationRequest(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete='PROTECT')
-    organization = models.ForeignKey(Organization, on_delete='PROTECT')
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -223,20 +313,26 @@ class OrganizationAffiliationRequest(models.Model):
 
     def save(self, commit=True, **kwargs):
         if commit:
+            print("send to", self.organization.point_of_contact.email)
             send_new_org_account_approval_email(
                 to_user=self.organization.point_of_contact,
-                about_user=self.user)
+                about_user=self.user,
+                organization=self.organization)
+
             super(OrganizationAffiliationRequest, self).save(**kwargs)
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
                                 db_index=True, null=False)
-    picture = models.ImageField(
-        upload_to='profile-picture/', default='profile-picture/None/no-img.jpg')
     subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject for identity token',
                                db_index=True)
+    middle_name = models.CharField(max_length=255, default='', blank=True,
+                                   help_text='Middle Name',)
+    picture = models.ImageField(upload_to='profile-picture/', null=True, blank=True)
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
+                                db_index=True, null=False)
     nickname = models.CharField(
         max_length=255,
         default='',
@@ -246,41 +342,68 @@ class UserProfile(models.Model):
     phone_verified = models.BooleanField(default=False, blank=True)
     mobile_phone_number = PhoneNumberField(blank=True, default="",
                                            help_text=_('US numbers only.'),)
+    password_recovery_passphrase = models.TextField(default="", blank=True)
+    password_recovery_passphrase_hash = models.TextField(
+        default="", blank=True)
+    public_key = models.TextField(default="", blank=True)
+    private_key = models.TextField(default="", blank=True)
 
     mobile_phone_number_verified = models.BooleanField(
         blank=True, default=False)
 
-    four_digit_suffix = models.CharField(
-        max_length=4, blank=True, default="",
-        help_text=_('If populated, this field must contain exactly four numbers.'),)
+    number_str_include = models.CharField(
+        max_length=10, blank=True, default="",
+        verbose_name="Pick Your Own ID",
+        help_text=_('Choose up to 10 number to be included in your account number.'))
+
     sex = models.CharField(choices=SEX_CHOICES,
                            max_length=6, default="", blank=True,
-                           help_text=_('Specify sex, not gender identity.')
+                           help_text=_(
+                               'Specify birth sex, not gender identity.')
                            )
     gender_identity = models.CharField(choices=GENDER_CHOICES,
-                                       max_length=3, default="U",
-                                       help_text=_('Gender / Gender Identity'),
+                                       verbose_name="Gender",
+                                       max_length=64, default="", blank=True,
+                                       help_text=_(
+                                           'Gender Identity is not necessarily the same as birth sex.'),
                                        )
+    gender_identity_custom_value = models.CharField(max_length=64, default="", blank=True,
+                                                    help_text=_(
+                                                        'Enter a custom value for gender_identity.'),
+                                                    )
     birth_date = models.DateField(blank=True, null=True)
     agree_tos = models.CharField(max_length=64, default="", blank=True,
                                  help_text=_('Do you agree to the terms and conditions?'))
     agree_privacy_policy = models.CharField(max_length=64, default="", blank=True,
                                             help_text=_('Do you agree to the privacy policy?'))
+    attest_training_completed = models.BooleanField(default=False, blank=True,
+                                                    help_text=_("""Yes, I attest that I have completed the
+                                                        training for this system and will abide by
+                                                        the code of conduct."""))
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def save(self, commit=True, **kwargs):
         if not self.subject:
             self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
-                                               number_1=self.mobile_phone_number,
-                                               number_2=self.four_digit_suffix)
+                                               number_str_include=self.number_str_include)
+
+            # Make sure the Subject has not been assigned to someone else.
+            up_exist = UserProfile.objects.filter(
+                subject=self.subject).exists()
+            if up_exist:
+                while True:
+                    self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
+                                                       number_str_include=self.number_str_include)
+                    if not UserProfile.objects.filter(subject=self.subject).exists():
+                        break
 
         if commit:
             super(UserProfile, self).save(**kwargs)
 
     def __str__(self):
-        display = '%s %s (%s)' % (self.user.first_name,
-                                  self.user.last_name,
+        display = '%s %s (%s)' % (self.user.first_name.title(),
+                                  self.user.last_name.title(),
                                   self.user.username)
         return display
 
@@ -342,7 +465,7 @@ class UserProfile(models.Model):
         return str(level)
 
     @property
-    def verified_person_data(self):
+    def verified_claims(self):
         vpa_list = []
         ialds = IdentityAssuranceLevelDocumentation.objects.filter(
             subject_user=self.user)
@@ -352,15 +475,15 @@ class UserProfile(models.Model):
                 subject_user=self.user)
             ialds = IdentityAssuranceLevelDocumentation.objects.filter(
                 subject_user=self.user)
-        for i in ialds:
 
-            od = OrderedDict()
-            od["verification"] = OrderedDict()
-            od["verification"]["trust_framework"] = "us_nist_800_63_3"
-            od["verification"]["method"] = i.evidence
-            od["verification"]["ial"] = str(i.level)
-            od["verification"]["method"] = i.evidence
-            od["verification"]["date"] = str(i.verification_date)
+        od = OrderedDict()
+        od["verification"] = OrderedDict()
+        od["verification"]["trust_framework"] = "nist_800_63A_ial_2"
+        od["verification"]["time"] = str(self.updated_at)
+        od["verification"]["evidence"] = []
+
+        for i in ialds:
+            od["verification"]["evidence"].append(i.oidc_ia_evidence)
             od["verification"]["claims"] = OrderedDict()
             od["verification"]["claims"]["given_name"] = self.given_name
             od["verification"]["claims"]["family_name"] = self.family_name
@@ -384,10 +507,11 @@ class UserProfile(models.Model):
 
     @property
     def picture_url(self):
-        p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
-        if p.count('http') == 2:
-            return self.picture.url
-        return p
+        if self.picture:
+            p = "%s%s" % (settings.HOSTNAME_URL, self.picture.url)
+            if p.count('http') == 2:
+                return self.picture.url
+            return p
 
     @property
     def vot(self):
@@ -418,7 +542,7 @@ class UserProfile(models.Model):
         formatted_identifiers = []
         identifiers = IndividualIdentifier.objects.filter(user=self.user)
         for i in identifiers:
-            formatted_identifiers.append(i.doc_oidc_format)
+            formatted_identifiers.append(i.doc_oidc_format_enhanced)
         return formatted_identifiers
 
     @property
@@ -441,6 +565,16 @@ class UserProfile(models.Model):
                     orgs.append(o)
         return orgs
 
+    @property
+    def memberships(self):
+        # Get the organizations for this user.
+        members = []
+        for o in Organization.objects.all():
+            for m in o.members.all():
+                if m == self.user:
+                    members.append(o.formatted_organization)
+        return members
+
 
 MFA_CHOICES = (
     ('', 'None'),
@@ -448,74 +582,6 @@ MFA_CHOICES = (
     ('FIDO', "FIDO U2F"),
     ('SMS', "Text Message (SMS)"),
 )
-
-
-class MFACode(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    uid = models.CharField(blank=True,
-                           default=uuid.uuid4,
-                           max_length=36, editable=False)
-    tries_counter = models.IntegerField(default=0, editable=False)
-    code = models.CharField(blank=True, max_length=4, editable=False)
-    mode = models.CharField(max_length=5, default="",
-                            choices=MFA_CHOICES)
-    valid = models.BooleanField(default=True)
-    expires = models.DateTimeField(blank=True)
-    added = models.DateField(auto_now_add=True)
-
-    def __str__(self):
-        name = 'To %s via %s' % (self.user,
-                                 self.mode)
-        return name
-
-    @property
-    def endpoint(self):
-        e = ""
-        up = UserProfile.objects.get(user=self.user)
-        if self.mode == "SMS" and up.mobile_phone_number:
-            e = up.mobile_phone_number
-        if self.mode == "EMAIL" and self.user.email:
-            e = self.user.email
-        return e
-
-    def save(self, commit=True, **kwargs):
-        if not self.id:
-            now = pytz.utc.localize(datetime.utcnow())
-            expires = now + timedelta(days=1)
-            self.expires = expires
-            self.code = str(random.randint(1000, 9999))
-            up = UserProfile.objects.get(user=self.user)
-            if self.mode == "SMS" and \
-               up.mobile_phone_number:
-                # Send SMS to up.mobile_phone_number
-                sns = boto3.client(
-                    'sns',
-                    # aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                    # aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                    region_name='us-east-1')
-                number = "%s" % (up.mobile_phone_number)
-                sns.publish(
-                    PhoneNumber=number,
-                    Message="Your code is : %s" % (self.code),
-                    MessageAttributes={
-                        'AWS.SNS.SMS.SenderID': {
-                            'DataType': 'String',
-                            'StringValue': 'MySenderID'
-                        }
-                    }
-                )
-            elif self.mode == "SMS" and not up.mobile_phone_number:
-                print("Cannot send SMS. No phone number on file.")
-            elif self.mode == "EMAIL" and self.user.email:
-                # "Send SMS to self.user.email
-                mfa_via_email(self.user, self.code)
-            elif self.mode == "EMAIL" and not self.user.email:
-                print("Cannot send email. No email_on_file.")
-            else:
-                """No MFA code sent"""
-                pass
-        if commit:
-            super(MFACode, self).save(**kwargs)
 
 
 class PhoneVerifyCode(models.Model):
@@ -551,7 +617,8 @@ class PhoneVerifyCode(models.Model):
                 number = "%s" % (up.mobile_phone_number)
                 sns.publish(
                     PhoneNumber=number,
-                    Message="Your code is : %s" % (self.code),
+                    Message="Your verification code for %s is : %s" % (settings.ORGANIZATION_NAME,
+                                                                       self.code),
                     MessageAttributes={
                         'AWS.SNS.SMS.SenderID': {
                             'DataType': 'String',
@@ -604,7 +671,9 @@ class ValidPasswordResetKey(models.Model):
         self.expires = expires
 
         # send an email with reset url
-        send_password_reset_url_via_email(self.user, self.reset_password_key)
+        if self.user.email:
+            send_password_reset_url_via_email(
+                self.user, self.reset_password_key)
         if commit:
             super(ValidPasswordResetKey, self).save(**kwargs)
 

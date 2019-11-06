@@ -2,15 +2,15 @@
 
 [![OpenID Certified](https://cloud.githubusercontent.com/assets/1454075/7611268/4d19de32-f97b-11e4-895b-31b2455a7ca6.png)](https://openid.net/certification/)
 
-Verify My Identity is a certified OpenID Connect Provider. Its supports role-based permission by using Django groups. VMI manages relationships between organizations, staff users, and consumer users. Other features include:
+Verify My Identity is a certified OpenID Connect Provider. Its supports role-based permissions by using Django groups.
+VMI manages relationships between organizations, staff users, and consumer users. Other features include:
 
 
 * Trusted Referee Support - According to NIST SP 800-63-3.
 * FIDO U2F / FIDO 2 Support
-* Text Message multi-facotor authentication support 
+* Text Message Multi-factor authentication support 
 * Vectors of Trust Support
 * Support for `document` and `address` claims as defined in the iGov Profile for OIDC.
-
 
 
 Installation
@@ -18,45 +18,94 @@ Installation
 
 This project is based on Python 3.6 and Django 2.1.x. 
 
-Dowload the project:
+Download the project:
+
 
     git clone https://github.com/TransparentHealth/vmi.git
    
 
-Install supporting libraries. (Consider using virtualenv for your pythoin setup.
+Install supporting libraries. (Consider using virtualenv for your python setup).
+
 
     cd vmi
     pip install -r requirements.txt
 
 Depending on your local environment you made need some supporting libraries
-for the above com,mand to run cleanly. For example you need a 
+for the above command to run cleanly. For example you need a 
 compiler and python-dev.
 
-Setup some local enviroment variables. 
+
+Add some entries to your `/etc/hosts` file.
 
 
+If running this OIDC server in conjunction with `smh_app` or `sharemyhealth` (OAuth2 server)
+on the same machine for development, then we recommend setting up names for each server host in `/etc/hosts`.
+You might add lines like the following to `/etc/hosts` file:
+
+
+     127.0.0.1       verifymyidentity
+     127.0.0.1       smhapp
+     127.0.0.1       sharemyhealth
+
+
+
+
+Setup some local environment variables. 
+
+
+    export EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES=".ENV" 
     export AWS_ACCESS_KEY_ID="YOUR_KEY_ID"
     export AWS_SECRET_ACCESS_KEY="YOUR_SECRET"
-    export OIDC_PROVIDER="http://localhost:8000"
-    export OIDC_ISSUER="http://localhost:8000"
+    export OIDC_PROVIDER="http://verifymyidentity:8000"
+    export OIDC_ISSUER="http://verifymyidentity:8000"
     export ALLOWED_HOSTS="*"
-    export ROOT_USER=superman
-    export ROOT_PASSWORD=manofst33l
+    export DJANGO_SUPERUSER_USERNAME="youruser"
+    export DJANGO_SUPERUSER_PASSWORD="yourpassword"
+    export DJANGO_SUPERUSER_EMAIL="super@example.com"
+    export DJANGO_SUPERUSER_FIRST_NAME="Super"
+    export DJANGO_SUPERUSER_LAST_NAME="User"
 
-Just add the above to a `.env` and then do a 'source .env'. Without valid 
-AWS credentials email and SMS text functions will not work. The root username and password 
+
+
+
+The `EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES` setting says to look for env vars in a file called `.env`.
+If this string is `EC2_PARAMSTORE`, the anything in `.env` will be overridden with parameters in
+an AWS EC2 Parameter store. There are a number of variables that can be set based on your
+specific environment and setup.  This is how you can brand the project to your needs.
+See the `settings.py` and for a full list.  Below are some basic variable you may want to set.
+
+Just add the above to a `.env` and then do a `source .env`. Without valid 
+AWS credentials email and SMS text functions will not work. The superuser settings
 are used to create a default superuser.
 
 Create the database:
 
+
     python manage.py migrate
 
-As mentioned above, this step also creates a superuser.
 
-Run the development server like so:
+Create initial Groups and Permissions, and Organizations
 
 
-     python manage.py runserver
+    python manage.py create_default_groups
+    python manage.py create_sample_organizations
+
+
+
+Create a superuser (Optional)
+
+
+    python manage.py create_super_user_from_envars
+
+
+In development our convention is to run `vmi` on port `8000`, `sharemyhealth` on 8001, and `smh_app` on `8002`.
+To start this server on port 8001 issue the following command.
+
+
+     python manage.py runserver 
+
+
+This will start the server on the default port of `8000`.
 
 
 
@@ -65,6 +114,7 @@ Docker Installation
 -------------------
 
 Alternatively, a Docker configuration is available in:
+
 
     .development
 
@@ -83,17 +133,15 @@ docker-compose -f .development/docker-compose.yml exec web python manage.py migr
 If you make changes to `requirements.txt` to add libraries re-run 
 `docker-compose` with the `--build` option.
 
-After the VMI Docer container is comepltely setup, you execute Django 
+After the VMI Docker container is completely setup, you execute Django 
 commands like so:
 
 
 `docker-compose -f .development/docker-compose.yml exec web python manage.py`
 
 
-
-
-Connecting ShareMyHealth and VerifyMyIdentity
----------------------------------------------
+Connecting ShareMyHealth ShareMyHealth App, and VerifyMyIdentity
+------------------------------------------====================---
 
 The following link outlines some settings for getting Verify My Identity and Share My Health working in
 a in a local development environment.
@@ -107,50 +155,23 @@ a in a local development environment.
 [VerifyMyIdentity - VMI](https://github.com/TransparentHealth/vmi), 
 a standards-focused OpenID Connect Identity Provider.
 
+
 [ShareMyHealth](https://github.com/TransparentHealth/sharemyhealth) is designed as a 
-consumer-mediated health information exchange.  
+consumer-mediated health information exchange. It is an OAuth2 Provider and FHIR Server.  
 ShareMyHealth acts as a relying party to 
 [vmi](https://github.com/TransparentHealth/vmi).
+
+
+[ShareMyHealth App](https://github.com/TransparentHealth/sharemyhealth) is a web application
+for community members and community-based organizations.  It functions as a personal health record
+and allows users to selectivly share information with organizations they choose.
+
+ShareMyHealth App is an OAuth2 client to [ShareMyHealth](https://github.com/TransparentHealth/sharemyhealth).
+It gets healkth information as FHIR.  It is also a relying party to [vmi](https://github.com/TransparentHealth/vmi).
+
 
 ## Supporting Resources
 
 vmi uses css resources from Bootstrap (v.3.3.x) and 
 Font-Awesome (v4.4.x). 
 
-
-=======
-identity assurance escelation and FIDO.
-
-This project is based on Python 3.6 and Django 2.1.x.
-
-Install supporting libraries with
-
-    pip install -r requirements.txt
-    
-
-Alternatively, a Docker configuration is available in:
-
-    .development
-
-By default the docker instance will be attached to 
-port **8000** on localhost
-
-It will also configure a postgreSQL instance on port **5432**.
-
-If you're working with a fresh db image
-the migrations have to be run.
-
-If you make changes to requirements.txt to add libraries re-run 
-docker-compose with the --build option.
-
-## Associated Projects
-
-[ShareMyHealth](https://github.com/TransparentHealth/sharemyhealth) is designed as a 
-consumer-mediated health information exchange.  
-ShareMyHealth acts as a relying party to 
-[vmi](https://github.com/TransparentHealth/vmi).
-
-## Supporting Resources
-
-vmi uses css resources from Bootstrap (v.3.3.x) and 
-Font-Awesome (v4.4.x). 

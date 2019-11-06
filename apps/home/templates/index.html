@@ -1,79 +1,64 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
-{% block title %}{{ settings.APPLICATION_TITLE }}{% endblock %}
-{% block pretitle %}{% endblock %}
-{% block extra_head %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li class="active"><a href="/">Home</a></li>
+                    </ol>
+{% endblock %}
+{% block Content %}
+            <div class="row">
+                <div class="col">
+                    <h1 class="page-title">
+                       Welcome to
+                        <b>{{settings.APPLICATION_TITLE }}</b>
+                    </h1 class="page-title">
+                    <p> Already have an account? Maybe you want to login to
+                        <a href="{{settings.KILLER_APP_URI}}">{{settings.KILLER_APP_TITLE}}</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 my-4">
+                    <h2>Login</h2>
+                    {% include 'include/login-form.html' %}
+                </div>
+
+                <div class="col-lg-6 my-4">
+                    <h2>Create New Agent Account</h2>
+                    <h3>Find your organization</h3>
+                    {% include "include/find-org-to-create-account.html" %}
+
+                    <p>Want your Organization to join?
+                        Contact the
+                        <a href="{{ settings.ORG_SIGNUP_CONTACT  }}" target="_blank" rel="noopener">
+                            {{settings.ORGANIZATION_TITLE }}
+                        </a>
+                        for more information.
+                    </p>
+                </div>
+
+                {% if settings.ALLOW_MEMBER_SIGNUP %}
+                <div class="col my-4">
+                    <a href="{% url 'create_account_enduser' %}">
+                        <button type="button" class="btn btn-primary">
+                            <i class="fa fa-plus"></i>
+                            Signup as a Community Member
+                        </button>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
 {% endblock %}
 
-
-{% block pagename %} {{ settings.APPLICATION_TITLE }} {% endblock %}
-{% block Content %}
-
-
-    <div class="hero-unit text-center">
-
-        <div class="container-fluid">
-            
-                <div class="row">
-                  <div class="col-lg-10">
-                    {% include "include/messages.html" %}
-                  </div>
-                </div>
-            
-                <div class="col-md-12">
-                    
-                <div class="col-lg-12 well">
-    
-                        <h1>{{ settings.APPLICATION_TITLE }}</h1>
-
-                                               {{ settings.TOP_LEFT_TITLE }} helps connect people with their own health information.</p>
-               
-                        <!-- or <a href="{% url 'social:begin' 'google-openidconnect' %}">continue with Google</a> -->
-                        <p>
-
-                                   
-                        <a href="{% url 'create_account_enduser' %}">
-
-                                        <button type="button" class="btn btn-primary"> <i class="fa fa-plus"></i> Signup as a Community Member</button></a>
-                        
-                                                <a href="#Organizations">
-
-                                        <button type="button" class="btn btn-primary"> <i class="fa fa-plus"></i> Signup as an Organization Agent</button></a>
-                        </div>
-                
-
-            
-                Already have an account? <a href="{{settings.KILLER_APP_URI}}">Login to {{ settings.TOP_LEFT_TITLE }}</a>.
-                        <!-- or <a href="{% url 'social:begin' 'google-openidconnect' %}">continue with Google</a> -->
-                        <p>
-
-                
-             
-                   <div class="col-lg-12 well">
-    
-                        
-                        
-                        
-                        <h1>Participating Organizations</h1>
-                        
-                    
-                            {% for o in organizations %}
-                             <a href="{% url 'create_org_account' o.slug %}"><img src="{{o.picture_url}}" alt={{o.name}}></a>{{ o.signup_uri }}<br>
-                            {% endfor %}
-                
-                    
-                        
-                
-                        </div>
-                
-                
-                
-                  <h2>Want your Organization to join {{ settings.TOP_LEFT_TITLE }}?</h2>
-                  <h3>Contact the <a href="https://abhealth.us/contact-us/"> {{settings.ORGANIZATION_TITLE }}</a> for more information.</h3>
-                
-                </div>   
-            </div>
-        </div>
-
+{% block ExtraJSFoot %}
+<script type="application/javascript">$("#id_username").focus();</script>
+<script type="application/javascript">
+var empt = document.forms["loginform"]["username"].value;
+if (empt != "")
+    {
+    $("#id_password").focus();
+    }
+</script>
 {% endblock %}

@@ -34,6 +34,18 @@
 
       <ul class="nav navbar-nav navbar-right">
 
+{% if request.user|has_group:"OrganizationalAgent" %} 
+       <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-building"></i> Organizations<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            {% for o in  request.user.userprofile.organizations %}
+                <li><a href="{% url 'display_organization' o.slug %}"> <i class="fa fa-building"></i> {{o.name}}</a></li>
+            {% endfor %} 
+          </ul>
+        </li>
+
+{% endif %}
+
 
 		{% if user.is_authenticated %}
 
@@ -45,14 +57,15 @@
            <!-- <li> <a href="{% url 'social:begin' 'google-openidconnect' %}"> <i class="fa fa-google"></i> Link Your Google Account</a></li> -->
           	<li><a href="{% url 'account_settings' %}"> <i class="fa fa-user"></i> Basic Information</a></li>
             <li><a href="{% url 'upload_profile_picture' %}"> <i class="fa fa-photo"></i> Profile Picture</a></li>
-            <li><a href="{% url 'display_individual_identifiers' %}"> <i class="fa fa-id"></i> Identifiers</a></li>
+            <li><a href="{% url 'display_individual_identifiers' %}"> <i class="fa fa-user"></i> Identifiers</a></li>
             <li><a href="{% url 'display_addresses' %}"> <i class="fa fa-map"></i> Addresses</a></li>
             <li><a href="{% url 'mobile_phone' %}"> <i class="fa fa-mobile"></i> Mobile Phone</a></li>
             <li><a href="{% url 'mfa-management' %}"> <i class="fa fa-key"></i> Multi-factor Authentication</a></li>
-            <li><a href="{% url 'fido:fido-list' %}"> <i class="fa fa-key"></i> FIDO 2 Multi-factor Authentication</a></li>    
             <li><a href="{% url 'oauth2_provider:authorized-token-list' %}"> <i class="fa fa-legal"></i> Authorized Applications</a>
 		        <li><a href="{% url 'oauth2_provider:list' %}">  <i class="fa fa-key"></i> Developer Application Registration</a>
-            <li><a href="{% url 'reset_password' %}"><i class="fa fa-sync"></i> Change Password</a></li>
+            <li><a href="{% url 'password_recovery_passphrase_home' %}">  <i class="fa fa-key"></i> Password Recovery Passphrase</a>
+            
+            <li><a href="{% url 'reset_password' %}"><i class="fa fa-key"></i> Change Password</a></li>
             <li><a href="{% url 'delete_account' %}"><i class="fa fa-remove"></i> Delete Account</a></li>
           </ul>
         </li>

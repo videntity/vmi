@@ -1,38 +1,36 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% load has_group %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li class="active"><a href="/">Home</a></li>
+                    </ol>
+{% endblock %}
 {% block Content %}
+            <div class="row">
+                <div class="col">
+                     <p>Hello {{request.user.first_name|title}} {{request.user.last_name|title}}.</p>
+                     <p>Your username is <span class="badge badge-primary">{{ request.user }}</span>
+                     and your account number is <span class="badge badge-primary">{{ profile.subject }}</span>.</p>
+                     <p>
+                     Your identity assurance level is <span class="badge badge-success">{{profile.ial}}</span>.</p>
 
-<div class="container">
-
-    <div class="row">
-        <div class="col-lg-12">
-	      <ol class="breadcrumb">
-	        <li class="active"><a href="/">Home</a></li>
-	      </ol>
-        </div>
-     </div>
-
-
-    <div class="row">
-      <div class="col-lg-10">
-        {% include "include/messages.html" %}
-      </div>
-    </div>
-
- <div class="col-lg-12 well">
-    <div class="row text-center">
-        <div class="col-lg-12">
-
-    <a href="{% url 'user_search' %}"><button type="button" class="btn btn-default">Member Search</button></a>
- 
-    
-	    </div>
-		
-    </div> <!-- /.row -->
- </div> <!-- /.well -->
-</div><!-- /.container -->
+                     
+                    {% if request.user|has_group:"IdentityAssuranceTrustedReferee" %}
+                    <p> Since you are in the group <span class="badge badge-default">IdentityAssuranceTrustedReferee</span>
+                    you have access to
+                    <a href="{% url 'user_search' %}">User search</a>. This                     
+                    allows you find accounts of other users and update most details.</p>
+                    <a href="{% url 'user_search' %}">
+                        <button type="button" class="btn btn-primary">User Search</button>
+                    </a>
+                    {% endif %}
+</p>
+                     <h5>Looking for {{settings.KILLER_APP_TITLE}}? <a href="{{settings.KILLER_APP_URI}}">Login here.</a></h5>
 
 
+                </div>
+            </div><!-- /.row -->
 {% endblock %}
 
