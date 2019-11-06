@@ -25,7 +25,7 @@ class StaffSignupForm(forms.Form):
         max_length=100, label=_("Nickname"), required=False)
 
     mobile_phone_number = forms.CharField(required=True,
-                                          label=_("Mobile Phone Number"),
+                                          label=_("Mobile Phone Number*"),
                                           max_length=10)
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password"))
