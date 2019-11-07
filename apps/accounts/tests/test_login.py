@@ -16,6 +16,14 @@ class SimpleLoginTests(TestCase):
         self.client = Client()
         self.url = reverse('mfa_login')
 
+    def test_valid_login_get(self):
+        """
+        Valid login page
+        """
+        response = self.client.get(self.url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Login')
+
     def test_valid_login(self):
         """
         Valid User can login
