@@ -58,26 +58,26 @@ class UserProfileClaimProvider(BaseProvider):
 
     def claim_given_name(self):
         try:
-            return self.user.userprofile.given_name
+            return self.user.userprofile.given_name.title()
         except Exception:
             return None
 
     def claim_family_name(self):
         try:
-            return self.user.userprofile.family_name
+            return self.user.userprofile.family_name.title()
         except Exception:
             return None
 
     def claim_middle_name(self):
         try:
-            return self.user.userprofile.middle_name
+            return self.user.userprofile.middle_name.title()
         except Exception:
             return None
 
     def claim_name(self):
         try:
-            return "%s %s" % (self.user.userprofile.given_name,
-                              self.user.userprofile.family_name)
+            return "%s %s" % (self.user.userprofile.given_name.title(),
+                              self.user.userprofile.family_name.title())
         except Exception:
             return None
 
@@ -93,6 +93,7 @@ class UserProfileClaimProvider(BaseProvider):
         except Exception:
             return None
 
+    # TO DO Remove or revise this claim ? It will break things.
     def claim_gender(self):
         try:
             gender = self.user.userprofile.sex
@@ -102,12 +103,26 @@ class UserProfileClaimProvider(BaseProvider):
                 return "female"
         except Exception:
             return None
+    # Downstream health / vital statistics should rely on this claim
 
-    def claim_gender_identity(self):
+    def claim_sex(self):
         try:
-            return self.user.userprofile.gender_identity
+            return self.user.userprofile.sex
         except Exception:
             return None
+
+    # def claim_gender_identity_custom_value(self):
+    #     try:
+    #         return self.user.userprofile.gender_identity_custom_value
+    #     except Exception:
+    #         return None
+    #
+    #
+    # def claim_gender_identity(self):
+    #     try:
+    #         return self.user.userprofile.gender_identity
+    #     except Exception:
+    #         return None
 
     def claim_birthdate(self):
         try:

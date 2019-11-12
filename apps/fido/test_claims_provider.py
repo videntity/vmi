@@ -30,12 +30,12 @@ class ClaimProviderTests(TestCase):
         cp = get_claims_provider()(user=self.dev_user)
         claims = cp.get_claims()
         self.assertEqual(claims["email"], "dev@example.com")
-        self.assertEqual(claims['vot'], "P0.Ce")
+        self.assertEqual(claims['vot'], "P1.C2")
         self.assertEqual(claims['aal'], "2")
 
     def test_get_claims_no_change(self):
         cp = get_claims_provider()(user=self.test_user)
         claims = cp.get_claims()
         self.assertEqual(claims["email"], "test@example.com")
-        self.assertEqual(claims['vot'], "P0.Cc")
+        self.assertEqual(claims['vot'], "P1.C1")
         self.assertEqual(claims['aal'], "1")
