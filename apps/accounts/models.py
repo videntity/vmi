@@ -45,6 +45,8 @@ class IndividualIdentifier(models.Model):
                             max_length=255, blank=True, default='', db_index=True)
     name = models.SlugField(max_length=255, blank=True,
                             default='', db_index=True)
+
+    issuer = models.CharField(max_length=255, blank=True, default='')
     # ISO 3166-1
     country = models.CharField(max_length=2, blank=True,
                                default=settings.DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS, db_index=True,
@@ -53,7 +55,7 @@ class IndividualIdentifier(models.Model):
     # ISO 3166-2
     subdivision = models.CharField(max_length=2, blank=True, default='',
                                    verbose_name="State",
-                                   help_text="e.g., a country's subdivision such as a state or province.")
+                                   help_text="A country's subdivision such as a state or province.")
 
     value = models.CharField(max_length=250, blank=True,
                              default='', db_index=True)
@@ -86,6 +88,7 @@ class IndividualIdentifier(models.Model):
     @property
     def doc_oidc_format_enhanced(self):
         od = self.doc_oidc_format
+        od['issuer'] = self.issuercountry
         od['country'] = self.country
         od['subdivision'] = self.subdivision
         od['type'] = self.type
@@ -330,7 +333,8 @@ class UserProfile(models.Model):
                                db_index=True)
     middle_name = models.CharField(max_length=255, default='', blank=True,
                                    help_text='Middle Name',)
-    picture = models.ImageField(upload_to='profile-picture/', null=True, blank=True)
+    picture = models.ImageField(
+        upload_to='profile-picture/', null=True, blank=True)
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
                                 db_index=True, null=False)
     nickname = models.CharField(
@@ -466,6 +470,7 @@ class UserProfile(models.Model):
 
     @property
     def verified_claims(self):
+
         vpa_list = []
         ialds = IdentityAssuranceLevelDocumentation.objects.filter(
             subject_user=self.user)
@@ -474,7 +479,7 @@ class UserProfile(models.Model):
             IdentityAssuranceLevelDocumentation.objects.create(
                 subject_user=self.user)
             ialds = IdentityAssuranceLevelDocumentation.objects.filter(
-                subject_user=self.user)
+                subject_user=self.user, )
 
         od = OrderedDict()
         od["verification"] = OrderedDict()
@@ -483,14 +488,28 @@ class UserProfile(models.Model):
         od["verification"]["evidence"] = []
 
         for i in ialds:
-            od["verification"]["evidence"].append(i.oidc_ia_evidence)
-            od["verification"]["claims"] = OrderedDict()
-            od["verification"]["claims"]["given_name"] = self.given_name
-            od["verification"]["claims"]["family_name"] = self.family_name
-            od["verification"]["claims"][
-                "birthdate"] = self.preferred_birthdate
-            od["verification"]["claims"]["gender"] = self.gender
-            vpa_list.append(od)
+            od = OrderedDict()
+            od["verification"] = OrderedDict()
+            od["verification"]["trust_framework"] = "nist_800_63A_ial_2"
+            od["verification"]["time"] = str(self.updated_at)
+            od["verification"]["evidence"] = []
+
+            if i.level != "1":
+                od["verification"]["evidence"].append(i.oidc_ia_evidence)
+                od["verification"]["claims"] = OrderedDict()
+
+                # TODO Check the list of claims to be applied.
+                od["verification"]["claims"]["given_name"] = self.given_name
+                od["verification"]["claims"]["family_name"] = self.family_name
+
+                if i.evidence_type == "id_document":
+                    od["verification"]["claims"][
+                        "birthdate"] = self.preferred_birthdate
+                if i.evidence_type == "utility_bill":
+                    od["verification"]["claims"]["address"] = self.address
+                # od["verification"]["claims"]["gender"] = self.gender
+                vpa_list.append(od)
+
         return vpa_list
 
     @property
@@ -516,17 +535,29 @@ class UserProfile(models.Model):
     @property
     def vot(self):
         """Vectors of Trust rfc8485"""
+        # https://tools.ietf.org/html/rfc8485
+        # Signed and verifiable assertion, passed through the user agent (web
+        # browser)
         response = ""
         ial = self.ial
         aal = self.aal
-        if ial == "2":
+        if ial == "1":
+            response = "%sP1." % (response)
+        elif ial == "2":
             response = "%sP2." % (response)
+        elif ial == "3":
+            response = "%sP3." % (response)
         else:
             response = "%sP0." % (response)
+
         if aal == "1":
-            response = "%sCc" % (response)
+            response = "%sC1" % (response)
+        elif aal == "2":
+            response = "%sC2" % (response)
+        elif aal == "3":
+            response = "%sC3" % (response)
         else:
-            response = "%sCc" % (response)
+            response = "%sC1" % (response)
         return response
 
     @property

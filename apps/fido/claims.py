@@ -29,7 +29,7 @@ class AuthenticatorAssuranceProvider(BaseProvider):
                 vot = self.claims.get("vot", False)
                 if vot:
                     parts = vot.split(".")
-                    parts[1] = "Ce"
+                    parts[1] = "C2"
                     return ".".join(parts)
                 return None
         except Exception:
