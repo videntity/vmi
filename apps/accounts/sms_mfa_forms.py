@@ -12,10 +12,10 @@ class MFACodeForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length=150, label=_('Username*'),
-                               widget=forms.TextInput(attrs={'placeholder': 'Your username*'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Your Password*'}), max_length=150,
-                               label=_('Password*'))
+    username = forms.CharField(max_length=150, label=_('Username, email, or account number'),
+                               widget=forms.TextInput(attrs={'placeholder': 'Enter your username, email, or account number'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password'}), max_length=150,
+                               label=_('Password'))
     required_css_class = 'required'
 
     def clean_username(self):

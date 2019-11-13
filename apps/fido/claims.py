@@ -7,7 +7,7 @@ class AuthenticatorAssuranceProvider(BaseProvider):
     def claim_aal(self):
         try:
             # we can say that if a user has a device
-            # it was used durring authentication as
+            # it was used during authentication as
             # that is currently enforced. This may not
             # hold up if changes are made to the authentication
             # flow of the system.
@@ -17,11 +17,12 @@ class AuthenticatorAssuranceProvider(BaseProvider):
             return None
 
     def claim_vot(self):
-        # https://tools.ietf.org/html/rfc8485#appendix-A.2
-        # Ce could also be Cf
+        # https://github.com/TransparentHealth/openid-connect-consumerhealth-profile
+        # https://tools.ietf.org/html/rfc8485
+
         try:
             # we can say that if a user has a device
-            # it was used durring authentication as
+            # it was used during authentication as
             # that is currently enforced. This may not
             # hold up if changes are made to the authentication
             # flow of the system.

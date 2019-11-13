@@ -75,9 +75,11 @@ MIDDLEWARE = [
 
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google_openidconnect.GoogleOpenIdConnect',
+    # 'social_core.backends.google_openidconnect.GoogleOpenIdConnect',
     'django.contrib.auth.backends.ModelBackend',
-
+    'apps.accounts.authentication_backends.EmailBackend',
+    'apps.accounts.authentication_backends.SubjectBackend',
+    # apps.accounts.ldap_auth_backends.LDAPBackend',
 )
 
 
