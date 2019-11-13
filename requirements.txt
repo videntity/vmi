@@ -39,6 +39,7 @@ virtualenv==16.0.0
 pyjwt==1.6.4
 pycryptodome==3.6.6
 pyjwkest==1.4.0
+pyldap==3.2.0
 python-dotenv==0.10.3
 djangorestframework==3.10.2
 django-filter==2.0.0
