@@ -285,6 +285,9 @@ POLICY_URI = env('DJANGO_POLICY_URI',
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
 TOS_URI = env('DJANGO_TOS_URI',
               'http://sharemy.health/terms-of-service-1.0.html')
+AGENT_TOS_URI = env('DJANGO_AGENT_TOS_URI',
+                    'http://sharemy.health/agent-terms-of-service-1.0.html')
+
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 TRAINING_URI = env('DJANGO_TRAINING_URI',
                    'http://sharemy.health/training1.0.html')
@@ -315,8 +318,11 @@ ORG_SIGNUP_CONTACT = env('ORG_SIGNUP_CONTACT',
 # Allow Members to create accounts
 ALLOW_MEMBER_SIGNUP = bool_env(env('ALLOW_MEMBER_SIGNUP', False))
 
+CONTACT_EMAIL = env('DJANGO_CONTACT_EMAIL', 'sharemyhealth@abhealth.us')
+
 SETTINGS_EXPORT = [
     'DEBUG',
+    'CONTACT_EMAIL',
     'ALLOWED_HOSTS',
     'APPLICATION_TITLE',
     'STATIC_URL',

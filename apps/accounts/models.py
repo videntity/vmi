@@ -88,7 +88,7 @@ class IndividualIdentifier(models.Model):
     @property
     def doc_oidc_format_enhanced(self):
         od = self.doc_oidc_format
-        od['issuer'] = self.issuercountry
+        od['issuer'] = self.issuer
         od['country'] = self.country
         od['subdivision'] = self.subdivision
         od['type'] = self.type

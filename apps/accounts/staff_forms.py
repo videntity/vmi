@@ -16,7 +16,7 @@ YEARS = [x for x in range(1901, 2000)]
 User = get_user_model()
 
 agree_tos_label = mark_safe(
-    'Do you agree to the <a href="%s" target="_blank">terms of service</a>?' % (settings.TOS_URI))
+    'Do you agree to the <a href="%s" target="_blank">terms of service</a>?' % (settings.AGENT_TOS_URI))
 
 attest_training_completed_label = mark_safe(
     """Yes, I attest I have completed the <a href="%s" target="_blank">training</a>
