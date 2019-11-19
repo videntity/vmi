@@ -61,8 +61,8 @@ urlpatterns = [
         name='verify_mobile_phone_number'),
     url(r'^settings/(?P<subject>[^/]+)',
         account_settings, name='account_settings_subject'),
-    url(r'^settings', account_settings, name='account_settings'),
-    url(r'^delete', delete_account, name='delete_account'),
+    url(r'^settings$', account_settings, name='account_settings'),
+    url(r'^delete$', delete_account, name='delete_account'),
 
     url(r'^upload-profile-picture/(?P<subject>[^/]+)',
         upload_profile_picture, name='upload_profile_picture_subject'),
