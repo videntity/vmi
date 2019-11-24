@@ -14,6 +14,35 @@ def random_secret(y=40):
                                  '0123456789') for x in range(y))
 
 
+def send_member_verify_request_email(to_user, about_user_profile, organization):
+    """Send to trust/org agents to login and verify the identity of this person."""
+
+    plaintext = get_template('verify-new-member-email.txt')
+    htmly = get_template('verify-new-member-email.html')
+    context = {"APPLICATION_TITLE": settings.APPLICATION_TITLE,
+               "TO_FIRST_NAME": to_user.first_name,
+               "TO_LAST_NAME": to_user.last_name,
+               "ABOUT_FIRST_NAME": about_user_profile.user.first_name,
+               "ABOUT_LAST_NAME": about_user_profile.user.last_name,
+               "ORGANIZATION_NAME": organization.name,
+               "ABOUT_SUBJECT": about_user_profile.subject,
+               "HOSTNAME_URL": settings.HOSTNAME_URL,
+               }
+
+    subject = """[%s]A New Member account requires your approval.""" % (
+        settings.ORGANIZATION_NAME)
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to = [to_user.email, ]
+
+    text_content = plaintext.render(context)
+    html_content = htmly.render(context)
+
+    msg = EmailMultiAlternatives(subject=subject, body=text_content,
+                                 to=to, from_email=from_email)
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send()
+
+
 def send_password_reset_url_via_email(user, reset_key):
     subject = '[%s]Your password ' \
               'reset request' % (settings.ORGANIZATION_NAME)

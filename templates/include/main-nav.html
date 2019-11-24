@@ -21,6 +21,21 @@
                        {% if request.user|has_group:"OrganizationalAgent" %}
                         <li class="dropdown col">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Reports<b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{% url 'orgs_and_agents_report' %}">Organizations and Agents</a>
+                                </li>
+                            </ul>
+                        </li>
+                        {% endif %}
+
+
+
+                       {% if request.user|has_group:"OrganizationalAgent" %}
+                        <li class="dropdown col">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 Organizations<b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
@@ -40,7 +55,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="{% url 'oauth2_provider:list' %}">Register Application</a>
+                                    <a href="{% url 'oauth2_provider:list' %}">Register Applications</a>
                                 </li>
                             </ul>
                         </li>
