@@ -1,8 +1,8 @@
 Hello {{TO_FIRST_NAME|title}} {{TO_LAST_NAME|title}},
 
-A new user {{ABOUT_FIRST_NAME|title}} {{ABOUT_LAST_NAME|title}} registered for your organization, {{ORGANIZATION_NAME}}, and requires your approval. Please log in to you account to approve or deny the request.
+A new user {{ABOUT_FIRST_NAME|title}} {{ABOUT_LAST_NAME|title}} registered for your organization, {{ ORGANIZATION_NAME }}, and requires your attention.
 
-Login here: {{HOSTNAME_URL}}
+{{HOSTNAME_URL}}
 
 Thanks,
 

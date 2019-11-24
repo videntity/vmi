@@ -40,7 +40,7 @@ GENDER_CHOICES = (('', 'Blank'),
 
 class IndividualIdentifier(models.Model):
     user = models.ForeignKey(
-        get_user_model(), on_delete=models.PROTECT, null=True)
+        get_user_model(), on_delete=models.CASCADE, null=True)
     type = models.CharField(choices=settings.INDIVIDUAL_ID_TYPE_CHOICES,
                             max_length=255, blank=True, default='', db_index=True)
     name = models.SlugField(max_length=255, blank=True,
@@ -123,7 +123,7 @@ class OrganizationIdentifier(models.Model):
 class Address(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, db_index=True, editable=False)
     user = models.ForeignKey(
-        get_user_model(), on_delete=models.PROTECT, null=True)
+        get_user_model(), on_delete=models.CASCADE, null=True)
     street_1 = models.CharField(max_length=250, blank=True, default='')
     street_2 = models.CharField(max_length=250, blank=True, default='')
     city = models.CharField(max_length=250, blank=True, default='')
@@ -171,7 +171,7 @@ class Address(models.Model):
 
 class PersonToPersonRelationship(models.Model):
     grantor = models.ForeignKey(
-        get_user_model(), on_delete=models.PROTECT, null=True,
+        get_user_model(), on_delete=models.CASCADE, null=True,
         related_name="persontoperson_grantor")
     grantee = models.ForeignKey(
         get_user_model(), on_delete=models.PROTECT, null=True,
@@ -447,6 +447,14 @@ class UserProfile(models.Model):
         return self.sex
 
     @property
+    def gender_flattened(self):
+        if self.gender_identity_custom_value:
+            return self.gender_identity_custom_value.title()
+        elif self.gender_identity:
+            return self.gender_identity.title()
+        return ""
+
+    @property
     def birthdate(self):
         return self.birth_date
 
@@ -640,23 +648,24 @@ class PhoneVerifyCode(models.Model):
             up = UserProfile.objects.get(user=self.user)
             if up.mobile_phone_number:
                 # Send SMS to up.mobile_phone_number
-                sns = boto3.client(
-                    'sns',
-                    # aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                    # aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                    region_name='us-east-1')
-                number = "%s" % (up.mobile_phone_number)
-                sns.publish(
-                    PhoneNumber=number,
-                    Message="Your verification code for %s is : %s" % (settings.ORGANIZATION_NAME,
-                                                                       self.code),
-                    MessageAttributes={
-                        'AWS.SNS.SMS.SenderID': {
-                            'DataType': 'String',
-                            'StringValue': 'MySenderID'
+                if settings.SMS_STRATEGY == "AWS-SNS":
+                    sns = boto3.client(
+                        'sns',
+                        # aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        # aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name='us-east-1')
+                    number = "%s" % (up.mobile_phone_number)
+                    sns.publish(
+                        PhoneNumber=number,
+                        Message="Your verification code for %s is : %s" % (settings.ORGANIZATION_NAME,
+                                                                           self.code),
+                        MessageAttributes={
+                            'AWS.SNS.SMS.SenderID': {
+                                'DataType': 'String',
+                                'StringValue': 'MySenderID'
+                            }
                         }
-                    }
-                )
+                    )
         if commit:
             super(PhoneVerifyCode, self).save(**kwargs)
 
