@@ -1,5 +1,5 @@
 {% load i18n %}
-        <form method="POST" action="{% url 'find_org_to_create_account' %}">
+        <form method="POST" action="{% url 'find_org_to_create_member_account' %}">
             {% csrf_token %}
             <div class="form-group">
                 <select name="organization_slug">
@@ -10,6 +10,6 @@
                 </select>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-lg btn-primary" value="{% trans 'Create Agent Account' %}" />
+                <input type="submit" class="btn btn-lg btn-primary" value="{% trans 'Create Member Account' %}" />
             </div>
         </form>

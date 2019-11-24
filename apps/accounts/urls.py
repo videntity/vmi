@@ -5,7 +5,7 @@ from .views import (account_settings,
                     mylogout, create_account,
                     forgot_password, activation_verify,
                     reset_password, delete_account, password_reset_email_verified)
-
+from .member_views import create_member_account, find_org_to_create_member_account
 from .staff_views import (create_org_account,
                           find_org_to_create_account,
                           approve_org_affiliation,
@@ -29,6 +29,8 @@ from .address_views import (display_addresses, add_new_address,
                             delete_address, edit_address)
 
 from .profile_picture_views import upload_profile_picture
+from .change_account_views import activate_subject, deactivate_subject
+
 
 # Copyright Videntity Systems Inc.
 
@@ -45,10 +47,6 @@ urlpatterns = [
         name='reset_password_with_recovery_passphrase'),
     url(r'^password-recovery-passphrase/reset-after-passphrase-verified/(?P<username>[^/]+)/(?P<reset_password_key>[^/]+)/$',
         reset_password_after_passphrase_verified, name='reset_password_after_passphrase_verified'),
-
-
-
-
     url(r"^organization/(?P<organization_slug>[^/]+)/remove-agent/(?P<user_id>[^/]+)",
         remove_agent_from_organization,
         name='remove_agent_from_organization'),
@@ -57,13 +55,12 @@ urlpatterns = [
     url(r'^reset-forgotten-password(?P<reset_password_key>[^/]+)/$',
         password_reset_email_verified, name='password_reset_email_verified'),
     url(r'^mobile-phone', mobile_phone, name='mobile_phone'),
-    url(r'^verify-mobile-phone-number/(?P<uid>[^/]+)/', verify_mobile_phone_number,
-        name='verify_mobile_phone_number'),
+    url(r'^verify-mobile-phone-number/(?P<uid>[^/]+)/',
+        verify_mobile_phone_number, name='verify_mobile_phone_number'),
     url(r'^settings/(?P<subject>[^/]+)',
         account_settings, name='account_settings_subject'),
-    url(r'^settings', account_settings, name='account_settings'),
-    url(r'^delete', delete_account, name='delete_account'),
-
+    url(r'^settings$', account_settings, name='account_settings'),
+    url(r'^delete$', delete_account, name='delete_account'),
     url(r'^upload-profile-picture/(?P<subject>[^/]+)',
         upload_profile_picture, name='upload_profile_picture_subject'),
     url(r'^upload-profile-picture', upload_profile_picture,
@@ -71,11 +68,19 @@ urlpatterns = [
     url(r'^create-account/(?P<service_title>[^/]+)/', create_account,
         name='create_account_enduser_affilate'),
     url(r'^create-account', create_account, name='create_account_enduser'),
+
+
+
     url(r'^activation-verify/(?P<activation_key>[^/]+)/$',
         activation_verify, name='activation_verify'),
     url(r'^forgot-password', forgot_password, name='forgot_password'),
     url(r'^reset-password', reset_password, name='reset_password'),
 
+    # Member
+    url(r'^find-org-to-create-member-account', find_org_to_create_member_account,
+        name='find_org_to_create_member_account'),
+    url(r'^create-member/(?P<organization_slug>[^/]+)/',
+        create_member_account, name='create_member_account'),
 
     # Organization related
     url(r'^find-org-to-create-account', find_org_to_create_account,
@@ -109,7 +114,6 @@ urlpatterns = [
     url("^edit-individual-identifier/(?P<id>[^/]+)$",
         edit_individual_identifier, name='edit_individual_identifier'),
 
-
     url("^addresses/(?P<subject>[^/]+)$",
         display_addresses, name='display_addresses_subject'),
     url(r"^addresses/", display_addresses, name='display_addresses'),
@@ -122,6 +126,14 @@ urlpatterns = [
         delete_address, name='delete_address'),
 
     url("^edit-address/(?P<id>[^/]+)$", edit_address, name='edit_address'),
+
+    # Activate/Deactivate
+    url("^activate/(?P<subject>[^/]+)$",
+        activate_subject, name='activate_subject'),
+
+    # Activate/Deactivate
+    url("^deactivate/(?P<subject>[^/]+)$",
+        deactivate_subject, name='deactivate_subject'),
 
 
     path("mfa", ManageView.as_view(), name='mfa-management'),

@@ -11,7 +11,7 @@ class InPersonIdVerifyForm(forms.ModelForm):
         for field in self.Meta.required:
             self.fields[field].required = True
             self.fields[field].label = "%s*" % (self.fields[field].label)
-        # NArrow the drop down choices for this form
+        # Narrow the drop down choices for this form
         self.fields[
             'id_documentation_verification_method_type'].choices = ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES[0:3]
         self.fields['evidence'].choices = (('ONE-SUPERIOR-OR-STRONG+', 'One Superior or Strong+ pieces of identity evidence'),
@@ -37,12 +37,16 @@ class InPersonIdVerifyForm(forms.ModelForm):
                   'id_document_issuer_number',
                   'id_document_issuer_date_of_issuance',
                   'id_document_issuer_date_of_expiry',
-                  'utility_bill_provider_name',
-                  'utility_bill_provider_street_address',
-                  'utility_bill_provider_locality',
-                  'utility_bill_provider_region',
-                  'utility_bill_provider_postal_code',
-                  'utility_bill_provider_country',)
+                  'front_of_id_card',
+                  'back_of_id_card',
+                  'pdf417_barcode',
+                  # 'utility_bill_provider_name',
+                  # 'utility_bill_provider_street_address',
+                  # 'utility_bill_provider_locality',
+                  # 'utility_bill_provider_region',
+                  # 'utility_bill_provider_postal_code',
+                  # 'utility_bill_provider_country',
+                  )
 
         required = ('id_documentation_verification_method_type',
                     'evidence_type',

@@ -11,15 +11,19 @@
                 <div class="col-lg-12 well">
                     <div class="row text-center">
                         <div class="col-lg-12">
-                            <h3>Hello {{request.user.first_name|title}} {{request.user.last_name|title}}.
-                            Your account number is <span class="label label-default">{{profile.subject}}</span></h3>
+                            <h3>Hello {{request.user.first_name|title}} {{request.user.last_name|title}}.</h3>
+                            <p>Your username is <span class="badge badge-primary">{{ request.user }}</span>
+                            and your account number is <span class="badge badge-primary">{{profile.subject}}</span>
 
                             {% ifequal profile.ial "1" %}
-                            <p>We need to verify you identity before you can gain full access. Your identity level is <span class="label label-default">{{profile.ial}}</span>,
-                            but most services require level <span class="label label-success">2</span>. Please see your point of contact so they can help you verify your identity.</p>
+                                    <p>Your identity needs verified before you can gain full access.
+                                    Your identity level is <span class="badge badge-danger">{{profile.ial}}</span>,
+                                    but most services require level <span class="badge badge-success">2</span>. Please see your
+                                    point of contact so they can help you verify your identity.</p>
                             {% else %}
-                            <h4>Your identity has been verified to level <span class="label label-success">{{profile.ial}}</span> and you may now access available information from here and
-                            other parties relying on this service.</h4>
+                                    <p>Your identity has been verified to level <span class="badge badge-success">{{profile.ial}}</span>.
+                                    You may now access the:</p>
+                                    <h5><a href="{{settings.KILLER_APP_URI}}"> <button type="button" class="btn btn-primary">{{settings.KILLER_APP_TITLE}}</button> </a></h5>
                             {% endifequal %}
                         </div>
                     </div> <!-- /.row -->

@@ -27,7 +27,7 @@ def inperson_id_verify(request, subject):
         subject_user=up.user)
     name = _("Verify Identity for %s (%s)") % (up, up.subject)
     if request.method == 'POST':
-        form = InPersonIdVerifyForm(request.POST, instance=ial_d)
+        form = InPersonIdVerifyForm(request.POST, request.FILES, instance=ial_d)
         if form.is_valid():
             ial_doc = form.save(commit=False)
             ial_doc.subject_user = up.user

@@ -39,14 +39,20 @@
                 </div>
                 <div class="col">
                     <p>User: {{user.userprofile}} {% if user.userprofile.nickname %}(“{{ user.userprofile.nickname }}”){% endif %}</p>
+                    <p>Account Active: {{user.is_active }}
+                           {% if user.is_active %}
+                               (<a href="{% url 'deactivate_subject' user.userprofile.subject %}">Deactivate</a>)
+                           {% else %}
+                               (<a href="{% url 'activate_subject' user.userprofile.subject %}">Activate</a>)
+                           {% endif %}</p>
                     <p>Subject ID: {{user.userprofile.subject}}</p>
                     <p>Email: {{ user.email|default:"—" }}</p>
                     <p>Birthdate: {{user.userprofile.birthdate}}</p>
-                    <p>Sex: {{user.userprofile.get_display_sex|default:"—"}}</p>
-                    <p>Gender: {{user.userprofile.get_gender_display|default:"—"}}</p>
+                    <p>Sex: {{user.userprofile.get_sex_display|default:"—"}}</p>
+                    <p>Gender: {{user.userprofile.gender_flattened|default:"—"}}</p>
                     <p>Phone: {{user.userprofile.mobile_phone_number|default:"—"}}</p>
                     <p>
-                        Identity Level: {{user.userprofile.ial|default:"-"}}
+                        Identity Assurance Level: {{user.userprofile.ial|default:"-"}}
                         {% if user.userprofile.ial == '1' and user != request.user %}
                             (<a href="{% url 'inperson_id_verify' user.userprofile.subject|default:'None' %}">Verify Identity of {{user.userprofile}}</a>)
                         {% endif %}

@@ -19,7 +19,8 @@ ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES = (("pipp", "Physical In-Person Pro
                                                 ("", "Blank"))
 
 EVIDENCE_TYPE_CHOICES = (('id_document', _('Verification based on any kind of government issued identity document')),
-                         ('utility_bill', _('Verification based on a utility bill')))
+                         # ('utility_bill', _('Verification based on a utility bill'))
+                         )
 
 
 class IdentityAssuranceLevelDocumentation(models.Model):
@@ -61,7 +62,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
                                                                  blank=True, default='')
 
     evidence_type = models.CharField(
-        choices=EVIDENCE_TYPE_CHOICES, max_length=64, default='', blank=True)
+        choices=EVIDENCE_TYPE_CHOICES, max_length=64, default='id_document', blank=True)
 
     claims = models.TextField(help_text=_("A whitespace delimited list of claims supported by this evidence."),
                               blank=True, default='')
@@ -132,6 +133,21 @@ class IdentityAssuranceLevelDocumentation(models.Model):
                                               If left blank the Identity assurance level of 2
                                               will not expire."""))
     verification_date = models.DateField(blank=True, null=True)
+
+    front_of_id_card = models.ImageField(
+        upload_to='identity_documents/', null=True, blank=True)
+
+    back_of_id_card = models.ImageField(
+        upload_to='identity_documents/', null=True, blank=True)
+
+    pdf417_barcode = models.ImageField(
+        upload_to='identity_documents/', null=True, blank=True)
+
+    pdf417_barcode_parsed = models.TextField(
+        blank=True,
+        default="",
+        help_text="The extracted parsed text content from the pdf417_barcode.")
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
