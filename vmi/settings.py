@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_filters',
     'apps.oidc',
     'apps.home',
+    'apps.reports',
     'apps.accounts',
     'apps.ial',
     'apps.fido',
@@ -266,6 +267,8 @@ OIDC_PROVIDER = {
     ],
 }
 
+# Adding to allow other modes of SMS text delivery in the future.
+SMS_STRATEGY = env('SMS_STRATEGY', 'AWS-SNS')
 
 # Add a prefix to the lugh checkdigit calculation.
 # This can help identify genuine subject ids and indicate provenance.
