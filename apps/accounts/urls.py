@@ -76,7 +76,7 @@ urlpatterns = [
     url(r'^forgot-password', forgot_password, name='forgot_password'),
     url(r'^reset-password', reset_password, name='reset_password'),
 
-    # Member
+    # Member Creates accounts.
     url(r'^find-org-to-create-member-account', find_org_to_create_member_account,
         name='find_org_to_create_member_account'),
     url(r'^create-member/(?P<organization_slug>[^/]+)/',
