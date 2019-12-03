@@ -9,7 +9,7 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from phonenumber_field.formfields import PhoneNumberField
 from .forms import RepresentsPositiveInt
-from .models import SEX_CHOICES, GENDER_CHOICES
+from .models import SEX_CHOICES
 from .texts import send_text
 from .emails import send_member_verify_request_email
 
@@ -23,18 +23,7 @@ agree_tos_label = mark_safe(
 
 
 class MemberSignupForm(forms.Form):
-    picture = forms.ImageField(required=False,
-                               help_text=_("""Upload your profile picture."""))
     username = forms.CharField(max_length=30, label=_("Username*"))
-    email = forms.EmailField(max_length=150, label=_("Email"), required=False,
-                             help_text=_("""An email email is highly
-                                recommended so we may send
-                                you important updates on
-                                account activity"""))
-    mobile_phone_number = PhoneNumberField(required=False, label=_("Mobile Phone Number"),
-                                           help_text=_("""An mobile phone number is highly
-                                                          recommended so we may send you important
-                                                          updates on account activity."""))
     first_name = forms.CharField(max_length=100, label=_("First Name*"))
     last_name = forms.CharField(max_length=100, label=_("Last Name*"))
     middle_name = forms.CharField(
@@ -45,14 +34,18 @@ class MemberSignupForm(forms.Form):
                                  required=True)
     sex = forms.ChoiceField(label=_(
         'Sex*'), choices=SEX_CHOICES, required=True, help_text="Enter birth sex.")
-    gender_identity = forms.ChoiceField(choices=GENDER_CHOICES, required=False,
-                                        label=_("Gender"),
-                                        help_text="""Gender identity is not necessarily the same
-                                                     as birth sex. A custom value may be supplied.""")
-    gender_identity_custom_value = forms.CharField(required=False,
-                                                   label=_(
-                                                       "Gender Identity Custom Value"),
-                                                   help_text="If you want, add a custom value for gender identity.")
+    picture = forms.ImageField(required=False,
+                               help_text=_("""Upload your profile picture."""))
+
+    email = forms.EmailField(max_length=150, label=_("Email"), required=False,
+                             help_text=_("""An email email is highly
+                                recommended so we may send
+                                you important updates on
+                                account activity"""))
+    mobile_phone_number = PhoneNumberField(required=False, label=_("Mobile Phone Number"),
+                                           help_text=_("""An mobile phone number is highly
+                                                          recommended so we may send you important
+                                                          updates on account activity."""))
     pick_your_account_number = forms.CharField(max_length=10, label=_("Want to Customize Your Account Number?"),
                                                help_text=_("""If you want, pick up to 10 easy-to-remember numbers
                                                            to be included in your account number. If left blank,
@@ -155,9 +148,9 @@ class MemberSignupForm(forms.Form):
             picture=self.cleaned_data.get('picture'),
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
             sex=self.cleaned_data.get('sex', ""),
-            gender_identity=self.cleaned_data.get('gender_identity', ""),
-            gender_identity_custom_value=self.cleaned_data.get(
-                'gender_identity_custom_value', ""),
+            # gender_identity=self.cleaned_data.get('gender_identity', ""),
+            # gender_identity_custom_value=self.cleaned_data.get(
+            #     'gender_identity_custom_value', ""),
             birth_date=self.cleaned_data.get('birth_date', ""),
             agree_tos=settings.CURRENT_TOS_VERSION,
             agree_privacy_policy=settings.CURRENT_PP_VERSION)
@@ -184,6 +177,6 @@ class MemberSignupForm(forms.Form):
         for agent in org.users.all():
 
             send_member_verify_request_email(agent, up, org)
-            print(agent.first_name)
+            # print(agent.first_name)
 
         return new_user
