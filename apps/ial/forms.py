@@ -2,6 +2,17 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from .models import IdentityAssuranceLevelDocumentation, ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES
 
+IAL_EVIDENCE_CLASSIFICATIONS = [
+    ('ONE-SUPERIOR-OR-STRONG+', "Valid New York State Driver's License"),
+    ('ONE-SUPERIOR-OR-STRONG+', 'Valid New York State Identification Card'),
+    ('ONE-SUPERIOR-OR-STRONG+', 'New York State Medicaid ID'),
+    ('ONE-SUPERIOR-OR-STRONG+', 'Valid Medicare ID Card'),
+    ('ONE-SUPERIOR-OR-STRONG+', 'Valid US Passport'),
+    ('ONE-SUPERIOR-OR-STRONG+', 'Valid Veteran ID Card'),
+    ('TWO-STRONG', 'Original Birth Certificate and a Social Security Card'),
+    ('TRUSTED-REFEREE-VOUCH', 'I am a Trusted Referee Vouching for this person'),
+]
+
 
 class InPersonIdVerifyForm(forms.ModelForm):
 
@@ -14,15 +25,7 @@ class InPersonIdVerifyForm(forms.ModelForm):
         # Narrow the drop down choices for this form
         self.fields[
             'id_documentation_verification_method_type'].choices = ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES[0:3]
-        self.fields['evidence'].choices = (('ONE-SUPERIOR-OR-STRONG+', 'One Superior or Strong+ pieces of identity evidence'),
-                                           ('ONE-STRONG-TWO-FAIR',
-                                            'One Strong and Two Fair pieces of identity evidence'),
-                                           ('TWO-STRONG',
-                                            'Two Pieces of Strong identity evidence'),
-                                           ('TRUSTED-REFEREE-VOUCH',
-                                            'I am a Trusted Referee Vouching for this person'),
-                                           # ('KBA','Knowledged-Based Identity Verification')
-                                           )
+        self.fields['evidence'].choices = IAL_EVIDENCE_CLASSIFICATIONS
 
     class Meta:
         model = IdentityAssuranceLevelDocumentation
@@ -56,7 +59,7 @@ class InPersonIdVerifyForm(forms.ModelForm):
         evidence = self.cleaned_data["evidence"]
         if not evidence:
             raise forms.ValidationError(
-                _("""You must supply information about ID verification evidence"""))
+                _("""You must supply information about ID verification evidence."""))
         return evidence
 
     def clean_id_verify_description(self):

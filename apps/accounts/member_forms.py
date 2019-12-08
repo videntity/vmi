@@ -167,8 +167,8 @@ class MemberSignupForm(forms.Form):
                 new_user.first_name.title(),
                 settings.KILLER_APP_TITLE,
                 settings.TOP_LEFT_TITLE,
-                new_user.username,
-                up.subject)
+                up.subject,
+                new_user.username)
             send_text(msg, up.mobile_phone_number)
 
         # Send the organization
