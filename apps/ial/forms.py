@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from .models import IdentityAssuranceLevelDocumentation, ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES
+from django.conf import settings
 
 IAL_EVIDENCE_CLASSIFICATIONS = [
     ('ONE-SUPERIOR-OR-STRONG+', "Valid New York State Driver's License"),
@@ -26,13 +27,17 @@ class InPersonIdVerifyForm(forms.ModelForm):
         self.fields[
             'id_documentation_verification_method_type'].choices = ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES[0:3]
         self.fields['evidence'].choices = IAL_EVIDENCE_CLASSIFICATIONS
+        self.fields['expires_at'].widget = forms.SelectDateWidget()
+        self.fields['id_document_issuer_date_of_issuance'].widget = forms.SelectDateWidget(
+            years=settings.ID_DOCUMENT_ISSUANCE_YEARS)
+        self.fields[
+            'id_document_issuer_date_of_expiry'].widget = forms.SelectDateWidget()
 
     class Meta:
         model = IdentityAssuranceLevelDocumentation
         fields = ('id_documentation_verification_method_type',
                   'evidence_type',
                   'evidence',
-                  'expires_at',
                   'id_document_type',
                   'id_document_issuer_name',
                   'id_document_issuer_country',
@@ -40,6 +45,7 @@ class InPersonIdVerifyForm(forms.ModelForm):
                   'id_document_issuer_number',
                   'id_document_issuer_date_of_issuance',
                   'id_document_issuer_date_of_expiry',
+                  'expires_at',
                   'front_of_id_card',
                   'back_of_id_card',
                   'pdf417_barcode',

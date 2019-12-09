@@ -82,7 +82,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
     id_document_issuer_date_of_issuance = models.DateField(
         blank=True, null=True)
     id_document_issuer_date_of_expiry = models.DateField(blank=True, null=True,
-                                                         help_text=_("Format YYYY-MM-DD"))
+                                                         help_text=_("The date the ID document expires."))
 
     utility_bill_provider_name = models.CharField(
         max_length=250, blank=True, default='')
@@ -129,9 +129,8 @@ class IdentityAssuranceLevelDocumentation(models.Model):
 
     expires_at = models.DateField(verbose_name="Invalidate Identity Assurance Date",
                                   blank=True, null=True,
-                                  help_text=_("""Format YYYY-MM-DD.
-                                              If left blank the Identity assurance level of 2
-                                              will not expire."""))
+                                  help_text=_("""If left blank, the Identity Assurance Level
+                                              of 2 will remain in effect indefinitely."""))
     verification_date = models.DateField(blank=True, null=True)
 
     front_of_id_card = models.ImageField(
