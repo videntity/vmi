@@ -31,9 +31,10 @@ class MemberSignupForm(forms.Form):
     nickname = forms.CharField(
         max_length=100, label=_("Nickname"), required=False)
     birth_date = forms.DateField(label=_('Birth Date*'), widget=forms.SelectDateWidget(years=settings.BIRTHDATE_YEARS),
-                                 required=True)
-    sex = forms.ChoiceField(label=_(
-        'Sex*'), choices=SEX_CHOICES, required=True, help_text="Enter birth sex.")
+                                 required=True, help_text="We use this information to help look up your information.")
+    sex = forms.ChoiceField(label=_('Sex*'),
+                            choices=SEX_CHOICES, required=True,
+                            help_text="Enter birth sex. We use this information to help look up your information.")
     picture = forms.ImageField(required=False,
                                help_text=_("""Upload your profile picture."""))
 
