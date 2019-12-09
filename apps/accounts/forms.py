@@ -63,7 +63,7 @@ class SignupForm(forms.Form):
                                                "Mobile Phone Number"))
     email = forms.EmailField(max_length=75, required=False)
     sex = forms.ChoiceField(choices=SEX_CHOICES, required=False,
-                            help_text="Enter birth sex.")
+                            help_text="Enter birth sex. We use this information to help look up your information.")
     gender_identity = forms.ChoiceField(choices=GENDER_CHOICES, required=False,
                                         label=_("Gender"),
                                         help_text="""Gender identity is not necessarily the same
@@ -71,7 +71,7 @@ class SignupForm(forms.Form):
     gender_identity_custom_value = forms.CharField(required=False,
                                                    help_text="If gender identity is custom, include your gender here.")
     birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=settings.BIRTHDATE_YEARS),
-                                 required=False)
+                                 required=False, help_text="We use this information to help look up your information.")
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password"),
                                 help_text=_("Passwords must be at least 8 characters and not be too common."))

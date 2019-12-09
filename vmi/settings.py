@@ -507,5 +507,7 @@ MINIMUM_BIRTH_YEAR = now.year - MINIMUM_AGE
 
 BIRTHDATE_YEARS = [x for x in range(1900, MINIMUM_BIRTH_YEAR)]
 
+ID_DOCUMENT_ISSUANCE_YEARS = [x for x in range(now.year-20, now.year)]
+
 # Set possible expiration for identity documents e.g. driver's license).
 EXPIRY_DATE_ACCEPTABLE_YEARS = [x for x in range(now.year, 2050)]

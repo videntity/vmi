@@ -18,7 +18,7 @@
                         <li class="col"><a href="{% url 'home' %}">Home</a></li>
                         {% endif %}
 
-                       {% if request.user|has_group:"OrganizationalAgent" %}
+                       {% if request.user|has_group:"OrganizationAgentReport" %}
                         <li class="dropdown col">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 Reports<b class="caret"></b>
