@@ -1,13 +1,10 @@
 import logging
-# from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse  # HttpResponseRedirect, Http404,
-# from django.contrib.auth.decorators import login_required
-# from django.contrib.auth.decorators import permission_required
-# from ..accounts.models import Organization
-# from .decorators import group_required
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from ..accounts.models import Organization, UserProfile
+from .decorators import group_required
 from datetime import datetime
 import csv
-# from collections import OrderedDict
 
 # Copyright Videntity Systems Inc.
 
@@ -15,20 +12,32 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
 __author__ = "Alan Viars"
 
-# @group_required("some-group")
+#
 
 
+@login_required
+@group_required("OrganizationAgentReport")
 def orgs_and_agents_report(request):
     filename = datetime.now().strftime('%m-%d-%Y_%H:%M:%S') + '.csv'
     response = HttpResponse(content_type="text/csv")
     response['Content-Disposition'] = 'attachment; filename=' + filename
     rows = []
-    row = ["animals", "plants"]
+    row = ["organization", "point_of_contact", "agent_first_name", "agent_last_name",
+           "agent_email", "agent_phone_number",  "agent_last_login"]
     rows.append(row)
-    row = ["cat", "apple tree"]
-    rows.append(row)
-    row = ["dog", "grass"]
-    rows.append(row)
+    row = []
+    for org in Organization.objects.all():
+        for agent in org.users.all():
+            row.append(org.name)
+            if org.point_of_contact == agent:
+                row.append("Y")
+            else:
+                row.append("N")
+            up = UserProfile.objects.get(user=agent)
+            row = row + [agent.first_name, agent.last_name,
+                         agent.email, up.mobile_phone_number, agent.last_login]
+            rows.append(row)
+            row = []
 
     writer = csv.writer(response, delimiter=',')
     for r in rows:
