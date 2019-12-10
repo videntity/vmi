@@ -511,3 +511,7 @@ ID_DOCUMENT_ISSUANCE_YEARS = [x for x in range(now.year-20, now.year)]
 
 # Set possible expiration for identity documents e.g. driver's license).
 EXPIRY_DATE_ACCEPTABLE_YEARS = [x for x in range(now.year, 2050)]
+
+# VECTORS_OF_TRUST_TRUSTMARK_URLfor value of `vtm` claim.
+VECTORS_OF_TRUST_TRUSTMARK_URL = env('VECTORS_OF_TRUST_TRUSTMARK_URL',
+                                     'https://github.com/TransparentHealth/800-63-3-trustmark/')

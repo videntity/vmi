@@ -1,4 +1,5 @@
 from apps.oidc.claims import BaseProvider
+from django.conf import settings
 
 
 class AddressClaimProvider(BaseProvider):
@@ -163,6 +164,12 @@ class UserProfileClaimProvider(BaseProvider):
     def claim_vot(self):
         try:
             return self.user.userprofile.vot
+        except Exception:
+            return None
+
+    def claim_vtm(self):
+        try:
+            return settings.VECTORS_OF_TRUST_TRUSTMARK_URL
         except Exception:
             return None
 
