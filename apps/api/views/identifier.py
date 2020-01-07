@@ -17,7 +17,7 @@ User = get_user_model()
 
 
 class IdentifierSerializer(serializers.ModelSerializer):
-    classification = serializers.ChoiceField(required=False, source="evidence", choices=settings.IAL_EVIDENCE_CLASSIFICATIONS)
+    classification = serializers.ChoiceField(required=False, source="evidence", choices=settings.IAL2_EVIDENCE_CLASSIFICATIONS)
     description = serializers.CharField(required=False, source="id_verify_description")
     exp = serializers.DateField(required=False, source='expires_at')
     verifier_subject = serializers.CharField(source="verifying_user.userprofile.subject", read_only=True)
