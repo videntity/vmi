@@ -37,7 +37,7 @@
                             </td>
                             <td>
                                 {% if up.ial == '1' %}
-                                <a href="{% url 'inperson_id_verify' up.subject|default:'None' %}">
+                                <a href="{% url 'verify_id_with_card' up.subject|default:'None' %}">
                                     <button type="button" class="btn btn-warning">Verify Identity</button>
                                 </a>
                                 {% endif %}
