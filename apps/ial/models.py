@@ -180,7 +180,9 @@ class IdentityAssuranceLevelDocumentation(models.Model):
 
     def save(self, commit=True, **kwargs):
         if commit:
-            self.id_verify_description = self.short_description
+            if not self.id_verify_description:
+                self.id_verify_description = self.short_description
+
             super(IdentityAssuranceLevelDocumentation, self).save(**kwargs)
 
     class Meta:

@@ -19,14 +19,15 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 @login_required
 @permission_required('ial.change_identityassuranceleveldocumentation')
 def delete_id_verify(request, id):
-    ial_d = get_object_or_404(IdentityAssuranceLevelDocumentation, id=id)
-    up = get_object_or_404(UserProfile, user=ial_d.subject_user)
+    ial_d = get_object_or_404(IdentityAssuranceLevelDocumentation, pk=id)
     msg = "ID evidence for %s %s removed by %s %s." % (ial_d.subject_user.first_name,
                                                        ial_d.subject_user.last_name,
                                                        request.user.first_name, request.user.last_name)
     logger.info(msg)
     messages.success(request, _(msg))
+    user = ial_d.subject_user
     ial_d.delete()
+    up = UserProfile.objects.get(user=user)
     return HttpResponseRedirect(reverse('user_profile_subject', args=(up.subject,)))
 
 
