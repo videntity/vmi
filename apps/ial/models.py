@@ -1,4 +1,3 @@
-import json
 import uuid
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -8,9 +7,9 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 __author__ = "Alan Viars"
 
-ID_DOCUMENT_TYPES = (('idcard', """ID Card"""),
+ID_DOCUMENT_TYPES = (('driving_permit', 'Driving Permit'),
+                     ('idcard', """ID Card"""),
                      ('passport', 'Passport'),
-                     ('driving_permit', 'Driving Permit'),
                      ('us_health_insurance_card', 'US Health and Insurance Card'))
 
 ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES = (("pipp", "Physical In-Person Proofing"),
@@ -19,7 +18,7 @@ ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES = (("pipp", "Physical In-Person Pro
                                                 ("", "Blank"))
 
 EVIDENCE_TYPE_CHOICES = (('id_document', _('Verification based on any kind of government issued identity document')),
-                         # ('utility_bill', _('Verification based on a utility bill'))
+                         ('utility_bill', _('Verification based on a utility bill'))
                          )
 
 
@@ -30,25 +29,12 @@ class IdentityAssuranceLevelDocumentation(models.Model):
     # Evidence classifications are defined/customizable in settings.
     """
     uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)
-    action = models.CharField(
-        choices=(
-            ('', _('Create a record with an IAL of 1 (Default)')),
-            ('1-TO-2',
-             _('Verify Identity: Change the Identity assurance Level from 1 to 2')),
-            ('2-TO-1',
-             _('Administrative Downgrade of this identity Assurance documentation. IAL 2 --> 1 for this piece of evidence')),
-            ('UPDATE',
-             _('Update details only.'))
-        ),
-        max_length=6,
-        default='',
-        blank=True)
-
     subject_user = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
         db_index=True,
         related_name="subject_user")
+
     verifying_user = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
@@ -68,7 +54,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
                               blank=True, default='')
 
     id_document_type = models.CharField(choices=ID_DOCUMENT_TYPES,
-                                        max_length=16,
+                                        max_length=128,
                                         blank=True, default='')
 
     id_document_issuer_name = models.CharField(
@@ -96,36 +82,20 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         max_length=20, blank=True, default='')
     utility_bill_provider_country = models.CharField(max_length=2, blank=True,
                                                      default=settings.DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS)
-    evidence = models.CharField(verbose_name=_('Identity Assurance Classification'),
-                                choices=settings.IAL_EVIDENCE_CLASSIFICATIONS,
+    evidence = models.CharField(verbose_name=_('Identity Assurance Level 2 Classification'),
+                                choices=settings.IAL2_EVIDENCE_CLASSIFICATIONS,
                                 max_length=256,
                                 default='',
                                 blank=True)
-
-    evidence_subclassification = models.CharField(
-        choices=settings.IAL_EVIDENCE_SUBCLASSIFICATIONS,
-        max_length=256,
-        default='',
-        blank=True)
 
     id_verify_description = models.TextField(blank=True, default='',
                                              help_text=_("""Describe the evidence given to assure this person's
                                                 identity has been verified."""))
 
-    id_assurance_downgrade_description = models.TextField(
-        blank=True,
-        default='',
-        help_text=_("Complete this description when downgrading the ID assurance level."))
-
     note = models.TextField(
         blank=True,
         null=True,
-    )
-
-    metadata = models.TextField(
-        blank=True,
-        default="""{"subject_user":null, "history":[]}""",
-        help_text="JSON Object")
+        help_text=_("Add any notes or secondary card information here."))
 
     expires_at = models.DateField(verbose_name="Invalidate Identity Assurance Date",
                                   blank=True, null=True,
@@ -140,7 +110,8 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         upload_to='identity_documents/', null=True, blank=True)
 
     pdf417_barcode = models.ImageField(
-        upload_to='identity_documents/', null=True, blank=True)
+        upload_to='identity_documents/', null=True, blank=True,
+        verbose_name="Image of the barcode on the back of the driver's license.")
 
     pdf417_barcode_parsed = models.TextField(
         blank=True,
@@ -154,11 +125,23 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         return self.level
 
     @property
+    def short_description(self):
+        # The Identity Assurance Level is derived.
+        # If evidence exists to support IAL2
+        desc = "%s of %s." % (self.get_id_documentation_verification_method_type_display(),
+                              self.get_evidence_display(),)
+        if self.verifying_user:
+            verified_by = " Verified by %s %s." % (
+                self.verifying_user.first_name, self.verifying_user.last_name)
+        else:
+            verified_by = ""
+        return "%s%s" % (desc, verified_by)
+
+    @property
     def level(self):
-        # The Identity assurance level is derived.
-        # If there is evidence to support IAL2
+        # The Identity Assurance Level is derived.
+        # If evidence exists to support IAL2
         if self.evidence:
-            # If the evidence has an expiration
             if self.expires_at:
                 # if the evidence is expired
                 if date.today() > self.expires_at:
@@ -196,37 +179,10 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         return od
 
     def save(self, commit=True, **kwargs):
-        metadata = json.loads(self.metadata, object_pairs_hook=OrderedDict)
-        if len(metadata['history']) == 0:
-            metadata['subject_user'] = str(self.subject_user)
-        # Write the history
-        history = OrderedDict()
-        history['verifying_user'] = str(self.verifying_user)
-        history['actions'] = self.action
-        if self.action == "1-TO-2":
-            history['id_verify_description'] = self.id_verify_description
-        elif self.action == "2-TO-1":
-            history[
-                'id_assurance_downgrade_description'] = self.id_assurance_downgrade_description
-            self.evidence = ''
-        history['updated_at'] = str(self.updated_at)
-        # append the history
-        metadata['history'].append(history)
-
-        # Sent the expire
-
-        # TODO Potential enhancement add to Github to discuss. May want to be a settting,
-        #    if self.id_document_issuer_date_of_expiry and not self.expires_at:
-        #      self.expires_at = self.id_document_issuer_date_of_expiry
-
-        # Set the ID description if blank
-        if not self.id_verify_description:
-            self.id_verify_description = "%s\n%s\n%s" % (self.id_documentation_verification_method_type,
-                                                         self.evidence_type,
-                                                         self.id_document_type)
-
         if commit:
-            self.metadata = json.dumps(metadata)
+            if not self.id_verify_description:
+                self.id_verify_description = self.short_description
+
             super(IdentityAssuranceLevelDocumentation, self).save(**kwargs)
 
     class Meta:

@@ -41,7 +41,7 @@ class IdentifierTestCase(BaseTestCase):
             "/api/v1/user/{}/id-assurance/".format(self.subject),
             {
                 "description": "NY Medicaid card.",
-                "classification": "ONE-SUPERIOR-OR-STRONG+",
+                "classification": "ONE-SUPERIOR-OR-STRONG-PLUS",
                 "exp": "2022-01-01",
                 "note": "A paper copy of the document is on file.",
                 "verification_date": "2019-03-04"
@@ -54,7 +54,7 @@ class IdentifierTestCase(BaseTestCase):
 
         self.assertDictContainsSubset({
             "description": "NY Medicaid card.",
-            "classification": "ONE-SUPERIOR-OR-STRONG+",
+            "classification": "ONE-SUPERIOR-OR-STRONG-PLUS",
             "exp": "2022-01-01",
             "verifier_subject": self.token.user.userprofile.subject,
             "note": "A paper copy of the document is on file.",
@@ -67,7 +67,7 @@ class IdentifierTestCase(BaseTestCase):
         self.assertEqual(200, get_response.status_code, get_response.content)
         self.assertDictContainsSubset({
             "description": "NY Medicaid card.",
-            "classification": "ONE-SUPERIOR-OR-STRONG+",
+            "classification": "ONE-SUPERIOR-OR-STRONG-PLUS",
             "exp": "2022-01-01",
             "verifier_subject": self.token.user.userprofile.subject,
             "note": "A paper copy of the document is on file.",
@@ -80,7 +80,7 @@ class IdentifierTestCase(BaseTestCase):
             "/api/v1/user/{}/id-assurance/".format(0000),
             {
                 "description": "NY Medicaid card.",
-                "classification": "ONE-SUPERIOR-OR-STRONG+",
+                "classification": "ONE-SUPERIOR-OR-STRONG-PLUS",
                 "exp": "2022-01-01",
                 "note": "A paper copy of the document is on file.",
                 "verification_date": "2019-03-04"
@@ -96,7 +96,7 @@ class IdentifierTestCase(BaseTestCase):
             "/api/v1/user/{}/id-assurance/".format(self.subject),
             {
                 "description": "NY Medicaid card.",
-                "classification": "ONE-SUPERIOR-OR-STRONG+",
+                "classification": "ONE-SUPERIOR-OR-STRONG-PLUS",
                 "exp": "2022-01-01",
                 "note": "A paper copy of the document is on file.",
                 "verification_date": "2019-03-04"
@@ -122,7 +122,7 @@ class IdentifierTestCase(BaseTestCase):
         self.assertEqual(200, get_response.status_code, get_response.content)
         self.assertDictContainsSubset({
             "description": "NY Medicaid card.",
-            "classification": "ONE-SUPERIOR-OR-STRONG+",
+            "classification": "ONE-SUPERIOR-OR-STRONG-PLUS",
             "exp": "2021-01-01",
             "verifier_subject": self.token.user.userprofile.subject,
             "note": "A paper copy of the document is on file.",
@@ -135,7 +135,7 @@ class IdentifierTestCase(BaseTestCase):
             "/api/v1/user/{}/id-assurance/".format(self.subject),
             {
                 "description": "NY Medicaid card.",
-                "classification": "ONE-SUPERIOR-OR-STRONG+",
+                "classification": "ONE-SUPERIOR-OR-STRONG-PLUS",
                 "exp": "2022-01-01",
                 "note": "A paper copy of the document is on file.",
                 "verification_date": "2019-03-04"
@@ -160,7 +160,7 @@ class IdentifierTestCase(BaseTestCase):
             "/api/v1/user/{}/id-assurance/".format(self.subject),
             {
                 "description": "NY Medicaid card.",
-                "classification": "ONE-SUPERIOR-OR-STRONG+",
+                "classification": "ONE-SUPERIOR-OR-STRONG-PLUS",
                 "exp": "2022-01-01",
                 "note": "A paper copy of the document is on file.",
                 "verification_date": "2019-03-04"

@@ -282,7 +282,8 @@ TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity')
 ORGANIZATION_TITLE = env(
     'DJANGO_ORGANIZATION_TITLE',
     'Alliance for Better Health')
-ORGANIZATION_URI = env('DJANGO_ORGANIZATION_URI', 'https://abhealth.us')
+ORGANIZATION_URI = env('DJANGO_ORGANIZATION_URI',
+                       'http://transparenthealth.org')
 POLICY_URI = env('DJANGO_POLICY_URI',
                  'http://sharemy.health/privacy-policy-1.0.html')
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
@@ -298,7 +299,7 @@ TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 EXPLAINATION_LINE = ('This is an instance of Verify My Identity, \
                      a standards-based OpenID Connect Identity Provider.')
 EXPLAINATION_LINE = env('DJANGO_EXPLAINATION_LINE ', EXPLAINATION_LINE)
-USER_DOCS_URI = "https://abhealth.us"
+USER_DOCS_URI = "https://github.com/TransparentHealth/vmi"
 USER_DOCS_TITLE = "User Documentation"
 USER_DOCS = "User Docs"
 
@@ -351,19 +352,41 @@ SETTINGS_EXPORT = [
 ]
 
 # Emails
-DEFAULT_FROM_EMAIL = env('DJANGO_FROM_EMAIL', 'no-reply@verifymyidentity.com')
-DEFAULT_ADMIN_EMAIL = env('DJANGO_ADMIN_EMAIL',
+DEFAULT_FROM_EMAIL = env('FROM_EMAIL', 'no-reply@verifymyidentity.com')
+DEFAULT_ADMIN_EMAIL = env('ADMIN_EMAIL',
                           'no-reply@verifymyidentity.com')
 
-# The console.EmailBackend backend prints to the console.
-# Redefine this for SES or other email delivery mechanism
-EMAIL_BACKEND_DEFAULT = 'django_ses.SESBackend'
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', EMAIL_BACKEND_DEFAULT)
+# Select the right Email delivery system that works for you.
+# Django's default is 'django.core.mail.backends.smtp.EmailBackend'. This will work with most email systems.
+# Set the other email settings according to your configuration.
 
-# Un-comment the next line to print emails to the console instead of using SES.
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# If using the AWS Simple Email Service backend, 'django_ses.SESBackend', you need
+# only to have the values for AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY ,
+# and AWS_DEFAULT_REGION set.
 
-MFA = True
+# You can use 'django.core.mail.backends.console.EmailBackend' to send
+# emails to stdout instead of sending them.
+
+
+EMAIL_BACKEND = env('EMAIL_BACKEND', 'django_ses.SESBackend')
+
+# These values are important when using another email service such as your own email server (e.g. Exchange, Sendmail)
+# or a service such as Twilio SendGrid (available on the Azure Marketplace)
+# https://azuremarketplace.microsoft.com/en-us/marketplace/apps/SendGrid.SendGrid
+
+# Values default to Django default values
+EMAIL_HOST = env('EMAIL_HOST', 'localhost')
+EMAIL_PASSWORD = env('EMAIL_PASSWORD', '')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', '')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', '')
+EMAIL_PORT = int(env('EMAIL_PORT', 25))
+EMAIL_SUBJECT_PREFIX = env('EMAIL_SUBJECT_PREFIX', '[VerifyMyIdentity] ')
+EMAIL_USE_LOCALTIME = bool_env(env('EMAIL_USE_LOCALTIME', False))
+EMAIL_USE_TLS = bool_env(env('EMAIL_USE_TLS', False))
+EMAIL_USE_SSL = bool_env(env('EMAIL_USE_SSL', False))
+EMAIL_SSL_CERTFILE = env('EMAIL_SSL_CERTFILE', None)
+EMAIL_SSL_KEYFILE = env('EMAIL_SSL_KEYFILE', None)
+
 
 SIGNUP_TIMEOUT_DAYS = 3
 ORGANIZATION_NAME = "Verify My Identity"
@@ -373,7 +396,7 @@ MAX_PROFILE_PICTURE_SIZE = env(
     'MAX_PROFILE_PICTURE_SIZE', str(4 * 1024 * 1024))
 
 # Define individual identifier types
-INDIVIDUAL_ID_TYPE_CHOICES = (
+INDIVIDUAL_ID_TYPE_CHOICES = env('INDIVIDUAL_ID_TYPE_CHOICES', (
     ('PATIENT_ID_FHIR', 'Patient ID in FHIR'),
     ('MPI', 'Master Patient Index (Not FHIR Patient ID)'),
     ('SSN', 'Social Security Number'),
@@ -383,18 +406,15 @@ INDIVIDUAL_ID_TYPE_CHOICES = (
     ('INSURANCE_ID', 'Insurance ID Number'),
     ('IHE_ID', 'Health Information Exchange ID'),
     ('NPI', 'National Provider Identifier'),
-    ('UHI', 'Universal Health Identifier'),
-)
+    ('UHI', 'Universal Health Identifier'),))
 
 
-# Define orgnization identifier types
-ORGANIZATION_ID_TYPE_CHOICES = (
+# Define organization identifier types
+ORGANIZATION_ID_TYPE_CHOICES = env('ORGANIZATION_ID_TYPE_CHOICES', (
     ('FEIN', 'Federal Employer ID Number (Tax ID)'),
     ('NPI', 'National Provider Identifier'),
     ('OEID', 'Other Entity Identifier'),
-    ('PECOS', 'PECOS Medicare ID'),
-    ('UHI', 'Universal Health Identifier'),
-)
+    ('PECOS', 'PECOS Medicare ID'),))
 
 DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS = env(
     'DEFAULT_COUNTRY_CODE_FOR_IDENTIFIERS', "US")
@@ -417,62 +437,32 @@ SESSION_COOKIE_AGE = int(env('SESSION_COOKIE_AGE', int(30 * 60)))
 # Pick a login template and title.
 LOGIN_TEMPLATE_PICKER = {"default": 'login.html',
                          'share-my-health': 'login.html',
-                         'hixny': 'login.html',
-                         'healthy-together': 'login.html',
-                         'new-york-department-of-health': 'login.html',
-                         'new-york-my-medicaid': 'login.html',
-                         'circulation': 'login.html'
+                         # Add others here to create a custom login template.
                          }
 
-
-IAL_EVIDENCE_CLASSIFICATIONS = [
-    ('', 'No Identity Assurance evidence'),
-    ('ONE-SUPERIOR-OR-STRONG+',
+# List of IAL2 classifications. You can defined your own.  Anything that is not empty
+# (e.g.  not "") will be an IAL2.""
+IAL2_EVIDENCE_CLASSIFICATIONS = env('IAL_EVIDENCE_CLASSIFICATIONS', (
+    # Generic
+    ('ONE-SUPERIOR-OR-STRONG-PLUS',
      'One Superior or Strong+ pieces of identity evidence'),
-    ('ONE-STRONG-TWO-FAIR',
-     'One Strong and Two Fair pieces of identity evidence'),
-    ('TWO-STRONG',
-     'Two Pieces of Strong identity evidence'),
-    ('TRUSTED-REFEREE-VOUCH',
-     'I am a Trusted Referee Vouching for this person'),
-    ('KBA',
-     'Knowledged-Based Identity Verification')]
+    ('ONE-STRONG-TWO-FAIR', 'One Strong and Two Fair pieces of identity evidence'),
+    ('TWO-STRONG', 'Two Pieces of Strong identity evidence'),
+    ('TRUSTED-REFEREE-VOUCH', 'I am a Trusted Referee Vouching for this person'),
+    ('KBA', 'Knowledged-Based Identity Verification'),
+    # More specific
+    ('ONE-SUPERIOR-OR-STRONG-PLUS-1', "Driver's License"),
+    ('ONE-SUPERIOR-OR-STRONG-PLUS-2', "Identification Card"),
+    ('ONE-SUPERIOR-OR-STRONG-PLUS-3', 'Veteran ID Card'),
+    ('ONE-SUPERIOR-OR-STRONG-PLUS-4', 'Passport'),
+    ('TWO-STRONG-1', """At least two of the following documents: birth certificate,
+                        Social Security Card, Medicaid card, Medicare Card."""),
+    ('', 'No Identity Assurance Evidence'),
+))
 
 
-IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_1 = env(
-    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_1', "DRIVERS-LICENSE")
-IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_1 = env(
-    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_1', "Driver's License")
-
-
-IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_2 = env(
-    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_2', "MEDICAID-CARD")
-IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_2 = env(
-    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_2', "Medicaid card")
-
-IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_3 = env(
-    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_3', "MEDICARE-CARD")
-IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_3 = env(
-    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_3', "Medicare card")
-
-IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_4 = env(
-    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_4', "I9")
-IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_4 = env(
-    'IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_4', "I-9 Employee verification")
-
-
-IAL_EVIDENCE_SUBCLASSIFICATIONS = []
-IAL_EVIDENCE_SUBCLASSIFICATIONS.append(
-    (IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_1, IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_1))
-IAL_EVIDENCE_SUBCLASSIFICATIONS.append(
-    (IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_2, IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_2))
-IAL_EVIDENCE_SUBCLASSIFICATIONS.append(
-    (IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_3, IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_3))
-IAL_EVIDENCE_SUBCLASSIFICATIONS.append(
-    (IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_VALUE_4, IAL_EVIDENCE_SUBCLASSIFICATION_CUSTOM_DISPLAY_4))
-
-
-AUTO_IAL_2_DEFAULT_CLASSIFICATION = 'ONE-SUPERIOR-OR-STRONG+',
+# For creating agent users who have out of band _D verification on file.
+AUTO_IAL_2_DEFAULT_CLASSIFICATION = 'ONE-SUPERIOR-OR-STRONG-PLUS',
 AUTO_IAL_2_DEFAULT_SUBCLASSIFICATION = env(
     'AUTO_IAL_2_DEFAULT_SUBCLASSIFICATION', "I9")
 AUTO_IAL_2_DESCRIPTION = env(
@@ -480,9 +470,11 @@ AUTO_IAL_2_DESCRIPTION = env(
 
 LOGIN_RATELIMIT = env('LOGIN_RATELIMIT', '100/h')
 
-# Change these for production
+# These are used to encrypt the passphrase. Change these for production
 PASSPHRASE_SALT = env('PASSPHRASE_SALT', "FA6F747468657265616C706570706573")
 PASSPHRASE_ITERATIONS = int(env('PASSPHRASE_ITERATIONS', "200"))
+
+
 # These are added for portability to other cloud platforms.
 # Note that instead these values can be passed as an IAM role.
 # See
@@ -507,7 +499,7 @@ MINIMUM_BIRTH_YEAR = now.year - MINIMUM_AGE
 
 BIRTHDATE_YEARS = [x for x in range(1900, MINIMUM_BIRTH_YEAR)]
 
-ID_DOCUMENT_ISSUANCE_YEARS = [x for x in range(now.year-20, now.year)]
+ID_DOCUMENT_ISSUANCE_YEARS = [x for x in range(now.year - 20, now.year)]
 
 # Set possible expiration for identity documents e.g. driver's license).
 EXPIRY_DATE_ACCEPTABLE_YEARS = [x for x in range(now.year, 2050)]

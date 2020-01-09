@@ -43,7 +43,7 @@ class OrganizationAgentSignupTest(TestCase):
         """
         form_data = {'username': 'Fred',
                      'email': 'fred@acme.org',
-                     'mobile_phone_number': '919-789-2251',
+                     'mobile_phone_number': '9197892251',
                      'first_name': 'Fred',
                      'last_name': 'Frames',
                      'password1': 'bedrocks',
@@ -101,7 +101,7 @@ class OrganizationAgentSignupTest(TestCase):
         """
         form_data = {'username': 'wilma',
                      'email': 'aa@acme.org',
-                     'mobile_phone_number': '919-789-2251',
+                     'mobile_phone_number': '9197892251',
                      'first_name': 'Fred',
                      'last_name': 'Frames',
                      'password1': 'bedrocks',
@@ -123,7 +123,7 @@ class OrganizationAgentSignupTest(TestCase):
         """
         form_data = {'username': 'Lea',
                      'email': 'Lea@jjj.org',
-                     'mobile_phone_number': '919-789-2251',
+                     'mobile_phone_number': '9197892251',
                      'first_name': 'Lea',
                      'last_name': 'Bea',
                      'password1': 'bedrocks',
