@@ -19,7 +19,7 @@ agree_tos_label = mark_safe(
     'Do you agree to the <a href="%s" target="_blank">terms of service</a>?' % (settings.AGENT_TOS_URI))
 
 attest_training_completed_label = mark_safe(
-    """Yes, I attest I have completed the training and will abide by the code of conduct.""" 
+    """Yes, I attest I have completed the training and will abide by the code of conduct.""" )
 
 
 class StaffSignupForm(forms.Form):
