@@ -32,7 +32,7 @@ class StaffSignupForm(forms.Form):
     username = forms.CharField(max_length=30, label=_("Username*"))
     pick_your_account_number = forms.CharField(max_length=10, label=_(
         "Customize Your Own Account Number"), help_text=_("""Pick up to 10 numbers to be included in your
-                                               account number. If left blank, numbers will be used."""),
+                                               account number. If left blank, random numbers will be used."""),
         required=False)
     email = forms.EmailField(max_length=150, label=_("Email*"), required=True)
     mobile_phone_number = PhoneNumberField(required=True, max_length=15,
