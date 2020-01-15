@@ -19,7 +19,7 @@ agree_tos_label = mark_safe(
     'Do you agree to the <a href="%s" target="_blank">terms of service</a>?' % (settings.AGENT_TOS_URI))
 
 attest_training_completed_label = mark_safe(
-    """Yes, I attest I have completed the training and will abide by the code of conduct.""" )
+    """Yes, I attest I have completed the training and will abide by the code of conduct.""")
 
 
 class StaffSignupForm(forms.Form):
@@ -51,7 +51,7 @@ class StaffSignupForm(forms.Form):
                                 label=_("Password (again)*"))
     agree_tos = forms.BooleanField(label=_(agree_tos_label))
     attest_training_completed = forms.BooleanField(required=True,
-        label=_(attest_training_completed_label))
+                                                   label=_(attest_training_completed_label))
     org_slug = forms.CharField(widget=forms.HiddenInput(),
                                max_length=128, required=True)
     domain = forms.CharField(widget=forms.HiddenInput(),
