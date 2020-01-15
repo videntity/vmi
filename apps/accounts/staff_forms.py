@@ -19,8 +19,7 @@ agree_tos_label = mark_safe(
     'Do you agree to the <a href="%s" target="_blank">terms of service</a>?' % (settings.AGENT_TOS_URI))
 
 attest_training_completed_label = mark_safe(
-    """Yes, I attest I have completed the <a href="%s" target="_blank">training</a>
-    and will abide by the code of conduct.""" % (settings.TRAINING_URI))
+    """Yes, I attest I have completed the training and will abide by the code of conduct.""")
 
 
 class StaffSignupForm(forms.Form):
@@ -33,7 +32,7 @@ class StaffSignupForm(forms.Form):
     username = forms.CharField(max_length=30, label=_("Username*"))
     pick_your_account_number = forms.CharField(max_length=10, label=_(
         "Customize Your Own Account Number"), help_text=_("""Pick up to 10 numbers to be included in your
-                                               account number. If left blank, numbers will be used."""),
+                                               account number. If left blank, random numbers will be used."""),
         required=False)
     email = forms.EmailField(max_length=150, label=_("Email*"), required=True)
     mobile_phone_number = PhoneNumberField(required=True, max_length=15,
@@ -51,8 +50,8 @@ class StaffSignupForm(forms.Form):
     password2 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password (again)*"))
     agree_tos = forms.BooleanField(label=_(agree_tos_label))
-    attest_training_completed = forms.BooleanField(
-        label=_(attest_training_completed_label))
+    attest_training_completed = forms.BooleanField(required=True,
+                                                   label=_(attest_training_completed_label))
     org_slug = forms.CharField(widget=forms.HiddenInput(),
                                max_length=128, required=True)
     domain = forms.CharField(widget=forms.HiddenInput(),
