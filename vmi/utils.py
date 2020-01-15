@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+
 TRUE_LIST = [1, "1", "true", "True", "TRUE", "YES", "Yes", "yes", True]
 FALSE_LIST = [0, "0", "False", "FALSE", "false", "NO", "No", "no", False]
 

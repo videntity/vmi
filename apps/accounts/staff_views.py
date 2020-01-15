@@ -48,10 +48,9 @@ def approve_org_affiliation(request, organization_slug, username):
     if org.auto_ial_2_for_agents:
         IdentityAssuranceLevelDocumentation.objects.create(
             subject_user=user,
-            action='1-TO-2',
             id_verify_description=settings.AUTO_IAL_2_DESCRIPTION,
             evidence=settings.AUTO_IAL_2_DEFAULT_CLASSIFICATION,
-            evidence_subclassification=settings.AUTO_IAL_2_DEFAULT_SUBCLASSIFICATION)
+            note="IAL2 auto-applied to this agent account. %s." % (settings.AUTO_IAL_2_DESCRIPTION))
         # Add the user to default groups.
         for g in org.default_groups_for_agents.all():
             user.groups.add(g)

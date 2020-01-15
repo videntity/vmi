@@ -1,18 +1,22 @@
 # Copyright Videntity Systems, Inc.
 from django.conf.urls import url
-from .views import inperson_id_verify, two_to_one_downgrade
+from .views import delete_id_verify, verify_id_with_card, enter_id_card_info
 
 
 # Copyright Videntity Systems Inc.
 
 urlpatterns = [
-    url(r'^inperson-id-verify/(?P<subject>[^/]+)',
-        inperson_id_verify, name='inperson_id_verify'),
 
 
+    url(r'^verify-id-with-card/(?P<subject>[^/]+)',
+        verify_id_with_card, name='verify_id_with_card'),
 
-    url(r'^administrative-downgrade/(?P<subject>[^/]+)/(?P<pk>[^/]+)',
-        two_to_one_downgrade, name='ial_two_to_one_downgrade'),
+    url(r'^enter-id-card-info/(?P<id>[^/]+)',
+        enter_id_card_info, name='enter_id_card_info'),
+
+    url(r'^delete-id-verify/(?P<id>[^/]+)',
+        delete_id_verify, name='delete_id_verify'),
+
 
 
 ]

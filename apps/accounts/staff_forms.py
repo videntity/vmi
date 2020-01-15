@@ -36,7 +36,7 @@ class StaffSignupForm(forms.Form):
                                                account number. If left blank, numbers will be used."""),
         required=False)
     email = forms.EmailField(max_length=150, label=_("Email*"), required=True)
-    mobile_phone_number = PhoneNumberField(required=True,
+    mobile_phone_number = PhoneNumberField(required=True, max_length=15,
                                            label=_(
                                                "Mobile Phone Number"))
     first_name = forms.CharField(max_length=100, label=_("First Name*"))
@@ -45,10 +45,6 @@ class StaffSignupForm(forms.Form):
         max_length=100, label=_("Middle Name"), required=False)
     nickname = forms.CharField(
         max_length=100, label=_("Nickname"), required=False)
-
-    mobile_phone_number = forms.CharField(required=True,
-                                          label=_("Mobile Phone Number*"),
-                                          max_length=10)
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password*"),
                                 help_text=_("Passwords must be at least 8 characters and not be too common."))

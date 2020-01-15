@@ -37,7 +37,7 @@ class IALUpgradeTestCase(TestCase):
         self.other_user_subject = self.other_user_up.subject
         self.client = Client()
         self.client.login(username="bob", password="barker")
-        self.url = reverse('inperson_id_verify',
+        self.url = reverse('verify_id_with_card',
                            args=(self.other_user_subject,))
 
     def test_untrursted_wo_permission_cannot_raise_ial(self):
@@ -68,14 +68,14 @@ class IALUpgradeTestCase(TestCase):
             codename='change_identityassuranceleveldocumentation')
 
         self.user.user_permissions.add(permission)
-        self.url = reverse('inperson_id_verify', args=(self.up.subject,))
+        self.url = reverse('verify_id_with_card', args=(self.up.subject,))
         response = self.client.get(self.url, follow=True)
         self.assertEqual(response.status_code, 404)
 
 
-class IALUDowngradeTestCase(TestCase):
+class IALDocumentationDeleteTestCase(TestCase):
     """
-    Test IAL Downgrade
+    Test IAL Delete
     """
 
     def _create_user(self, username, password, **extra_fields):
@@ -94,22 +94,16 @@ class IALUDowngradeTestCase(TestCase):
         self._create_user('bob', 'barker', first_name='Bob',
                           last_name='Bob', email='bobexample.com')
         self.user = User.objects.get(username='bob')
-
-        self.other_user = self._create_user('alice', 'wonder', first_name='Alice',
-                                            last_name='Wonderland', email='alice@example.com')
+        UserProfile.objects.create(user=self.user)
         self.iald = IdentityAssuranceLevelDocumentation.objects.create(
-            subject_user=self.other_user)
-        self.up = UserProfile.objects.create(user=self.user)
-        self.other_user_up = UserProfile.objects.create(user=self.other_user)
-        self.other_user_subject = self.other_user_up.subject
+            subject_user=self.user, evidence="ONE-SUPERIOR-OR-STRONG-PLUS")
         self.client = Client()
         self.client.login(username="bob", password="barker")
-        self.url = reverse('ial_two_to_one_downgrade',
-                           args=(self.other_user_subject, self.iald.pk))
+        self.url = reverse('delete_id_verify', args=(self.iald.pk,))
 
-    def test_untrursted_wo_permission_cannot_raise_ial(self):
+    def test_untrursted_wo_permission_cannot_delete_ial(self):
         """
-        Test a persona can raise IAL of another if the have the permission to do so.
+        Test a person cannot delete IAL of another when they lack permission to do so.
         """
         response = self.client.get(self.url)
         # Should 302 and redirect to login since permission is missing.
@@ -117,24 +111,11 @@ class IALUDowngradeTestCase(TestCase):
 
     def test_trusted_ref_can_raise_ial(self):
         """
-        Test a persona can raise IAL of another if the have the permission to do so.
+        Test a person can delete IAL with the permission to do so.
         """
         permission = Permission.objects.get(
             codename='change_identityassuranceleveldocumentation')
-
         self.user.user_permissions.add(permission)
         response = self.client.get(self.url, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'downgrade')
-
-    def test_trusted_ref_cannot_raise_their_own_ial(self):
-        """
-        Test a persona can raise IAL of another if the have the permission to do so.
-        """
-        permission = Permission.objects.get(
-            codename='change_identityassuranceleveldocumentation')
-
-        self.user.user_permissions.add(permission)
-        self.url = reverse('inperson_id_verify', args=(self.up.subject,))
-        response = self.client.get(self.url, follow=True)
-        self.assertEqual(response.status_code, 404)
+        self.assertContains(response, 'removed')
