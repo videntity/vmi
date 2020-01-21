@@ -13,8 +13,8 @@ ID_DOCUMENT_TYPES = (('driving_permit', 'Driving License'),
                      ('us_health_insurance_card', 'US Health and Insurance Card'))
 
 ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES = (("pipp", "Physical In-Person Proofing"),
-                                                ("sripp", "Supervised remote In-Person Proofing"),
-                                                ("eid", "Online verification of an electronic ID card"),
+                                                # ("sripp", "Supervised remote In-Person Proofing"),
+                                                # ("eid", "Online verification of an electronic ID card"),
                                                 ("", "Blank"))
 
 EVIDENCE_TYPE_CHOICES = (('id_document', _('Verification based on any kind of government issued identity document')),

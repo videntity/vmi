@@ -28,7 +28,7 @@ class SelectVerificationTypeIDCardForm(forms.ModelForm):
             self.fields[field].label = "%s*" % (self.fields[field].label)
 
         self.fields[
-            'id_documentation_verification_method_type'].choices = ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES[0]
+            'id_documentation_verification_method_type'].choices = ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES
         self.fields['id_documentation_verification_method_type'].label = _(
             "Method")
         self.fields['evidence_type'].widget = forms.HiddenInput()
