@@ -62,6 +62,7 @@ class IDCardForm(forms.ModelForm):
         self.fields['evidence'].choices = settings.IAL2_EVIDENCE_CLASSIFICATIONS
         self.fields['evidence'].label = _("Evidence")
         self.fields['evidence'].disabled = True
+        self.fields['id_document_type'].widget = forms.HiddenInput()
         self.fields['id_document_type'].disabled = True
         self.fields['expires_at'].widget = forms.SelectDateWidget()
         self.fields['id_document_issuer_date_of_issuance'].widget = forms.SelectDateWidget(
