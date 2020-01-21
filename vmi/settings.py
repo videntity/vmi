@@ -442,7 +442,7 @@ LOGIN_TEMPLATE_PICKER = {"default": 'login.html',
 
 # List of IAL2 classifications. You can defined your own.  Anything that is not empty
 # (e.g.  not "") will be an IAL2.""
-IAL2_EVIDENCE_CLASSIFICATIONS = env('IAL_EVIDENCE_CLASSIFICATIONS', (
+IAL2_EVIDENCE_CLASSIFICATIONS = (
     # Generic
     ('ONE-SUPERIOR-OR-STRONG-PLUS',
      'One Superior or Strong+ pieces of identity evidence'),
@@ -458,7 +458,7 @@ IAL2_EVIDENCE_CLASSIFICATIONS = env('IAL_EVIDENCE_CLASSIFICATIONS', (
     ('TWO-STRONG-1', """At least two of the following documents: birth certificate,
                         Social Security Card, Medicaid card, Medicare Card."""),
     ('', 'No Identity Assurance Evidence'),
-))
+)
 
 
 # For creating agent users who have out of band _D verification on file.
