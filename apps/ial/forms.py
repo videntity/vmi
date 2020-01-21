@@ -6,14 +6,14 @@ from django.conf import settings
 IAL_EVIDENCE_CLASSIFICATIONS_ID_CARDS = (
     ('ONE-SUPERIOR-OR-STRONG-PLUS-1', "Driver's License"),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-2', "Identification Card"),
-    ('ONE-SUPERIOR-OR-STRONG-PLUS-3', 'Veteran ID Card'),
+    ('ONE-SUPERIOR-OR-STRONG-PLUS-3', 'US Health and Insurance Card'),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-4', 'Passport'),
-    ('TWO-STRONG-1', """At least two of the following documents: birth certificate,
-                        Social Security Card, Medicaid card, Medicare Card."""),
+#   ('TWO-STRONG-1', """At least two of the following documents: birth certificate,
+#                        Social Security Card, Medicaid card, Medicare Card."""),
 )
 
 EVIDENCE_TYPE_CHOICES = (('id_document', _('Verification based on any kind of government issued identity document')),
-                         # ('utility_bill', _('Verification based on a utility bill'))
+                         # ('utility_bill', _('Verification based on a utility bill')),
                          )
 
 
@@ -27,11 +27,11 @@ class SelectVerificationTypeIDCardForm(forms.ModelForm):
             self.fields[field].label = "%s*" % (self.fields[field].label)
 
         self.fields[
-            'id_documentation_verification_method_type'].choices = ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES[0:3]
+            'id_documentation_verification_method_type'].choices = ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES[0]
         self.fields['id_documentation_verification_method_type'].label = _(
             "Method")
         self.fields['evidence_type'].widget = forms.HiddenInput()
-        self.fields['evidence'].choices = IAL_EVIDENCE_CLASSIFICATIONS_ID_CARDS
+        self.fields['evidence'].choices = settings.IAL_EVIDENCE_CLASSIFICATIONS
         self.fields['evidence'].label = _("Evidence")
 
     class Meta:
@@ -52,16 +52,16 @@ class IDCardForm(forms.ModelForm):
             self.fields[field].label = "%s*" % (self.fields[field].label)
         # Narrow the drop down choices for this form
         self.fields[
-            'id_documentation_verification_method_type'].choices = ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES[0:3]
+            'id_documentation_verification_method_type'].choices = ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES
 
         self.fields['id_documentation_verification_method_type'].disabled = True
         self.fields['id_documentation_verification_method_type'].label = _(
             "Method")
         self.fields['evidence_type'].disabled = True
-        self.fields['evidence'].choices = IAL_EVIDENCE_CLASSIFICATIONS_ID_CARDS
+        self.fields['evidence'].choices = settings.IAL_EVIDENCE_CLASSIFICATIONS
         self.fields['evidence'].label = _("Evidence")
-        self.fields['evidence'].disabled = True
-        self.fields['id_document_type'].disabled = True
+        self.fields['evidence'].disabled = False
+        self.fields['id_document_type'].disabled = False
         self.fields['expires_at'].widget = forms.SelectDateWidget()
         self.fields['id_document_issuer_date_of_issuance'].widget = forms.SelectDateWidget(
             years=settings.ID_DOCUMENT_ISSUANCE_YEARS)

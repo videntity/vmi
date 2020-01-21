@@ -62,14 +62,14 @@ def enter_id_card_info(request, id):
     else:
         # this is an HTTP  GET
         initial = {}
-        if ial_d.evidence == "ONE-SUPERIOR-OR-STRONG-PLUS-1":
-            initial["id_document_type"] = "driving_permit"
-        if ial_d.evidence in ("ONE-SUPERIOR-OR-STRONG-PLUS-2",
-                              "ONE-SUPERIOR-OR-STRONG-PLUS-3",
-                              "TWO-STRONG-1"):
-            initial["id_document_type"] = "idcard"
-        if ial_d.evidence == "ONE-SUPERIOR-OR-STRONG-PLUS-4":
-            initial["id_document_type"] = "passport"
+        #if ial_d.evidence == "ONE-SUPERIOR-OR-STRONG-PLUS-1":
+        #    initial["id_document_type"] = "driving_permit"
+        #if ial_d.evidence in ("ONE-SUPERIOR-OR-STRONG-PLUS-2",
+        #                      "ONE-SUPERIOR-OR-STRONG-PLUS-3",
+        #                      "TWO-STRONG-1"):
+        #    initial["id_document_type"] = "idcard"
+        #if ial_d.evidence == "ONE-SUPERIOR-OR-STRONG-PLUS-4":
+        #    initial["id_document_type"] = "passport"
         return render(request, 'generic/bootstrapform.html',
                       {'name': name, 'form':
                        IDCardForm(instance=ial_d, initial=initial)})
@@ -84,7 +84,7 @@ def verify_id_with_card(request, subject):
             "You cannot enter information about your own identity assurance level.")
     ial_d = IdentityAssuranceLevelDocumentation.objects.create(
         subject_user=up.user)
-    name = _("Verify the identity of %s") % (up)
+    name = _("Verify the identity of %s %s") % (up.user.first_name, up.user.last_name)
     if request.method == 'POST':
         form = SelectVerificationTypeIDCardForm(
             request.POST, request.FILES, instance=ial_d)
