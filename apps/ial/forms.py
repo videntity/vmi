@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from .models import IdentityAssuranceLevelDocumentation, ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES
 from django.conf import settings
+from getenv import env
 
 IAL_EVIDENCE_CLASSIFICATIONS_ID_CARDS = (
     ('ONE-SUPERIOR-OR-STRONG-PLUS-1', "Driver's License"),
@@ -31,7 +32,7 @@ class SelectVerificationTypeIDCardForm(forms.ModelForm):
         self.fields['id_documentation_verification_method_type'].label = _(
             "Method")
         self.fields['evidence_type'].widget = forms.HiddenInput()
-        self.fields['evidence'].choices = settings.IAL2_EVIDENCE_CLASSIFICATIONS
+        self.fields['evidence'].choices = env("IAL_EVIDENCE_CLASSIFICATIONS")
         self.fields['evidence'].label = _("Evidence")
 
     class Meta:
@@ -58,7 +59,7 @@ class IDCardForm(forms.ModelForm):
         self.fields['id_documentation_verification_method_type'].label = _(
             "Method")
         self.fields['evidence_type'].disabled = True
-        self.fields['evidence'].choices = settings.IAL2_EVIDENCE_CLASSIFICATIONS
+        self.fields['evidence'].choices = env("IAL_EVIDENCE_CLASSIFICATIONS")
         self.fields['evidence'].label = _("Evidence")
         self.fields['evidence'].disabled = False
         self.fields['id_document_type'].disabled = False
