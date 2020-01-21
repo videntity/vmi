@@ -1,6 +1,6 @@
 Hello {{TO_FIRST_NAME|title}} {{TO_LAST_NAME|title}},
 
-A new user {{ABOUT_FIRST_NAME|title}} {{ABOUT_LAST_NAME|title}} ({{ABOUT_EMAIL}} - {{ ABOUT_MOBILE }}), registered for your organization, {{ ORGANIZATION_NAME }}, and requires your attention.
+A new user {{ABOUT_FIRST_NAME|title}} {{ABOUT_LAST_NAME|title}} (Email: {{ABOUT_EMAIL}} - Phone Number: {{ ABOUT_MOBILE }}), registered for your organization, {{ ORGANIZATION_NAME }}, and requires your attention.
 
 {{HOSTNAME_URL}}
 
