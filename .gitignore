@@ -107,4 +107,4 @@ Pipfile
 *.komodoproject
 *.DS_Store*
 *.pem
-/VMI-env
+/.vs
