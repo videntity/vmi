@@ -40,7 +40,7 @@ def enter_id_card_info(request, id):
         raise Http404("You cannot upgrade your own identity assurance level.")
     up = get_object_or_404(UserProfile, user=ial_d.subject_user)
 
-    name = _("Complete the ID Card Details for %s (%s)") % (up, up.user)
+    name = _("Complete the ID Card Details for %s") % (up)
     if request.method == 'POST':
         form = IDCardForm(request.POST, request.FILES, instance=ial_d)
         if form.is_valid():
@@ -70,6 +70,9 @@ def enter_id_card_info(request, id):
             initial["id_document_type"] = "idcard"
         if ial_d.evidence == "ONE-SUPERIOR-OR-STRONG-PLUS-4":
             initial["id_document_type"] = "passport"
+        if ial_d.evidence in ("ONE-SUPERIOR-OR-STRONG-PLUS-5",
+                              "ONE-SUPERIOR-OR-STRONG-PLUS-6"):
+            initial["id_document_type"] = "us_health_insurance_card"
         return render(request, 'generic/bootstrapform.html',
                       {'name': name, 'form':
                        IDCardForm(instance=ial_d, initial=initial)})
