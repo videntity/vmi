@@ -2,16 +2,16 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from .models import IdentityAssuranceLevelDocumentation, ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES
 from django.conf import settings
-from getenv import env
 
 IAL_EVIDENCE_CLASSIFICATIONS_ID_CARDS = (
     ('ONE-SUPERIOR-OR-STRONG-PLUS-1', "Driver's License"),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-2', "Identification Card"),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-3', 'US Health and Insurance Card'),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-4', 'Passport'),
+)
 #   ('TWO-STRONG-1', """At least two of the following documents: birth certificate,
 #                        Social Security Card, Medicaid card, Medicare Card."""),
-)
+
 
 EVIDENCE_TYPE_CHOICES = (('id_document', _('Verification based on any kind of government issued identity document')),
                          # ('utility_bill', _('Verification based on a utility bill')),
