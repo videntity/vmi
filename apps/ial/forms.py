@@ -32,7 +32,7 @@ class SelectVerificationTypeIDCardForm(forms.ModelForm):
         self.fields['id_documentation_verification_method_type'].label = _(
             "Method")
         self.fields['evidence_type'].widget = forms.HiddenInput()
-        self.fields['evidence'].choices = settings.IAL2_EVIDENCE_CLASSIFICATIONS
+        self.fields['evidence'].choices = settings.IAL2_EVIDENCE_CLASSIFICATIONS[3:]
         self.fields['evidence'].label = _("Evidence")
 
     class Meta:

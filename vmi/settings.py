@@ -444,6 +444,10 @@ LOGIN_TEMPLATE_PICKER = {"default": 'login.html',
 # (e.g.  not "") will be an IAL2.""
 IAL2_EVIDENCE_CLASSIFICATIONS = (
     # Generic
+    ('ONE-SUPERIOR-OR-STRONG-PLUS',
+     'One Superior or Strong+ pieces of identity evidence'),
+    ('ONE-STRONG-TWO-FAIR', 'One Strong and Two Fair pieces of identity evidence'),
+    ('TWO-STRONG', 'Two Pieces of Strong identity evidence'),
     ('TRUSTED-REFEREE-VOUCH', 'I am a Trusted Referee Vouching for this person'),
     # More specific
     ('ONE-SUPERIOR-OR-STRONG-PLUS-1', "Driver's License"),

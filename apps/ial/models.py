@@ -83,7 +83,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
     utility_bill_provider_country = models.CharField(max_length=2, blank=True,
                                                      default=settings.DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS)
     evidence = models.CharField(verbose_name=_('Identity Assurance Level 2 Classification'),
-                                choices=settings.IAL2_EVIDENCE_CLASSIFICATIONS,
+                                choices=settings.IAL2_EVIDENCE_CLASSIFICATIONS[3:],
                                 max_length=256,
                                 default='',
                                 blank=True)
