@@ -456,7 +456,7 @@ IAL2_EVIDENCE_CLASSIFICATIONS = (
     ('ONE-SUPERIOR-OR-STRONG-PLUS-4', 'Passport'),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-5', 'NY Medicaid ID Card'),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-6', 'Medicare ID'),
-    ('TWO-STRONG-1', 'Original Birth Certificate abd a Social Security Card')
+    ('TWO-STRONG-1', 'Original Birth Certificate and a Social Security Card')
 )
 
 
