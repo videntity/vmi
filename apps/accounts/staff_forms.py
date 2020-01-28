@@ -159,7 +159,6 @@ class StaffSignupForm(forms.Form):
             last_name=self.cleaned_data['last_name'],
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'],
-            mobile_phone_number=self.cleaned_data['mobile_phone_number'],
             is_active=False)
 
         up = UserProfile.objects.create(
