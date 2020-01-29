@@ -181,4 +181,4 @@ class StaffSignupForm(forms.Form):
 
         # Verify EmailSend a verification email
         create_activation_key(new_user)
-        return up
+        return new_user
