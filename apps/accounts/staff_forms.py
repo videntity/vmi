@@ -177,8 +177,8 @@ class StaffSignupForm(forms.Form):
         org = Organization.objects.get(slug=organization_slug)
 
         OrganizationAffiliationRequest.objects.create(
-            organization=org, user=up)
+            organization=org, user=new_user)
 
         # Verify EmailSend a verification email
-        create_activation_key(up)
+        create_activation_key(new_user)
         return up
