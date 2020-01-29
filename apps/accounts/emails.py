@@ -115,7 +115,6 @@ def send_new_org_account_approval_email(to_user, about_user, organization):
                "TO_LAST_NAME": to_user.last_name,
                "ABOUT_FIRST_NAME": about_user.first_name,
                "ABOUT_LAST_NAME": about_user.last_name,
-               "ABOUT_EMAIL": about_user.email,
                "ORGANIZATION_NAME": organization.name,
                "HOSTNAME_URL": settings.HOSTNAME_URL,
                }
