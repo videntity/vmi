@@ -42,12 +42,11 @@ def authenticated_organization_home(request):
             organization=o)
         for oar in affiliation_requests:
 
-            msg = """%s %s (%s %s) is requesting to be an agent of %s.
+            msg = """%s %s (%s) is requesting to be an agent of %s.
                      Please <a href="%s">approve</a> or <a href="%s">deny</a>
                      the request.""" % (oar.user.first_name,
                                         oar.user.last_name,
                                         oar.user.email,
-                                        oar.user.mobile_phone_number,
                                         oar.organization.name,
                                         reverse(
                                             'approve_org_affiliation',
