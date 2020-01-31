@@ -108,3 +108,5 @@ Pipfile
 *.DS_Store*
 *.pem
 /.vs
+.vs/
+.vs
