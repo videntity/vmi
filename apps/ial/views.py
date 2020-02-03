@@ -28,6 +28,8 @@ def delete_id_verify(request, id):
     user = ial_d.subject_user
     ial_d.delete()
     up = UserProfile.objects.get(user=user)
+    up.verifying_agent_email = ""
+    up.save()
     return HttpResponseRedirect(reverse('user_profile_subject', args=(up.subject,)))
 
 
@@ -85,6 +87,8 @@ def verify_id_with_card(request, subject):
     if request.user == up.user:
         raise Http404(
             "You cannot enter information about your own identity assurance level.")
+    up.verifying_agent_email = request.user.email
+    up.save()
     ial_d = IdentityAssuranceLevelDocumentation.objects.create(
         subject_user=up.user)
     name = _("Verify the identity of %s") % (up)

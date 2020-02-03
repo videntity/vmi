@@ -384,6 +384,7 @@ class UserProfile(models.Model):
                                                     help_text=_("""Yes, I attest that I have completed the
                                                         training for this system and will abide by
                                                         the code of conduct."""))
+    verifying_agent_email = models.EmailField(default="")
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
@@ -613,6 +614,10 @@ class UserProfile(models.Model):
                 if m == self.user:
                     members.append(o.formatted_organization)
         return members
+
+    @property
+    def verifying_agent_email(self):
+        return self.verifying_agent_email
 
 
 MFA_CHOICES = (
