@@ -190,6 +190,12 @@ class UserProfileClaimProvider(BaseProvider):
             return self.user.userprofile.website
         except Exception:
             return None
+        
+    def claim_verifying_agent_email(self):
+        try:
+            return self.user.userprofile.verifying_agent_email
+        except Exception:
+            return None
 
 
 class SubjectClaimProvider(BaseProvider):
