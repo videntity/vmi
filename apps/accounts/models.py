@@ -615,8 +615,6 @@ class UserProfile(models.Model):
                     members.append(o.formatted_organization)
         return members
 
-
-
 MFA_CHOICES = (
     ('', 'None'),
     ('EMAIL', "Email"),

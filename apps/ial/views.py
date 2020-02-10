@@ -41,7 +41,7 @@ def enter_id_card_info(request, id):
     if request.user == ial_d.subject_user:
         raise Http404("You cannot upgrade your own identity assurance level.")
     up = get_object_or_404(UserProfile, user=ial_d.subject_user)
-    
+
     name = _("Complete the ID Card Details for %s") % (up)
     if request.method == 'POST':
         form = IDCardForm(request.POST, request.FILES, instance=ial_d)
@@ -89,7 +89,7 @@ def verify_id_with_card(request, subject):
     if request.user == up.user:
         raise Http404(
             "You cannot enter information about your own identity assurance level.")
-    
+
     ial_d = IdentityAssuranceLevelDocumentation.objects.create(
         subject_user=up.user)
     name = _("Verify the identity of %s") % (up)
