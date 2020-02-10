@@ -191,6 +191,12 @@ class UserProfileClaimProvider(BaseProvider):
         except Exception:
             return None
 
+    def claim_verifying_agent_email(self):
+        try:
+            return self.user.userprofile.verifying_agent_email
+        except Exception:
+            return None
+
 
 class SubjectClaimProvider(BaseProvider):
     """"This claim is MANDATORY"""

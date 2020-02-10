@@ -15,7 +15,7 @@ YEARS = [x for x in range(1901, 2000)]
 
 
 agree_tos_label = mark_safe(
-    'Do you agree to the <a href="%s">terms of service</a>?' % (settings.TOS_URI))
+    'Do you agree to the <a href="%s">Terms of Service</a> and <a href="%s">Privacy Policy</a>?' % (settings.TOS_URI, settings.POLICY_URI))
 
 User = get_user_model()
 
