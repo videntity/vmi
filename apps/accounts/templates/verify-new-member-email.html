@@ -15,8 +15,8 @@
                <p>A new user, {{ABOUT_FIRST_NAME|title}} {{ABOUT_LAST_NAME|title}},
                 registered via your organization, {{ ORGANIZATION_NAME }}.
                 Please login and verify the user's identity.</p>
-               <p><a href="{{HOSTNAME_URL}}{% url 'inperson_id_verify' ABOUT_SUBJECT  %}">
-               {{HOSTNAME_URL}}{% url 'inperson_id_verify' ABOUT_SUBJECT  %} </a>
+               <p><a href="{{HOSTNAME_URL}}{% url 'verify_id_with_card' ABOUT_SUBJECT  %}">
+               {{HOSTNAME_URL}}{% url 'verify_id_with_card' ABOUT_SUBJECT  %} </a>
                
                 </div>
               </div>
