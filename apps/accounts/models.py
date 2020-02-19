@@ -615,10 +615,6 @@ class UserProfile(models.Model):
                     members.append(o.formatted_organization)
         return members
 
-    @property
-    def verifying_agent_email(self):
-        return self.verifying_agent_email
-
 
 MFA_CHOICES = (
     ('', 'None'),

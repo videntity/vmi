@@ -50,6 +50,8 @@ def enter_id_card_info(request, id):
             ial_doc.subject_user = up.user
             ial_doc.verifying_user = request.user
             ial_doc.save()
+            up.verifying_agent_email = request.user.email
+            up.save()
             messages.success(
                 request, _(
                     "You have verified %s %s's (%s) identity." % (up.user.first_name,
@@ -87,8 +89,7 @@ def verify_id_with_card(request, subject):
     if request.user == up.user:
         raise Http404(
             "You cannot enter information about your own identity assurance level.")
-    up.verifying_agent_email = request.user.email
-    up.save()
+
     ial_d = IdentityAssuranceLevelDocumentation.objects.create(
         subject_user=up.user)
     name = _("Verify the identity of %s") % (up)
