@@ -59,12 +59,12 @@ admin.site.register(
 
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('name', 'user', 'birth_date',
-                    'sex', 'subject', 'picture_url')
+                    'sex', 'subject', 'picture_url', 'verifying_agent_email')
     search_fields = [
         'user__first_name',
         'user__last_name',
         'birth_date',
-        'sex', ]
+        'sex', 'verifying_agent_email']
     raw_id_fields = ("user", )
     empty_value_display = ''
 

@@ -107,3 +107,6 @@ Pipfile
 *.komodoproject
 *.DS_Store*
 *.pem
+/.vs
+.vs/
+.vs
