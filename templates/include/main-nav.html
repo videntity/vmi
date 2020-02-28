@@ -102,7 +102,10 @@
                         {% endif %}
 
                         {% if request.user.is_authenticated %}
-                        <li><a href="{% url 'mylogout' %}">Logout</a></li>
+                        <li><a href="{% url 'mylogout' %}">Logout <i class="fa fa-sign-out fa-lg"><</a></li>
+                        {% else %}
+                        <a href="{% url 'mfa_login' %}">Login <i class="fa fa-sign-in fa-lg"></i></a>
+                        
                         {% endif %}
                     </ul>
                 </div>
