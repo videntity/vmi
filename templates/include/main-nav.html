@@ -14,9 +14,6 @@
 
                 <div class="navbar-expand">
                     <ul class="nav navbar-nav navbar-right">
-                        {% if request.path != '/' %}
-                        <li class="col"><a href="{% url 'home' %}">Home</a></li>
-                        {% endif %}
 
                        {% if request.user|has_group:"OrganizationAgentReport" %}
                         <li class="dropdown col">
@@ -102,7 +99,7 @@
                         {% endif %}
 
                         {% if request.user.is_authenticated %}
-                        <li><a href="{% url 'mylogout' %}">Logout <i class="fa fa-sign-out fa-lg"><</a></li>
+                       <li class="col"><a href="{% url 'mylogout' %}">Logout <i class="fa fa-sign-out"></i></a></li>
                         {% else %}
                         <a href="{% url 'mfa_login' %}">Login <i class="fa fa-sign-in fa-lg"></i></a>
                         
