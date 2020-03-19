@@ -21,17 +21,12 @@
 
             <div class="row">
                 <div class="col-lg-6 my-4">
-                    <h2>Login</h2>
-                    {% include 'include/login-form.html' %}
-                </div>
-
-                <div class="col-lg-6 my-4">
                     <h2>Create New Agent Account</h2>
                     <h3>Find your organization</h3>
                     {% include "include/find-org-to-create-account.html" %}
 
                     <p>Want your Organization to join?
-                        Contact the
+                        Contact
                         <a href="{{ settings.ORG_SIGNUP_CONTACT  }}" target="_blank" rel="noopener">
                             {{settings.ORGANIZATION_TITLE }}
                         </a>
