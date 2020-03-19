@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li class="active"><a href="/">Home</a></li>
+                    </ol>
+{% endblock %}
+{% block Content %}
+            <div class="row">
+                <div class="col">
+                    <h1 class="page-title">
+                       Welcome to
+                        <b>{{settings.APPLICATION_TITLE }}</b>
+                    </h1 class="page-title">
+                    <p> Already have an account? Maybe you want to login to
+                        <a href="{{settings.KILLER_APP_URI}}">{{settings.KILLER_APP_TITLE}}</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 my-4">
+                    <h2>Create New Agent Account</h2>
+                    <h3>Find your organization</h3>
+                    {% include "include/find-org-to-create-account.html" %}
+
+                    <p>Want your Organization to join?
+                        Contact
+                        <a href="{{ settings.ORG_SIGNUP_CONTACT  }}" target="_blank" rel="noopener">
+                            {{settings.ORGANIZATION_TITLE }}
+                        </a>
+                        for more information.
+                    </p>
+                </div>
+
+            </div>
+{% endblock %}
+
+{% block ExtraJSFoot %}
+<script type="application/javascript">$("#id_username").focus();</script>
+<script type="application/javascript">
+var empt = document.forms["loginform"]["username"].value;
+if (empt != "")
+    {
+    $("#id_password").focus();
+    }
+</script>
+{% endblock %}
