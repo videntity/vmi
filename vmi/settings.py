@@ -293,8 +293,12 @@ AGENT_TOS_URI = env('DJANGO_AGENT_TOS_URI',
                     'http://sharemy.health/agent-terms-of-service-1.0.html')
 
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
-TRAINING_URI = env('DJANGO_TRAINING_URI',
-                   'http://sharemy.health/training1.0.html')
+
+# If True, display the training attestation on agent signup.
+REQUIRE_TRAINING_FOR_AGENT_SIGNUP = bool_env(env('REQUIRE_TRAINING_FOR_AGENT_SIGNUP', False))
+TRAINING_URI = env('TRAINING_URI',
+                   'http://example.com/training1.0.html')
+
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 EXPLAINATION_LINE = ('This is an instance of Verify My Identity, \
                      a standards-based OpenID Connect Identity Provider.')
