@@ -16,14 +16,25 @@ YEARS = [x for x in range(1901, 2000)]
 User = get_user_model()
 
 agree_tos_label = mark_safe(
-    'Do you agree to the <a href="%s" target="_blank">terms of service</a>?' % (settings.AGENT_TOS_URI))
+    'Do you agree to the <a href="%s" target="_blank">Terms of Use</a>?' % (settings.AGENT_TOS_URI))
 
+# Todo re-ad training URL
 # attest_training_completed_label = mark_safe(
 #     """Yes, I attest I have completed the <a href="%s" target="_blank">training</a>
 #     and will abide by the code of conduct.""" % (settings.TRAINING_URI))
 
+attest_training_completed_label = mark_safe(
+    """Yes, I attest I have completed the training and will abide by the code of conduct.""")
+
 
 class StaffSignupForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if settings.REQUIRE_TRAINING_FOR_AGENT_SIGNUP:
+            self.fields['attest_training_completed'] = forms.BooleanField(required=True,
+                                                                          label=_(attest_training_completed_label))
+
     # Org Agent Signup Form.
     domain = forms.CharField(disabled=True, max_length=512, required=False,
                              help_text=_("You must register using this email domain."))
@@ -33,12 +44,12 @@ class StaffSignupForm(forms.Form):
     username = forms.CharField(max_length=30, label=_("Username*"))
     pick_your_account_number = forms.CharField(max_length=10, label=_(
         "Customize Your Own Account Number"), help_text=_("""Pick up to 10 numbers to be included in your
-                                               account number. If left blank, numbers will be used."""),
+                                               account number. If left blank, random numbers will be used."""),
         required=False)
     email = forms.EmailField(max_length=150, label=_("Email*"), required=True)
     mobile_phone_number = PhoneNumberField(required=True, max_length=15,
                                            label=_(
-                                               "Mobile Phone Number"))
+                                               "Mobile Phone Number*"))
     first_name = forms.CharField(max_length=100, label=_("First Name*"))
     last_name = forms.CharField(max_length=100, label=_("Last Name*"))
     middle_name = forms.CharField(
@@ -51,8 +62,7 @@ class StaffSignupForm(forms.Form):
     password2 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password (again)*"))
     agree_tos = forms.BooleanField(label=_(agree_tos_label))
-    # attest_training_completed = forms.BooleanField(
-    #    label=_(attest_training_completed_label))
+
     org_slug = forms.CharField(widget=forms.HiddenInput(),
                                max_length=128, required=True)
     domain = forms.CharField(widget=forms.HiddenInput(),
@@ -100,7 +110,7 @@ class StaffSignupForm(forms.Form):
 
         if email:
             username = self.cleaned_data.get('username')
-            if email and User.objects.filter(email=email).exclude(
+            if not settings.ALLOW_MULTIPLE_USERS_PER_EMAIL and email and User.objects.filter(email=email).exclude(
                     username=username).count():
                 raise forms.ValidationError(
                     _('This email address is already registered.'))
@@ -135,13 +145,14 @@ class StaffSignupForm(forms.Form):
     def clean_nickname(self):
         return self.cleaned_data.get("nickname", "").strip().upper()
 
-    #   def clean_attest_training_completed(self):
-    #       attest_training_completed = self.cleaned_data.get(
-    #           "attest_training_completed", False)
-    #       if not attest_training_completed:
-    #           raise forms.ValidationError(
-    #               _('You must complete the training before completing this form.'))
-    #       return attest_training_completed
+    def clean_attest_training_completed(self):
+        attest_training_completed = self.cleaned_data.get(
+            "attest_training_completed", False)
+        if settings.REQUIRE_TRAINING_FOR_AGENT_SIGNUP:
+            if not attest_training_completed:
+                raise forms.ValidationError(
+                    _('You must complete the training before completing this form.'))
+        return attest_training_completed
 
     def clean_pick_your_account_number(self):
         pick_your_account_number = self.cleaned_data.get(

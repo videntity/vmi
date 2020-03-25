@@ -391,6 +391,7 @@ class UserProfile(models.Model):
                                                     help_text=_("""Yes, I attest that I have completed the
                                                         training for this system and will abide by
                                                         the code of conduct."""))
+    verifying_agent_email = models.EmailField(blank=True, default="", help_text="email of agent performing identity verification")
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
