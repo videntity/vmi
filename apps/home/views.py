@@ -15,6 +15,16 @@ from apps.accounts.sms_mfa_forms import LoginForm
 # Copyright Videntity Systems, Inc.
 
 
+def select_org_for_account_create(request, user_type="member"):
+    """Select an org for create an account."""
+    template = 'select-org-for-member.html'
+    organizations = Organization.objects.filter(status="ACTIVE")
+    context = {'organizations': organizations}
+    if user_type == "agent":
+        template = 'select-org-for-agent.html'
+    return render(request, template, context)
+
+
 @login_required
 def user_profile(request, subject=None):
     if not subject:
@@ -27,7 +37,8 @@ def user_profile(request, subject=None):
                 and not request.user.has_perm('accounts.view_userprofile')):
             raise Http404()
         user = up.user
-    ials = IdentityAssuranceLevelDocumentation.objects.filter(subject_user=user)
+    ials = IdentityAssuranceLevelDocumentation.objects.filter(
+        subject_user=user)
     context = {'user': user, 'settings': settings, "ials": ials}
     template = 'profile.html'
     return render(request, template, context)
@@ -84,8 +95,9 @@ def authenticated_home(request):
         return authenticated_enduser_home(request)
 
     # User is not logged in.
-    organizations = Organization.objects.all()
-    context = {'name': name, 'organizations': organizations, 'login_form': LoginForm(initial=request.GET)}
+    organizations = Organization.objects.filter(status="ACTIVE")
+    context = {'name': name, 'organizations': organizations,
+               'login_form': LoginForm(initial=request.GET)}
     template = 'index.html'
     return render(request, template, context)
 

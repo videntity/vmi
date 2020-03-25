@@ -19,21 +19,6 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-lg-6 my-4">
-                    <h2>Create New Agent Account</h2>
-                    <h3>Find your organization</h3>
-                    {% include "include/find-org-to-create-account.html" %}
-
-                    <p>Want your Organization to join?
-                        Contact
-                        <a href="{{ settings.ORG_SIGNUP_CONTACT  }}" target="_blank" rel="noopener">
-                            {{settings.ORGANIZATION_TITLE }}
-                        </a>
-                        for more information.
-                    </p>
-                </div>
-
 
                 <div class="col-lg-6 my-4">
                     <h2>Create New Member Account</h2>
@@ -42,18 +27,6 @@
 
                    
                 </div>
-
-
-                {% if settings.ALLOW_MEMBER_SIGNUP %}
-                <div class="col my-4">
-                    <a href="{% url 'create_account_enduser' %}">
-                        <button type="button" class="btn btn-primary">
-                            <i class="fa fa-plus"></i>
-                            Signup as a Community Member
-                        </button>
-                    </a>
-                </div>
-                {% endif %}
             </div>
 {% endblock %}
 

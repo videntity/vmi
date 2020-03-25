@@ -73,7 +73,7 @@ admin.site.register(UserProfile, UserProfileAdmin)
 
 
 class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'point_of_contact', 'domain', 'picture_url', 'subject')
+    list_display = ('name', 'slug', 'point_of_contact', 'domain', 'subject', 'status',)
     search_fields = ['name', 'slug', 'org_identifiers__name', 'subject']
     raw_id_fields = ("point_of_contact", "members", "users", "addresses")
     empty_value_display = ''

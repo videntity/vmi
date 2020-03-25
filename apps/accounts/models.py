@@ -185,13 +185,20 @@ class PersonToPersonRelationship(models.Model):
 
 
 class Organization(models.Model):
+    ORG_STATUS_CHOICES = (('ACTIVE', 'Active'),
+                          ("INACTIVE", "Inactive"),
+                          ("SUSPENDED", "Suspended"))
+
+    status = models.CharField(
+        max_length=20, default='ACTIVE', choices=ORG_STATUS_CHOICES)
     name = models.CharField(max_length=250, default='', blank=True)
     number_str_include = models.CharField(
         max_length=10, blank=True, default="",
         verbose_name="Pick Your Own ID",
         help_text=_('Choose up to 10 number to be included in your account number.'))
     slug = models.SlugField(max_length=250, blank=True, default='',
-                            db_index=True, editable=False)
+                            db_index=True,
+                            help_text=_('Do not change this unless you know what you are doing.'))
     subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject ID',
                                db_index=True)

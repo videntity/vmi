@@ -5,7 +5,7 @@ certifi==2018.8.24
 chardet==3.0.4
 coverage==4.0.3
 dj-database-url==0.5.0
-Django==2.2.8
+Django==2.2.10
 #django-bootstrap-form==3.4
 -e git+https://github.com/TransparentHealth/django-bootstrap-form.git@master#egg=django-bootstrap-form
 django-phonenumber-field==2.1.0

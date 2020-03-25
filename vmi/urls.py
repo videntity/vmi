@@ -103,5 +103,6 @@ urlpatterns = [
     url(r"^profile/", user_profile, name='user_profile'),
     path('api/', include('apps.api.urls')),
     url('social-auth/', include('social_django.urls', namespace='social')),
+    path('home/', include('apps.home.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
