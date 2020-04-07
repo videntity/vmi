@@ -278,6 +278,7 @@ KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Share My Health Web Application')
 KILLER_APP_URI = env('KILLER_APP_URI', 'http://smhapp:8002')
 
 TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity')
+TOP_LEFT_TITLE += ":"
 
 ORGANIZATION_TITLE = env(
     'DJANGO_ORGANIZATION_TITLE',
