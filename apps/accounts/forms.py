@@ -14,8 +14,13 @@ from .models import UserProfile, create_activation_key, SEX_CHOICES, GENDER_CHOI
 YEARS = [x for x in range(1901, 2000)]
 
 
+<<<<<<< HEAD
 agree_tos_label = mark_safe(
     'Do you agree to the <a href="%s">Terms of Service</a> and <a href="%s">Privacy Policy</a>?' % (settings.TOS_URI, settings.POLICY_URI))
+=======
+agree_tos_label = mark_safe("""Do you agree to the <a href="%s">Terms of Service</a> and
+                            <a href="%s">Privacy Policy</a>?""" % (settings.TOS_URI, settings.POLICY_URI))
+>>>>>>> 3cedf3019ac38d95ed70c2cf29a6cf34efe4d7b1
 
 User = get_user_model()
 

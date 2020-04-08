@@ -38,9 +38,9 @@ def approve_org_affiliation(request, organization_slug, username):
     # Allow user to log in.
     user.is_active = True
     user.save()
-    msg = _("""%s %s is now affiliated with %s and may log in.""") % (user.first_name,
-                                                                      user.last_name,
-                                                                      org.name)
+    msg = _("""%s %s is now an agent of %s and may log in.""") % (user.first_name.capitalize(),
+                                                                  user.last_name.capitalize(),
+                                                                  org.name)
     send_org_account_approved_email(user, org)
     messages.success(request, msg)
 

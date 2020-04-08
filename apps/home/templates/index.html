@@ -17,6 +17,7 @@
                         <a href="{{settings.KILLER_APP_URI}}">{{settings.KILLER_APP_TITLE}}</a>.
                     </p>
                 </div>
+<<<<<<< HEAD
             </div class="row">
 
             <p>Verify My Identity is the login service that supports Share My Health. Share My Health has
@@ -49,6 +50,20 @@
                         <a href="TBD">
                             <p style="color:white;text-align:center;background-color:royalblue;border-radius:16px;border-style:solid;border-width:3px;border-color:white;margin-bottom:5px;">
                                 Create an <br/>Agent account</p>
+=======
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 my-4">
+                    <h2>Create New Agent Account</h2>
+                    <h3>Find your organization</h3>
+                    {% include "include/find-org-to-create-account.html" %}
+
+                    <p>Want your Organization to join?
+                        Contact
+                        <a href="{{ settings.ORG_SIGNUP_CONTACT  }}" target="_blank" rel="noopener">
+                            {{settings.ORGANIZATION_TITLE }}
+>>>>>>> 3cedf3019ac38d95ed70c2cf29a6cf34efe4d7b1
                         </a>
 
                     </div>

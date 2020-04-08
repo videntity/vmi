@@ -294,8 +294,13 @@ AGENT_TOS_URI = env('DJANGO_AGENT_TOS_URI',
                     'http://sharemy.health/agent-terms-of-service-1.0.html')
 
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
-TRAINING_URI = env('DJANGO_TRAINING_URI',
-                   'http://sharemy.health/training1.0.html')
+
+# If True, display the training attestation on agent signup.
+REQUIRE_TRAINING_FOR_AGENT_SIGNUP = bool_env(
+    env('REQUIRE_TRAINING_FOR_AGENT_SIGNUP', False))
+TRAINING_URI = env('TRAINING_URI',
+                   'http://example.com/training1.0.html')
+
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 EXPLAINATION_LINE = ('This is an instance of Verify My Identity, \
                      a standards-based OpenID Connect Identity Provider.')
@@ -323,7 +328,7 @@ ORG_SIGNUP_CONTACT = env('ORG_SIGNUP_CONTACT',
 # Allow Members to create accounts
 ALLOW_MEMBER_SIGNUP = bool_env(env('ALLOW_MEMBER_SIGNUP', False))
 
-CONTACT_EMAIL = env('DJANGO_CONTACT_EMAIL', 'sharemyhealth@abhealth.us')
+CONTACT_EMAIL = env('DJANGO_CONTACT_EMAIL', 'contact@example.com')
 
 SETTINGS_EXPORT = [
     'DEBUG',
@@ -353,9 +358,9 @@ SETTINGS_EXPORT = [
 ]
 
 # Emails
-DEFAULT_FROM_EMAIL = env('FROM_EMAIL', 'no-reply@verifymyidentity.com')
+DEFAULT_FROM_EMAIL = env('FROM_EMAIL', 'no-reply@example.com')
 DEFAULT_ADMIN_EMAIL = env('ADMIN_EMAIL',
-                          'no-reply@verifymyidentity.com')
+                          'no-reply@example.com')
 
 # Select the right Email delivery system that works for you.
 # Django's default is 'django.core.mail.backends.smtp.EmailBackend'. This will work with most email systems.
@@ -435,11 +440,27 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = int(env('SESSION_COOKIE_AGE', int(30 * 60)))
 
 
+# Whitelabeling.The next settings allow for homepage and login screen
+# customization.
+
 # Pick a login template and title.
 LOGIN_TEMPLATE_PICKER = {"default": 'login.html',
                          'share-my-health': 'login.html',
                          # Add others here to create a custom login template.
                          }
+
+# Whitelabel: Pick a public template. Customize to your needs.
+PUBLIC_HOME_TEMPLATE = env('PUBLIC_HOME_TEMPLATE', "index.html")
+
+# What a user sees when logged in.
+AUTHENTICATED_HOME_TEMPLATE = env(
+    'AUTHENTICATED_HOME_TEMPLATE', "authenticated-home.html")
+
+{"default": 'index.html',
+ 'share-my-health': 'login.html',
+ # Add others here to create a custom login template.
+ }
+
 
 # List of IAL2 classifications. You can defined your own.  Anything that is not empty
 # (e.g.  not "") will be an IAL2.""
@@ -508,4 +529,9 @@ EXPIRY_DATE_ACCEPTABLE_YEARS = [x for x in range(now.year, 2050)]
 VECTORS_OF_TRUST_TRUSTMARK_URL = env('VECTORS_OF_TRUST_TRUSTMARK_URL',
                                      'https://github.com/TransparentHealth/800-63-3-trustmark/')
 
+<<<<<<< HEAD
 ALLOW_MULTIPLE_USERS_PER_EMAIL = bool_env(env('ALLOW_MULTIPLE_USERS_PER_EMAIL', False))
+=======
+ALLOW_MULTIPLE_USERS_PER_EMAIL = bool_env(
+    env('ALLOW_MULTIPLE_USERS_PER_EMAIL', False))
+>>>>>>> 3cedf3019ac38d95ed70c2cf29a6cf34efe4d7b1
