@@ -17,14 +17,11 @@ User = get_user_model()
 
 agree_tos_label = mark_safe(
     'Do you agree to the <a href="%s" target="_blank">Terms of Use</a>?' % (settings.AGENT_TOS_URI))
-<<<<<<< HEAD
-=======
 
 # Todo re-ad training URL
 # attest_training_completed_label = mark_safe(
 #     """Yes, I attest I have completed the <a href="%s" target="_blank">training</a>
 #     and will abide by the code of conduct.""" % (settings.TRAINING_URI))
->>>>>>> 3cedf3019ac38d95ed70c2cf29a6cf34efe4d7b1
 
 attest_training_completed_label = mark_safe(
     """Yes, I attest I have completed the training and will abide by the code of conduct.""")
@@ -65,12 +62,8 @@ class StaffSignupForm(forms.Form):
     password2 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password (again)*"))
     agree_tos = forms.BooleanField(label=_(agree_tos_label))
-<<<<<<< HEAD
     attest_training_completed = forms.BooleanField(required=True,
                                                    label=_(attest_training_completed_label))
-=======
-
->>>>>>> 3cedf3019ac38d95ed70c2cf29a6cf34efe4d7b1
     org_slug = forms.CharField(widget=forms.HiddenInput(),
                                max_length=128, required=True)
     domain = forms.CharField(widget=forms.HiddenInput(),
