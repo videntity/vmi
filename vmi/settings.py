@@ -529,9 +529,5 @@ EXPIRY_DATE_ACCEPTABLE_YEARS = [x for x in range(now.year, 2050)]
 VECTORS_OF_TRUST_TRUSTMARK_URL = env('VECTORS_OF_TRUST_TRUSTMARK_URL',
                                      'https://github.com/TransparentHealth/800-63-3-trustmark/')
 
-<<<<<<< HEAD
+
 ALLOW_MULTIPLE_USERS_PER_EMAIL = bool_env(env('ALLOW_MULTIPLE_USERS_PER_EMAIL', False))
-=======
-ALLOW_MULTIPLE_USERS_PER_EMAIL = bool_env(
-    env('ALLOW_MULTIPLE_USERS_PER_EMAIL', False))
->>>>>>> 3cedf3019ac38d95ed70c2cf29a6cf34efe4d7b1
