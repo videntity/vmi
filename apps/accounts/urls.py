@@ -66,7 +66,7 @@ urlpatterns = [
     url(r'^upload-profile-picture', upload_profile_picture,
         name='upload_profile_picture'),
     url(r'^create-account/(?P<service_title>[^/]+)/', create_account,
-        name='create_account_enduser_affilate'),
+        name='create_account_enduser_affiliate'),
     url(r'^create-account', create_account, name='create_account_enduser'),
 
 
