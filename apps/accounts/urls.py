@@ -104,7 +104,6 @@ urlpatterns = [
     url(r"^individual-identifiers/", display_individual_identifiers,
         name='display_individual_identifiers'),
 
-
     url("^add-new-individual-identifier/(?P<subject>[^/]+)$",
         add_new_individual_identifier, name='add_new_individual_identifier'),
 
