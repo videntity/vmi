@@ -25,7 +25,7 @@ from .oauth2_views import (
     ApplicationUpdate,
 )
 from apps.oidc import views as oidc_views
-from apps.home.views import authenticated_home, user_search, user_profile
+from apps.home.views import home, user_search, user_profile
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -78,6 +78,7 @@ oauth2_management_urlpatterns = [
 
 
 urlpatterns = [
+    path('', home, name='home'),
     path('admin/',
          admin.site.urls),
     path('o/',
@@ -94,7 +95,6 @@ urlpatterns = [
     path('.well-known/',
          include('apps.oidc.wellknown_urls')),
     path('o/', include(('apps.oidc.urls', 'oidc'), namespace='oidc')),
-    path('', authenticated_home, name='home'),
     path('search', user_search, name='user_search'),
     path('device/',
          include(('apps.fido.urls', 'fido'), namespace='fido')),

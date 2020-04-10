@@ -30,6 +30,22 @@
 
 
 
+
+
+ {% if request.user|has_group:"IdentityAssuranceTrustedReferee" %}
+
+       <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Agent Tools<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            
+                <li><a href="{% url 'user_search' %}"> <i class="fa fa-search"></i> User Search</a></li>
+      
+          </ul>
+        </li>
+{% endif %}
+
+
+
                        {% if request.user|has_group:"OrganizationalAgent" %}
                         <li class="dropdown col">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
