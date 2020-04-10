@@ -278,6 +278,9 @@ KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Share My Health Web Application')
 KILLER_APP_URI = env('KILLER_APP_URI', 'http://smhapp:8002')
 
 TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity')
+PARTNER_REF = env('PARTNER_REF', '')
+if len(PARTNER_REF) > 0:
+    PARTNER_REF += "/"
 
 ORGANIZATION_TITLE = env(
     'DJANGO_ORGANIZATION_TITLE',
@@ -351,7 +354,9 @@ SETTINGS_EXPORT = [
     'KILLER_APP_URI',
     'KILLER_APP_TITLE',
     'ORG_SIGNUP_CONTACT',
-    'ALLOW_MEMBER_SIGNUP'
+    'ALLOW_MEMBER_SIGNUP',
+    'PARTNER_REF',
+    'PUBLIC_HOME_TEMPLATE',
 ]
 
 # Emails
@@ -452,12 +457,6 @@ PUBLIC_HOME_TEMPLATE = env('PUBLIC_HOME_TEMPLATE', "index.html")
 # What a user sees when logged in.
 AUTHENTICATED_HOME_TEMPLATE = env(
     'AUTHENTICATED_HOME_TEMPLATE', "authenticated-home.html")
-
-{"default": 'index.html',
- 'share-my-health': 'login.html',
- # Add others here to create a custom login template.
- }
-
 
 # List of IAL2 classifications. You can defined your own.  Anything that is not empty
 # (e.g.  not "") will be an IAL2.""
