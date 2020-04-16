@@ -17,6 +17,12 @@
             style="vertical-align:top;max-height:100%;max-width:100%">
             <img src="{% static 'img/layout/logo.png' %}"
                  style="vertical-align:text-top;max-height:100%;max-width:100%"></a>
+      <a href="{{ settings.PARTNER_HOME }}" contenteditable="false"
+           class="navbar-brand"
+           style="vertical-align:top;max-height:100%;max-width:100%">
+            <img src="{% static 'img/layout/smh_app.png' %}"
+                 style="vertical-align:text-top;max-height:100%;max-width:100%"></a>
+
         <a href="{% url 'home' %}" contenteditable="false"
            class="navbar-brand"
            alt="{{ settings.TOP_LEFT_TITLE }}">

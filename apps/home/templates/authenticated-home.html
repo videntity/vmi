@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load has_group %}
 {% load i18n %}
 {% load static %}
 {% block breadcrumbs %}
@@ -25,6 +26,8 @@
                                     You may now access the:</p>
                                     <h5><a href="{{settings.KILLER_APP_URI}}"> <button type="button" class="btn btn-primary">{{settings.KILLER_APP_TITLE}}</button> </a></h5>
                             {% endifequal %}
+                            
+                            
                         </div>
                     </div> <!-- /.row -->
                 </div> <!-- /.well -->
