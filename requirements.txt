@@ -22,7 +22,7 @@ mccabe==0.6.1
 mnemonic==0.18
 -e git+https://github.com/TransparentHealth/oauthlib.git@patch-ui_locales#egg=oauthlib
 # oauthlib==3.0.2 - TODO Use this lib. requires OIDC server code changes.
-Pillow==6.2.0
+Pillow==7.1.1
 phonenumbers==8.10.2
 pluggy==0.7.1
 py==1.6.0

@@ -248,7 +248,7 @@ OIDC_PROVIDER = {
         'apps.oidc.claims.UserClaimProvider',
 
         # Optional
-        # The USerProfileClaimProvider currently gets all claims fetch-able via the
+        # The UserProfileClaimProvider currently gets all claims fetch-able via the
         # UserProfile.
         'apps.accounts.claims.UserProfileClaimProvider',
         'apps.accounts.claims.AddressClaimProvider',
@@ -325,7 +325,7 @@ DISCLOSURE_TEXT = env('DJANGO_PRIVACY_POLICY_URI', DEFAULT_DISCLOSURE_TEXT)
 HOSTNAME_URL = env('HOSTNAME_URL', 'http://localhost:8000')
 
 ORG_SIGNUP_CONTACT = env('ORG_SIGNUP_CONTACT',
-                         'https://abhealth.us/contact-us/')
+                         'https://example.com/contact-us/')
 
 # Allow Members to create accounts
 ALLOW_MEMBER_SIGNUP = bool_env(env('ALLOW_MEMBER_SIGNUP', False))
