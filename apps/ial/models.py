@@ -13,9 +13,8 @@ ID_DOCUMENT_TYPES = (('driving_permit', 'Driving License'),
                      ('us_health_insurance_card', 'US Health and Insurance Card'))
 
 ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES = (("pipp", "Physical In-Person Proofing"),
-                                                # ("sripp", "Supervised remote In-Person Proofing"),
-                                                # ("eid", "Online verification of an electronic ID card"),
-                                                ("", "Blank"))
+                                                ("sripp", "Supervised Remote In-Person Proofing"),
+                                                ("eid", "Online verification of an electronic ID card"))
 
 EVIDENCE_TYPE_CHOICES = (('id_document', _('Verification based on any kind of government issued identity document')),
                          ('utility_bill', _('Verification based on a utility bill'))
@@ -45,7 +44,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
 
     id_documentation_verification_method_type = models.CharField(choices=ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES,
                                                                  max_length=16,
-                                                                 blank=True, default='')
+                                                                 blank=True, default='pipp')
 
     evidence_type = models.CharField(
         choices=EVIDENCE_TYPE_CHOICES, max_length=64, default='id_document', blank=True)
