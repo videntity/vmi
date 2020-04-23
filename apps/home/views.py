@@ -63,6 +63,7 @@ def authenticated_organization_home(request):
 def home(request):
     """Switch between anon, end user and organizational staff member."""
     name = _('Home')
+    template = settings.PUBLIC_HOME_TEMPLATE
     if request.user.is_authenticated:
         # Create user profile if one does not exist,
         UserProfile.objects.get_or_create(user=request.user)
@@ -72,7 +73,7 @@ def home(request):
     organizations = Organization.objects.filter(status="ACTIVE")
     context = {'name': name, 'organizations': organizations,
                'login_form': LoginForm(initial=request.GET)}
-    template = 'index.html'
+
     return render(request, template, context)
 
 

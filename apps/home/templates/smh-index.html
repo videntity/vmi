@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li class="active"><a href="/">Home</a></li>
+                    </ol>
+{% endblock %}
+{% block Content %}
+            <div class="row">
+                <div class="col">
+                    <h1 class="page-title">
+                       Welcome to
+                        <b>{{settings.APPLICATION_TITLE }}</b>
+                    </h1>
+                    <p> Already have an account? Maybe you want to login to
+                        <a href="{{settings.KILLER_APP_URI}}">{{settings.KILLER_APP_TITLE}}</a>.
+                    </p>
+                </div>
+
+            </div>
+
+            <p>Verify My Identity is the login service that supports Share My Health. Share My Health has
+                two types of user account:
+                <ol>
+                    <li>A member account for clients that are receiving services from an organization in the Alliance Network.
+                        A member only needs one account to be able to share information with any organization in the network.</li>
+                    <li> A Trusted Agent account for people who work for one of the organizations in the Network.</li>
+                </ol>
+
+            </p>
+                <div class="row">
+                    <div class="col-4" style="display:inline-block;background-color:silver;border-style:solid;border-color:darkgreen;border-radius:16px;border-width:3px;margin:20px;">
+                        <p>
+                            I am seeking help from an organization in the network:
+                        </p>
+                        <a href="/accounts/login">
+                            <p style="color:white;text-align:center;background-color:darkgreen;border-radius:16px;margin-bottom:5px;">
+                                I have an account. <br/>Log me in</p>
+                        </a>
+                        <a href="/home/select-org-for-account-create/member/?">
+                            <p style="color:white;text-align:center;background-color:royalblue;border-radius:16px;margin-bottom:5px;">
+                                I need an Account. <br/>Sign me up</p>
+                        </a>
+                    </div>
+                    <div class="col-4" style="display:inline-block;background-color:silver;border-style:solid;border-color:darkgreen;border-radius:16px;border-width:3px;margin:20px;">
+                        <p>
+                            I work for an organization in the network and need to create an Agent account:
+                        </p>
+                        <a href="/home/select-org-for-account-create/agent/?">
+                            <p style="color:white;text-align:center;background-color:royalblue;border-radius:16px;border-width:3px;margin-bottom:5px;">
+                                Create an <br/>Agent account</p>
+                       </a>
+
+                    </div>
+                    <div class="col-4">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                {% if settings.ALLOW_MEMBER_SIGNUP %}
+                <div class="col my-4">
+                    <a href="{% url 'create_account_enduser' %}">
+                        <button type="button" class="btn btn-primary">
+                            <i class="fa fa-plus"></i>
+                            Signup as a Community Member
+                        </button>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+{% endblock %}
+
+{% block ExtraJSFoot %}
+<script type="application/javascript">$("#id_username").focus();</script>
+<script type="application/javascript">
+var empt = document.forms["loginform"]["username"].value;
+if (empt != "")
+    {
+    $("#id_password").focus();
+    }
+</script>
+{% endblock %}
