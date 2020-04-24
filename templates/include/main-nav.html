@@ -4,7 +4,9 @@
                 <div class="row">
                     <a href="{% url 'home' %}">
                         <div id="logo-box" class="navbar-brand col-auto d-flex">
-                            <img id="logo-img" src="{% static 'img/logo.svg' %}"/>
+
+                            <img id="logo-img" src="{% static 'img/logo.png' %}"/>
+
                             <span id="logo-type" class="my-auto mx-1">
                                 {{ settings.TOP_LEFT_TITLE }}{% if settings.PARTNER_REF|length > 0 %}:{% endif %}
                             </span>

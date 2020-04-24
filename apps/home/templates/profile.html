@@ -23,7 +23,7 @@
                     <div class="row">
                         <div class="col my-3">
                             <a href="{% url 'verify_id_with_card' user.userprofile.subject|default:'None' %}">
-                                <button type="button" class="btn btn-warning btn-lg"><b>Verify Identity</b></button>
+                                <button type="button" class="btn btn-warning btn-lg"><b>Identity Not Verified</b></button>
                             </a>
                         </div>
                     </div>
@@ -103,19 +103,29 @@
                     {% endif %}
 
                     <div class="row my-4">
+                      
+                         {% if user.userprofile.ial == '1' and user != request.user %}
                         <div class="col">
-                            <a href="{% url 'account_settings_subject' user.userprofile.subject|default:'None' %}">
-                                <button type="button" class="btn btn-secondary">Add/Edit Basic Profile Information</button>
+                            <a href="{% url 'verify_id_with_card' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-secondary">Verify Identity</button>
                             </a>
                         </div>
+                        {% endif %}
+
                         <div class="col">
+                            <a href="{% url 'account_settings_subject' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-secondary">Profile Details</button>
+                            </a>
+                        </div>
+
+                                                <div class="col">
                             <a href="{% url 'display_addresses_subject' user.userprofile.subject|default:'None' %}">
-                                <button type="button" class="btn btn-secondary">Add/Edit/Delete Addresses</button>
+                                <button type="button" class="btn btn-secondary">Addresses</button>
                             </a>
                         </div>
                         <div class="col">
                             <a href="{% url 'display_individual_identifiers_subject' user.userprofile.subject|default:'None' %}">
-                                <button type="button" class="btn btn-secondary">Add/Edit/Delete Identifiers</button>
+                                <button type="button" class="btn btn-secondary">Identifiers</button>
                             </a>
                         </div>
                     </div>
