@@ -11,6 +11,7 @@ from django.urls import reverse
 from .forms import UserSearchForm
 from django.contrib.auth.decorators import permission_required
 from apps.accounts.sms_mfa_forms import LoginForm
+from django.utils.safestring import mark_safe
 
 # Copyright Videntity Systems, Inc.
 
@@ -63,6 +64,7 @@ def authenticated_organization_home(request):
 def home(request):
     """Switch between anon, end user and organizational staff member."""
     name = _('Home')
+    template = settings.PUBLIC_HOME_TEMPLATE
     if request.user.is_authenticated:
         # Create user profile if one does not exist,
         UserProfile.objects.get_or_create(user=request.user)
@@ -72,7 +74,7 @@ def home(request):
     organizations = Organization.objects.filter(status="ACTIVE")
     context = {'name': name, 'organizations': organizations,
                'login_form': LoginForm(initial=request.GET)}
-    template = 'index.html'
+
     return render(request, template, context)
 
 
@@ -158,4 +160,11 @@ def user_profile(request, subject=None):
         subject_user=user)
     context = {'user': user, 'settings': settings, "ials": ials}
     template = 'profile.html'
+
+    if not up.user.is_active:
+        msg = _("""%s account is not active and may not log in.
+                       <a href="%s">Activate now</a>?""" % (up,
+                                                            reverse('activate_subject', args=(up.subject,))))
+        messages.warning(request, _(mark_safe(msg)))
+
     return render(request, template, context)

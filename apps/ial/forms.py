@@ -6,14 +6,16 @@ from django.conf import settings
 IAL_EVIDENCE_CLASSIFICATIONS_ID_CARDS = (
     ('ONE-SUPERIOR-OR-STRONG-PLUS-1', "Driver's License"),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-2', "Identification Card"),
-    ('ONE-SUPERIOR-OR-STRONG-PLUS-3', 'US Health and Insurance Card'),
+    ('ONE-SUPERIOR-OR-STRONG-PLUS-3', 'Health/Insurance Card'),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-4', 'Passport'),
 )
 #   ('TWO-STRONG-1', """At least two of the following documents: birth certificate,
-#                        Social Security Card, Medicaid card, Medicare Card."""),
+# Social Security Card, Medicaid card, Medicare Card."""),
 
 
 EVIDENCE_TYPE_CHOICES = (('id_document', _('Verification based on any kind of government issued identity document')),
+
+                         # Utility bill is not supported at this time.
                          # ('utility_bill', _('Verification based on a utility bill')),
                          )
 
@@ -27,12 +29,29 @@ class SelectVerificationTypeIDCardForm(forms.ModelForm):
             self.fields[field].required = True
             self.fields[field].label = "%s*" % (self.fields[field].label)
 
+        # Set the
+        method_choices = []
+        if settings.ALLOW_PHYSICAL_INPERSON_PROOFING:
+            method_choices.append(("pipp", "Physical In-Person Proofing"))
+
+        if settings.ALLOW_SUPERVISED_REMOTE_INPERSON_PROOFING:
+            method_choices.append(
+                ("sripp", "Supervised Remote In-Person Proofing"))
+
+        if settings.ALLOW_ONLINE_VERIFICATION_OF_AN_ELECTRONIC_ID_CARD:
+            method_choices.append(
+                ("eid", "Online verification of an electronic ID card"))
+
         self.fields[
-            'id_documentation_verification_method_type'].choices = ID_DOCUMENTATION_VERIFICATION_METHOD_CHOICES
+            'id_documentation_verification_method_type'].choices = method_choices
+        self.initial[
+            "id_documentation_verification_method_type"] = settings.DEFAULT_PROOFING_METHOD
+
         self.fields['id_documentation_verification_method_type'].label = _(
             "Method")
         self.fields['evidence_type'].widget = forms.HiddenInput()
-        self.fields['evidence'].choices = settings.IAL2_EVIDENCE_CLASSIFICATIONS[3:]
+        self.fields[
+            'evidence'].choices = settings.IAL2_EVIDENCE_CLASSIFICATIONS[3:]
         self.fields['evidence'].label = _("Evidence")
 
     class Meta:
@@ -58,10 +77,14 @@ class IDCardForm(forms.ModelForm):
         self.fields['id_documentation_verification_method_type'].disabled = True
         self.fields['id_documentation_verification_method_type'].label = _(
             "Method")
+        self.fields[
+            'id_documentation_verification_method_type'].widget = forms.HiddenInput()
+        self.fields['evidence_type'].widget = forms.HiddenInput()
         self.fields['evidence_type'].disabled = True
         self.fields['evidence'].choices = settings.IAL2_EVIDENCE_CLASSIFICATIONS
         self.fields['evidence'].label = _("Evidence")
         self.fields['evidence'].disabled = True
+
         self.fields['id_document_type'].widget = forms.HiddenInput()
         self.fields['id_document_type'].disabled = True
         self.fields['expires_at'].widget = forms.SelectDateWidget()

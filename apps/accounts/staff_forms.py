@@ -16,7 +16,7 @@ YEARS = [x for x in range(1901, 2000)]
 User = get_user_model()
 
 agree_tos_label = mark_safe(
-    'Do you agree to the <a href="%s" target="_blank">Terms of Use</a>?' % (settings.AGENT_TOS_URI))
+    _('Do you agree to the <a href="%s" target="_blank">Terms of Use</a>?' % (settings.AGENT_TOS_URI)))
 
 # Todo re-ad training URL
 # attest_training_completed_label = mark_safe(
@@ -24,7 +24,7 @@ agree_tos_label = mark_safe(
 #     and will abide by the code of conduct.""" % (settings.TRAINING_URI))
 
 attest_training_completed_label = mark_safe(
-    """Yes, I attest I have completed the training and will abide by the code of conduct.""")
+    _("""Yes, I attest I have completed the training and will abide by the code of conduct."""))
 
 
 class StaffSignupForm(forms.Form):
@@ -42,10 +42,10 @@ class StaffSignupForm(forms.Form):
     picture = forms.ImageField(required=False,
                                help_text=_("""Upload your profile picture."""))
     username = forms.CharField(max_length=30, label=_("Username*"))
-    pick_your_account_number = forms.CharField(max_length=10, label=_(
-        "Customize Your Own Account Number"), help_text=_("""Pick up to 10 numbers to be included in your
-                                               account number. If left blank, random numbers will be used."""),
-        required=False)
+    # pick_your_account_number = forms.CharField(max_length=10, label=_(
+    #     "Customize Your Own Account Number"), help_text=_("""Pick up to 10 numbers to be included in your
+    #                                            account number. If left blank, random numbers will be used."""),
+    #     required=False)
     email = forms.EmailField(max_length=150, label=_("Email*"), required=True)
     mobile_phone_number = PhoneNumberField(required=True, max_length=15,
                                            label=_(
