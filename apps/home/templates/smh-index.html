@@ -20,14 +20,13 @@
 
             </div>
 
-            <p>Verify My Identity is the login service that supports Share My Health. Share My Health has
-                two types of user account:
+            <p>Verify My Identity is the login service that supports <a href="{{settings.KILLER_APP_URI}}">{{settings.KILLER_APP_TITLE}}</a>
+            {{settings.KILLER_APP_TITLE}} has two types of user accounts:
                 <ol>
-                    <li>A member account for clients that are receiving services from an organization in the Alliance Network.
-                        A member only needs one account to be able to share information with any organization in the network.</li>
+                    <li>A Member account for clients that are receiving services from an organization in the Alliance Network.
+                        A Member needs only one account to be able to share information with any organization in the Network.</li>
                     <li> A Trusted Agent account for people who work for one of the organizations in the Network.</li>
                 </ol>
-
             </p>
                 <div class="row">
                     <div class="col-4" style="display:inline-block;background-color:silver;border-style:solid;border-color:darkgreen;border-radius:16px;border-width:3px;margin:20px;">
@@ -40,7 +39,7 @@
                         </a>
                         <a href="/home/select-org-for-account-create/member/?">
                             <p style="color:white;text-align:center;background-color:royalblue;border-radius:16px;margin-bottom:5px;">
-                                I need an Account. <br/>Sign me up</p>
+                                I need an account. <br/>Sign me up</p>
                         </a>
                     </div>
                     <div class="col-4" style="display:inline-block;background-color:silver;border-style:solid;border-color:darkgreen;border-radius:16px;border-width:3px;margin:20px;">
@@ -74,13 +73,3 @@
             </div>
 {% endblock %}
 
-{% block ExtraJSFoot %}
-<script type="application/javascript">$("#id_username").focus();</script>
-<script type="application/javascript">
-var empt = document.forms["loginform"]["username"].value;
-if (empt != "")
-    {
-    $("#id_password").focus();
-    }
-</script>
-{% endblock %}
