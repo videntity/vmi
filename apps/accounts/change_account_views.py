@@ -20,10 +20,10 @@ def activate_subject(request, subject):
     up.user.is_active = True
     up.user.save()
     msg = _("Account for %s %s's account was activated by %s %s." % (
-        up.user.first_name, up.user.last_name, request.user.first_name, request.user.last_name))
+        up.user.first_name.title(), up.user.last_name.title(),
+        request.user.first_name.title(), request.user.last_name.title()))
     logger.info(msg)
-    messages.success(
-        request, 'Account activated. %s may now log in.' % (up.user.first_name.title()))
+    messages.success(request, _('Account activated.'))
     return HttpResponseRedirect(reverse('user_profile_subject', args=(up.subject,)))
 
 
@@ -34,8 +34,8 @@ def deactivate_subject(request, subject):
     up.user.is_active = False
     up.user.save()
     msg = _("Account for %s %s's account was deactivated by %s %s." % (
-        up.user.first_name, up.user.last_name, request.user.first_name, request.user.last_name))
+        up.user.first_name.title(), up.user.last_name.title(),
+        request.user.first_name.title(), request.user.last_name.title()))
     logger.info(msg)
-    messages.success(
-        request, 'Account deactivated. %s may no longer log in.' % (up.user.first_name.title()))
+    messages.success(request, _('Account deactivated.'))
     return HttpResponseRedirect(reverse('user_profile_subject', args=(up.subject,)))

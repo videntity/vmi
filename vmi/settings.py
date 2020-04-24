@@ -302,7 +302,6 @@ REQUIRE_TRAINING_FOR_AGENT_SIGNUP = bool_env(
     env('REQUIRE_TRAINING_FOR_AGENT_SIGNUP', False))
 TRAINING_URI = env('TRAINING_URI',
                    'http://example.com/training1.0.html')
-
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 EXPLAINATION_LINE = ('This is an instance of Verify My Identity, \
                      a standards-based OpenID Connect Identity Provider.')
@@ -460,7 +459,7 @@ PUBLIC_HOME_TEMPLATE = env('PUBLIC_HOME_TEMPLATE', "index.html")
 AUTHENTICATED_HOME_TEMPLATE = env(
     'AUTHENTICATED_HOME_TEMPLATE', "authenticated-home.html")
 
-# List of IAL2 classifications. You can defined your own.  Anything that is not empty
+# List of IAL2 classifications. You can define your own.  Anything that is not empty
 # (e.g.  not "") will be an IAL2.""
 IAL2_EVIDENCE_CLASSIFICATIONS = (
     # Generic
@@ -468,7 +467,7 @@ IAL2_EVIDENCE_CLASSIFICATIONS = (
      'One Superior or Strong+ pieces of identity evidence'),
     ('ONE-STRONG-TWO-FAIR', 'One Strong and Two Fair pieces of identity evidence'),
     ('TWO-STRONG', 'Two Pieces of Strong identity evidence'),
-    ('TRUSTED-REFEREE-VOUCH', 'I am a Trusted Referee Vouching for this person'),
+
     # More specific
     ('ONE-SUPERIOR-OR-STRONG-PLUS-1', "Driver's License"),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-2', "Identification Card"),
@@ -476,7 +475,8 @@ IAL2_EVIDENCE_CLASSIFICATIONS = (
     ('ONE-SUPERIOR-OR-STRONG-PLUS-4', 'Passport'),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-5', 'NY Medicaid ID Card'),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-6', 'Medicare ID'),
-    ('TWO-STRONG-1', 'Original Birth Certificate and a Social Security Card')
+    ('TWO-STRONG-1', 'Original Birth Certificate and a Social Security Card'),
+    ('TRUSTED-REFEREE-VOUCH', 'I am a Trusted Referee Vouching for this person'),
 )
 
 
@@ -527,5 +527,18 @@ EXPIRY_DATE_ACCEPTABLE_YEARS = [x for x in range(now.year, 2050)]
 VECTORS_OF_TRUST_TRUSTMARK_URL = env('VECTORS_OF_TRUST_TRUSTMARK_URL',
                                      'https://github.com/TransparentHealth/800-63-3-trustmark/')
 
+# ALLOW_MULTIPLE_USERS_PER_EMAIL should never be activated on a production
+# system. It exists for debugging and testing.
 ALLOW_MULTIPLE_USERS_PER_EMAIL = bool_env(
     env('ALLOW_MULTIPLE_USERS_PER_EMAIL', False))
+
+
+# Use these settings to allow/disallow different ID verification modes.
+ALLOW_PHYSICAL_INPERSON_PROOFING = bool_env(
+    env('ALLOW_PHYSICAL_INPERSON_PROOFING', True))  # pipp
+ALLOW_SUPERVISED_REMOTE_INPERSON_PROOFING = bool_env(
+    env('ALLOW_PHYSICAL_INPERSON_PROOFING', True))  # sripp
+ALLOW_ONLINE_VERIFICATION_OF_AN_ELECTRONIC_ID_CARD = bool_env(
+    env('ALLOW_ONLINE_VERIFICATION_OF_AN_ELECTRONIC_ID_CARD', False))  # eid
+DEFAULT_PROOFING_METHOD = env(
+    'DEFAULT_PROOFING_METHOD', 'pipp')  # pipp, sripp, or eid

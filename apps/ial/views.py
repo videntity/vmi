@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import permission_required
 from ..accounts.models import UserProfile
 from .forms import SelectVerificationTypeIDCardForm, IDCardForm
 from .models import IdentityAssuranceLevelDocumentation
+from django.utils.safestring import mark_safe
 
 # Copyright Videntity Systems Inc.
 
@@ -20,9 +21,10 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 @permission_required('ial.change_identityassuranceleveldocumentation')
 def delete_id_verify(request, id):
     ial_d = get_object_or_404(IdentityAssuranceLevelDocumentation, pk=id)
-    msg = "ID evidence for %s %s removed by %s %s." % (ial_d.subject_user.first_name,
-                                                       ial_d.subject_user.last_name,
-                                                       request.user.first_name, request.user.last_name)
+    msg = "Identity verification evidence for %s %s removed by %s %s." % (ial_d.subject_user.first_name.title(),
+                                                                          ial_d.subject_user.last_name.title(),
+                                                                          request.user.first_name.title(),
+                                                                          request.user.last_name.title())
     logger.info(msg)
     messages.success(request, _(msg))
     user = ial_d.subject_user
@@ -41,8 +43,8 @@ def enter_id_card_info(request, id):
     if request.user == ial_d.subject_user:
         raise Http404("You cannot upgrade your own identity assurance level.")
     up = get_object_or_404(UserProfile, user=ial_d.subject_user)
+    name = _("Complete the ID card / evidence details for %s") % (up)
 
-    name = _("Complete the ID Card Details for %s") % (up)
     if request.method == 'POST':
         form = IDCardForm(request.POST, request.FILES, instance=ial_d)
         if form.is_valid():
@@ -52,11 +54,7 @@ def enter_id_card_info(request, id):
             ial_doc.save()
             up.verifying_agent_email = request.user.email
             up.save()
-            messages.success(
-                request, _(
-                    "You have verified %s %s's (%s) identity." % (up.user.first_name,
-                                                                  up.user.last_name,
-                                                                  up.user.username)))
+            messages.info(request, _("Identity verification details updated."))
             return HttpResponseRedirect(reverse('user_profile_subject', args=(up.subject,)))
         else:
             # return the bound form with errors
@@ -77,6 +75,18 @@ def enter_id_card_info(request, id):
         if ial_d.evidence in ("ONE-SUPERIOR-OR-STRONG-PLUS-5",
                               "ONE-SUPERIOR-OR-STRONG-PLUS-6"):
             initial["id_document_type"] = "us_health_insurance_card"
+
+        msg = _("""Add evidence details here or continue to
+                  <a href="%s">%s's</a> profile.""" % (
+            reverse('user_profile_subject', args=(up.subject,)), up)
+        )
+        messages.info(request, _(mark_safe(msg)))
+        if not up.user.is_active:
+            msg = _("""%s account is not active and may not login.
+                       <a href="%s">Activate now</a>?""" % (up,
+                                                            reverse('activate_subject', args=(up.subject,))))
+            messages.warning(request, _(mark_safe(msg)))
+
         return render(request, 'generic/bootstrapform.html',
                       {'name': name, 'form':
                        IDCardForm(instance=ial_d, initial=initial)})
@@ -101,6 +111,9 @@ def verify_id_with_card(request, subject):
             ial_doc.subject_user = up.user
             ial_doc.verifying_user = request.user
             ial_doc.save()
+            msg = _("""The identity for %s %s is now verified.""" % (ial_doc.subject_user.first_name.title(),
+                                                                     ial_doc.subject_user.last_name.title()))
+            messages.success(request, _(msg))
             return HttpResponseRedirect(reverse('enter_id_card_info', args=(ial_doc.pk,)))
         else:
             # return the bound form with errors
@@ -109,6 +122,10 @@ def verify_id_with_card(request, subject):
                           {'name': name, 'form': form})
     else:
         # this is an HTTP  GET
+
+        messages.warning(request, _("""NOTE: Complete this form after you have inspected evidence.
+                                       Optionally, you may add more details about the evidence on the next screen."""))
+
         return render(request, 'generic/bootstrapform.html',
                       {'name': name, 'form':
                        SelectVerificationTypeIDCardForm(instance=ial_d)})
