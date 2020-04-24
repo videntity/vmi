@@ -38,8 +38,8 @@ def approve_org_affiliation(request, organization_slug, username):
     # Allow user to log in.
     user.is_active = True
     user.save()
-    msg = _("""%s %s is now an agent of %s and may log in.""") % (user.first_name.capitalize(),
-                                                                  user.last_name.capitalize(),
+    msg = _("""%s %s is now an agent of %s and may log in.""") % (user.first_name.title(),
+                                                                  user.last_name.title(),
                                                                   org.name)
     send_org_account_approved_email(user, org)
     messages.success(request, msg)
@@ -71,7 +71,7 @@ def deny_org_affiliation(request, organization_slug, username):
         return HttpResponseForbidden()
     oar.delete()
     msg = _("""You have canceled %s %s's affiliation request with %s.""") % (
-        user.first_name, user.last_name, org.name)
+        user.first_name.title(), user.last_name.title(), org.name)
     messages.success(request, msg)
     return HttpResponseRedirect(reverse('home'))
 
@@ -113,8 +113,8 @@ def create_org_account(request, organization_slug,
                     """Your affiliation with %s must be approved by %s %s
                     before you may log in.
                     You will receive an email when your account is approved.""" %
-                    (org.name, org.point_of_contact.first_name,
-                     org.point_of_contact.last_name)))
+                    (org.name, org.point_of_contact.first_name.title(),
+                     org.point_of_contact.last_name.title())))
             return HttpResponseRedirect(reverse('home'))
         else:
             # return the bound form with errors
