@@ -298,8 +298,7 @@ AGENT_TOS_URI = env('DJANGO_AGENT_TOS_URI',
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 
 # If True, display the training attestation on agent signup.
-REQUIRE_TRAINING_FOR_AGENT_SIGNUP = bool_env(
-    env('REQUIRE_TRAINING_FOR_AGENT_SIGNUP', False))
+REQUIRE_TRAINING_FOR_AGENT_SIGNUP = bool_env(env('REQUIRE_TRAINING_FOR_AGENT_SIGNUP', False))
 TRAINING_URI = env('TRAINING_URI',
                    'http://example.com/training1.0.html')
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
@@ -329,7 +328,7 @@ ORG_SIGNUP_CONTACT = env('ORG_SIGNUP_CONTACT',
 # Allow Members to create accounts
 ALLOW_MEMBER_SIGNUP = bool_env(env('ALLOW_MEMBER_SIGNUP', False))
 
-CONTACT_EMAIL = env('DJANGO_CONTACT_EMAIL', 'contact@example.com')
+CONTACT_EMAIL = env('DJANGO_CONTACT_EMAIL', 'sharemyhealth@abhealth.us')
 
 SETTINGS_EXPORT = [
     'DEBUG',

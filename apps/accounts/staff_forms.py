@@ -111,7 +111,7 @@ class StaffSignupForm(forms.Form):
 
         if email:
             username = self.cleaned_data.get('username')
-            if not settings.ALLOW_MULTIPLE_USERS_PER_EMAIL and email and User.objects.filter(email=email).exclude(
+            if email and User.objects.filter(email=email).exclude(
                     username=username).count():
                 raise forms.ValidationError(
                     _('This email address is already registered.'))
