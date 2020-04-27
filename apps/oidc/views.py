@@ -52,8 +52,9 @@ class Wellknown(APIView):
             "token_endpoint":
                 oidc_settings.OIDC_ISSUER + reverse("oauth2_provider:token"),
             "revocation_endpoint":
-                oidc_settings.OIDC_ISSUER +
-                reverse("oauth2_provider:revoke-token"),
+                oidc_settings.OIDC_ISSUER + reverse("oauth2_provider:revoke-token"),
+            "introspection_endpoint":
+                oidc_settings.OIDC_ISSUER + reverse("oauth2_provider:introspect"),
             "response_types_supported":
                 oauth2_settings.OAUTH2_SERVER_CLASS.get_all_response_types(),
             "scopes_supported": Scopes.get_all_scopes().keys(),
