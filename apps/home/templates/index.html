@@ -69,5 +69,14 @@
             </div>
 {% endblock %}
 
-
+{% block ExtraJSFoot %}
+<script type="application/javascript">$("#id_username").focus();</script>
+<script type="application/javascript">
+var empt = document.forms["loginform"]["username"].value;
+if (empt != "")
+    {
+    $("#id_password").focus();
+    }
+</script>
+{% endblock %}
 
