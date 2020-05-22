@@ -25,7 +25,7 @@ def display_addresses(request, subject=None):
     else:
         up = get_object_or_404(UserProfile, subject=subject)
         # Check permission that the user can view other profiles.
-        if not request.user.has_perm('accounts.view_address'):
+        if not request.user.has_perm('accounts.view_address') and up.user != request.user:
             raise Http404()
         user = up.user
     addresses = Address.objects.filter(user=user)
@@ -38,7 +38,7 @@ def add_new_address(request, subject):
     name = _('Add a New Address')
     up = get_object_or_404(UserProfile, subject=subject)
     # Check permission that the user can view other profiles.
-    if not request.user.has_perm('accounts.add_address'):
+    if not request.user.has_perm('accounts.add_address') and up.user != request.user:
         raise Http404()
     user = up.user
     if request.method == 'POST':
@@ -60,11 +60,11 @@ def add_new_address(request, subject):
 @login_required
 def edit_address(request, id):
     name = _('Edit Address')
+    address = get_object_or_404(Address, id=id)
     # Check permission that the user can view other profiles.
-    if not request.user.has_perm('accounts.change_address'):
+    if not request.user.has_perm('accounts.change_address') and address.user != request.user:
         raise Http404()
 
-    address = get_object_or_404(Address, id=id)
     up = get_object_or_404(UserProfile, user=address.user)
     if request.method == 'POST':
         form = AddressForm(request.POST, instance=address)
@@ -82,10 +82,10 @@ def edit_address(request, id):
 
 @login_required
 def delete_address(request, id):
-    # Check permission that the user can view other profiles.
-    if not request.user.has_perm('accounts.delete_address'):
-        raise Http404()
     address = Address.objects.get(id=id)
+    # Check permission that the user can view other profiles.
+    if not request.user.has_perm('accounts.delete_address') and address.user != request.user:
+        raise Http404()
     up = get_object_or_404(UserProfile, user=address.user)
     address.delete()
 

@@ -24,11 +24,12 @@ def display_individual_identifiers(request, subject=None):
     else:
         up = get_object_or_404(UserProfile, subject=subject)
         # Check permission that the user can view other profiles.
-        if not request.user.has_perm('accounts.view_individualidentifier'):
+        if not request.user.has_perm('accounts.view_individualidentifier') and up.user != request.user:
             raise Http404()
         user = up.user
     identifiers = IndividualIdentifier.objects.filter(user=user)
-    context = {'user': user, 'identifiers': identifiers, 'up': up, 'name': name}
+    context = {'user': user, 'identifiers': identifiers,
+               'up': up, 'name': name}
     return render(request, 'identifiers-table.html', context)
 
 
@@ -37,7 +38,7 @@ def add_new_individual_identifier(request, subject):
     name = _('Add a New Identifier')
     up = get_object_or_404(UserProfile, subject=subject)
     # Check permission that the user can view other profiles.
-    if not request.user.has_perm('accounts.add_individualidentifier'):
+    if not request.user.has_perm('accounts.add_individualidentifier') and up.user != request.user:
         raise Http404()
     user = up.user
     if request.method == 'POST':
@@ -59,8 +60,9 @@ def add_new_individual_identifier(request, subject):
 @login_required
 def edit_individual_identifier(request, id):
     name = _('Edit Identifier')
+    identifier = get_object_or_404(IndividualIdentifier, id=id)
     # Check permission that the user can view other profiles.
-    if not request.user.has_perm('accounts.change_individualidentifier'):
+    if not request.user.has_perm('accounts.change_individualidentifier') and identifier.user != request.user:
         raise Http404()
 
     identifier = get_object_or_404(IndividualIdentifier, id=id)
@@ -81,10 +83,11 @@ def edit_individual_identifier(request, id):
 
 @login_required
 def delete_individual_identifier(request, id):
-    # Check permission that the user can view other profiles.
-    if not request.user.has_perm('accounts.delete_individualidentifier'):
-        raise Http404()
     identifier = IndividualIdentifier.objects.get(id=id)
+    # Check permission that the user can view other profiles.
+    if not request.user.has_perm('accounts.delete_individualidentifier') and identifier.user != request.user:
+        raise Http404()
+
     up = get_object_or_404(UserProfile, user=identifier.user)
     identifier.delete()
 

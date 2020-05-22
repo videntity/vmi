@@ -4,7 +4,7 @@
 {% block breadcrumbs %}
                     <ol class="breadcrumb">
                         <li ><a href="/">Home</a></li>
-                        <li><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
+                        <li class="active"><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
                         <li class="active">Identifiers</li>
                     </ol>
 {% endblock %}
@@ -14,7 +14,9 @@
                     <thead>
                         <tr>
                             <th scope="col">Type</th>
-                            <th scope="col">Value</th>
+                            <th scope="col">Issuer</th>
+                            <th scope="col">URI</th>
+                            <th scope="col">Value/Number</th>
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -22,7 +24,9 @@
                         {% for i in identifiers %}
                         <tr>
                             <th scope="row">{{i.type|default:'—'}}</th>
-                            <th scope="row">{{i.value}}</th>
+                            <th scope="row">{{i.issuer|default:'—'}}</th>
+                            <th scope="row">{{i.uri|default:'—'}}</th>
+                            <th scope="row">{{i.value|default:'—'}}</th>
                             <th scope="row">
                                 <a href="{% url 'edit_individual_identifier' i.id %}">
                                     <button type="button" class="btn btn-default"> Edit </button>
