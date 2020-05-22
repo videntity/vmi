@@ -65,7 +65,6 @@ def edit_address(request, id):
     if not request.user.has_perm('accounts.change_address') and address.user != request.user:
         raise Http404()
 
-
     up = get_object_or_404(UserProfile, user=address.user)
     if request.method == 'POST':
         form = AddressForm(request.POST, instance=address)

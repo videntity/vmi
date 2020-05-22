@@ -28,7 +28,8 @@ def display_individual_identifiers(request, subject=None):
             raise Http404()
         user = up.user
     identifiers = IndividualIdentifier.objects.filter(user=user)
-    context = {'user': user, 'identifiers': identifiers, 'up': up, 'name': name}
+    context = {'user': user, 'identifiers': identifiers,
+               'up': up, 'name': name}
     return render(request, 'identifiers-table.html', context)
 
 
@@ -86,7 +87,7 @@ def delete_individual_identifier(request, id):
     # Check permission that the user can view other profiles.
     if not request.user.has_perm('accounts.delete_individualidentifier') and identifier.user != request.user:
         raise Http404()
-    
+
     up = get_object_or_404(UserProfile, user=identifier.user)
     identifier.delete()
 
