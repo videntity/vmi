@@ -28,7 +28,7 @@ __author__ = "Alan Viars"
 SEX_CHOICES = (('',  'Blank'),
                ('female', 'Female'),
                ('male', 'Male'),
-               ('other', 'Gender Neutral'),
+               ('other', 'Other'),
                )
 
 GENDER_CHOICES = (('', 'Blank'),
@@ -36,6 +36,8 @@ GENDER_CHOICES = (('', 'Blank'),
                   ('male', 'Male'),
                   ('custom', 'Custom')
                   )
+
+# For Passports, SSNs, URIs, MPIs, etc.
 
 
 class IndividualIdentifier(models.Model):
@@ -91,7 +93,6 @@ class IndividualIdentifier(models.Model):
         od['issuer'] = self.issuer
         od['country'] = self.country
         od['subdivision'] = self.subdivision
-        od['type'] = self.type
         od['uri'] = self.uri
         return od
 
@@ -101,6 +102,8 @@ class IndividualIdentifier(models.Model):
             if not self.name:
                 self.name = self.type
             super(IndividualIdentifier, self).save(*args, **kwargs)
+
+# For Tax ID's NPIs, PECOOS IDs, etc.
 
 
 class OrganizationIdentifier(models.Model):
@@ -118,6 +121,8 @@ class OrganizationIdentifier(models.Model):
 
     def __str__(self):
         return self.value
+
+# For Addresses
 
 
 class Address(models.Model):
@@ -168,6 +173,8 @@ class Address(models.Model):
         od['country'] = self.country
         return od
 
+# Future Version - Experimental
+
 
 class PersonToPersonRelationship(models.Model):
     grantor = models.ForeignKey(
@@ -182,6 +189,9 @@ class PersonToPersonRelationship(models.Model):
 
     class Meta:
         unique_together = [['grantor', 'grantee']]
+
+# For Organizations such as governments, companies, non-profits,
+# professional groups, etc.
 
 
 class Organization(models.Model):
@@ -233,7 +243,7 @@ class Organization(models.Model):
 
     users = models.ManyToManyField(
         get_user_model(), blank=True, related_name='org_staff', verbose_name="Organizational Agents",
-        help_text="Employees or contractors acting on behalf of the Organization.")
+        help_text="Agents are employees, contractors or persons acting on behalf of the organization.")
 
     auto_ial_2_for_agents = models.BooleanField(default=True, blank=True)
     auto_ial_2_for_agents_description = models.TextField(default=settings.AUTO_IAL_2_DESCRIPTION,
@@ -242,7 +252,8 @@ class Organization(models.Model):
     default_groups_for_agents = models.ManyToManyField(Group, blank=True,
                                                        help_text="All new agents will be in these groups by default.")
 
-    open_member_enrollment = models.BooleanField(default=True, blank=True, db_index=True)
+    open_member_enrollment = models.BooleanField(
+        default=True, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
@@ -253,6 +264,11 @@ class Organization(models.Model):
     def signup_url(self):
         return "%s%s" % (settings.HOSTNAME_URL, reverse(
             'create_org_account', args=(self.slug,)))
+
+    @property
+    def member_signup_url(self):
+        return "%s%s" % (settings.HOSTNAME_URL, reverse(
+            'create_member_account', args=(self.slug,)))
 
     @property
     def formatted_organization(self):
@@ -353,13 +369,14 @@ class UserProfile(models.Model):
     email_verified = models.BooleanField(default=False, blank=True)
     phone_verified = models.BooleanField(default=False, blank=True)
     mobile_phone_number = PhoneNumberField(blank=True, default="",
-                                           help_text=_('US numbers only.'),)
+                                           help_text=_('United States phone numbers only.'),)
     password_recovery_passphrase = models.TextField(default="", blank=True)
     password_recovery_passphrase_hash = models.TextField(
         default="", blank=True)
     public_key = models.TextField(default="", blank=True)
     private_key = models.TextField(default="", blank=True)
-
+    website = models.TextField(default='', blank=True,
+                               help_text='A personal website.',)
     mobile_phone_number_verified = models.BooleanField(
         blank=True, default=False)
 
@@ -392,7 +409,8 @@ class UserProfile(models.Model):
                                                     help_text=_("""Yes, I attest that I have completed the
                                                         training for this system and will abide by
                                                         the code of conduct."""))
-    verifying_agent_email = models.EmailField(blank=True, default="", help_text="email of agent performing identity verification")
+    verifying_agent_email = models.EmailField(
+        blank=True, default="", help_text="Email of agent performing identity verification.")
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
@@ -415,8 +433,8 @@ class UserProfile(models.Model):
             super(UserProfile, self).save(**kwargs)
 
     def __str__(self):
-        display = '%s %s (%s)' % (self.user.first_name.title(),
-                                  self.user.last_name.title(),
+        display = '%s %s (%s)' % (self.user.first_name.lower().title(),
+                                  self.user.last_name.lower().title(),
                                   self.user.username)
         return display
 
@@ -535,11 +553,8 @@ class UserProfile(models.Model):
 
     @property
     def profile_url(self):
-        return ""
-
-    @property
-    def website(self):
-        return ""
+        return "%s%s" % (settings.HOSTNAME_URL, reverse(
+            'user_profile_subject', args=(self.subject,)))
 
     @property
     def picture_url(self):
@@ -594,7 +609,7 @@ class UserProfile(models.Model):
         return formatted_identifiers
 
     @property
-    def organization_agent(self):
+    def agent_to_organization(self):
         # Get the organizations for this user.
         orgs = []
         for o in Organization.objects.all():
@@ -604,8 +619,8 @@ class UserProfile(models.Model):
         return orgs
 
     @property
-    def organizations(self):
-        # Get the organizations for this user.
+    def agent_organizations(self):
+        # Get the organizations for this user is an agent.
         orgs = []
         for o in Organization.objects.all():
             for u in o.users.all():
@@ -614,8 +629,18 @@ class UserProfile(models.Model):
         return orgs
 
     @property
-    def memberships(self):
-        # Get the organizations for this user.
+    def member_organizations(self):
+        # Get the organizations for which this user is a member.
+        orgs = []
+        for o in Organization.objects.all():
+            for u in o.members.all():
+                if u == self.user:
+                    orgs.append(o)
+        return orgs
+
+    @property
+    def member_to_organization(self):
+        # Get the organizations for this user as formated organizations.
         members = []
         for o in Organization.objects.all():
             for m in o.members.all():
@@ -627,7 +652,7 @@ class UserProfile(models.Model):
 MFA_CHOICES = (
     ('', 'None'),
     ('EMAIL', "Email"),
-    ('FIDO', "FIDO U2F"),
+    ('FIDO', "FIDO U2F or FIDO 2.0"),
     ('SMS', "Text Message (SMS)"),
 )
 
