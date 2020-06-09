@@ -4,7 +4,7 @@
 {% block breadcrumbs %}
                     <ol class="breadcrumb">
                         <li ><a href="/">Home</a></li>
-                        <li class="active"><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
+                        <li><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
                     </ol>
 {% endblock %}
 {% block Content %}

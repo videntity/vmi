@@ -49,13 +49,30 @@
                                 Organizations<b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                            {% for org in request.user.userprofile.organizations %}
+                            {% for org in request.user.userprofile.agent_organizations %}
                                 <li>
                                     <a href="{% url 'display_organization' org.slug %}">{{org.name}}</a>
                                 </li>
                             {% endfor %}
                             </ul>
                         </li>
+                        {% else %}
+                        {% if request.user.userprofile %}
+                        <li class="dropdown col">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Organizations<b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                            {% for org in request.user.userprofile.member_organizations %}
+                                <li>
+                                    <a href="{% url 'display_organization' org.slug %}">{{org.name}}</a>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </li>
+                        {% endif%}
+                        
+                        
                         {% endif %}
 
                        {% if request.user|has_group:"ApplicationDeveloper" %}
