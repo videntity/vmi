@@ -82,7 +82,8 @@ class IdentityAssuranceLevelDocumentation(models.Model):
     utility_bill_provider_country = models.CharField(max_length=2, blank=True,
                                                      default=settings.DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS)
     evidence = models.CharField(verbose_name=_('Identity Assurance Level 2 Classification'),
-                                choices=settings.IAL2_EVIDENCE_CLASSIFICATIONS[3:],
+                                choices=settings.IAL2_EVIDENCE_CLASSIFICATIONS[
+                                    3:],
                                 max_length=256,
                                 default='',
                                 blank=True)
@@ -136,9 +137,6 @@ class IdentityAssuranceLevelDocumentation(models.Model):
             verified_by = ""
         return "%s%s" % (desc, verified_by)
 
-
-
-
     @property
     def level(self):
         # The Identity Assurance Level is derived.
@@ -151,7 +149,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
             return str(2)
         # The default level is 1
         return str(1)
-    
+
     @property
     def id_document_issuer_date_of_issuance_str(self):
         if self.id_document_issuer_date_of_issuance:
@@ -163,8 +161,7 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         if self.id_document_issuer_date_of_expiry:
             return self.id_document_issuer_date_of_expiry
         return ""
-    
-        
+
     @property
     def oidc_ia_evidence(self):
 
