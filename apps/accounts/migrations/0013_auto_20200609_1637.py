@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='userprofile',
             name='mobile_phone_number',
-            field=phonenumber_field.modelfields.PhoneNumberField(blank=True, default='', help_text='United States phone numbers only.', max_length=128, region=settings.PHONENUMBER_DEFAULT_REGION),
+            field=phonenumber_field.modelfields.PhoneNumberField(blank=True, default='', help_text='United States phone numbers only.', max_length=128),
         ),
         migrations.AlterField(
             model_name='userprofile',
