@@ -186,6 +186,7 @@ class AccountSettingsForm(forms.Form):
     nickname = forms.CharField(max_length=100, required=False)
     email = forms.EmailField(label=_('Email'), required=False)
     mobile_phone_number = PhoneNumberField(required=False, label=_("Mobile Phone Number"))
+    website = forms.CharField(max_length=512, label=_("Personal Website"))
     sex = forms.ChoiceField(choices=SEX_CHOICES,
                             required=False,
                             help_text="Enter sex, not gender identity.")
@@ -237,6 +238,7 @@ class AccountSettingsForm(forms.Form):
         up, created = UserProfile.objects.get_or_create(user=user)
         up.nickname = self.cleaned_data.get('nickname', "")
         up.middle_name = self.cleaned_data.get('middle_name', "")
+        up.website = self.cleaned_data.get('website', "")
         up.sex = self.cleaned_data.get('sex', ""),
         up.gender_identity = self.cleaned_data.get('gender_identity', ""),
         up.gender_identity_custom_value = self.cleaned_data.get(

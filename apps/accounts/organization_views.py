@@ -1,9 +1,8 @@
 import logging
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Organization
 from django.contrib.auth import get_user_model
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
@@ -33,14 +32,13 @@ def display_member_organizations(request, subject=None):
     else:
         up = get_object_or_404(UserProfile, subject=subject)
         # Check permission that the user can view other profiles.
-        #if not request.user.has_perm('accounts.view_individualidentifier') and up.user != request.user:
+        # if not request.user.has_perm('accounts.view_individualidentifier') and up.user != request.user:
         #    raise Http404()
         user = up.user
     organizations = Organization.objects.filter(members=user)
     context = {'user': user, 'organizations': organizations,
                'up': up, 'name': name}
     return render(request, 'organizations-table.html', context)
-
 
 
 @login_required
@@ -59,8 +57,11 @@ def remove_agent_from_organization(request, organization_slug, user_id):
 def remove_member_from_organization(request, subject, organization_slug):
     org = get_object_or_404(Organization, slug=organization_slug)
     up = get_object_or_404(UserProfile, subject=subject)
+    if request.user != up.user or request.user not in org.users.all():
+        raise Http404("Not found.")
+
     org.members.remove(up.user)
     msg = _('%s %s removed as member of %s.' %
             (up.user.first_name, up.user.last_name, org.name))
     messages.success(request, msg)
-    return HttpResponseRedirect(reverse('user_profile', args=(up.subject,)))
+    return HttpResponseRedirect(reverse('user_profile_subject', args=(up.subject,)))

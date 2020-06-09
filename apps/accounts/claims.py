@@ -1,6 +1,8 @@
 from apps.oidc.claims import BaseProvider
 from django.conf import settings
 
+# For address Claim
+
 
 class AddressClaimProvider(BaseProvider):
 
@@ -9,6 +11,9 @@ class AddressClaimProvider(BaseProvider):
             return self.user.userprofile.address
         except Exception:
             return None
+
+# For document claim. For paper and electronic identifiers.
+# Passports, URL pointers, Master Patient IDs, SSN, etc.
 
 
 class IdentifierClaimProvider(BaseProvider):
@@ -20,24 +25,50 @@ class IdentifierClaimProvider(BaseProvider):
             return None
 
 
-class OrganizationAgentClaimProvider(BaseProvider):
+# For adding agent_to_organuization claim (e.g. "employee of", etc.)
+class AgentToOrganizationClaimProvider(BaseProvider):
 
-    def claim_organization_agent(self):
+    def claim_agent_to_organization(self):
         try:
-            return self.user.userprofile.organization_agent
+            return self.user.userprofile.agent_to_organization
         except Exception:
             return None
 
 
-class MembershipClaimProvider(BaseProvider):
+# Reserved for future versions
+class AgentToMemberClaimProvider(BaseProvider):
 
-    def claim_memberships(self):
+    def claim_agent_to_member(self):
         try:
-            return self.user.userprofile.memberships
+            return self.user.userprofile.agent_to_member
+        except Exception:
+            return None
+
+# Reserved for future versions
+
+
+class MemberToMemberClaimProvider(BaseProvider):
+    # For familiy and  family relationships
+
+    def claim_agent_to_member(self):
+        try:
+            return self.user.userprofile.member_to_member
+        except Exception:
+            return None
+
+# Member to
+
+
+class MemberToOrganizationClaimProvider(BaseProvider):
+
+    def claim_member_to_organization(self):
+        try:
+            return self.user.userprofile.member_to_organization
         except Exception:
             return None
 
 
+# Identity Assurance for OIDC.
 class VerifiedPersonDataClaimProvider(BaseProvider):
 
     def claim_verified_claims(self):
@@ -48,6 +79,22 @@ class VerifiedPersonDataClaimProvider(BaseProvider):
             return None
 
 
+class ExtendedGenderClaimProvider(BaseProvider):
+
+    def claim_gender_identity_custom_value(self):
+        try:
+            return self.user.userprofile.gender_identity_custom_value
+        except Exception:
+            return None
+
+    def claim_gender_identity(self):
+        try:
+            return self.user.userprofile.gender_identity
+        except Exception:
+            return None
+
+
+# Contains most of the basic claims
 class UserProfileClaimProvider(BaseProvider):
 
     def claim_sub(self):
@@ -103,27 +150,14 @@ class UserProfileClaimProvider(BaseProvider):
             if gender == "female":
                 return "female"
         except Exception:
-            return None
+            return ""
     # Downstream health / vital statistics should rely on this claim
 
     def claim_sex(self):
         try:
             return self.user.userprofile.sex
         except Exception:
-            return None
-
-    # def claim_gender_identity_custom_value(self):
-    #     try:
-    #         return self.user.userprofile.gender_identity_custom_value
-    #     except Exception:
-    #         return None
-    #
-    #
-    # def claim_gender_identity(self):
-    #     try:
-    #         return self.user.userprofile.gender_identity
-    #     except Exception:
-    #         return None
+            return ""
 
     def claim_birthdate(self):
         try:
@@ -146,6 +180,24 @@ class UserProfileClaimProvider(BaseProvider):
     def claim_phone_verified(self):
         try:
             return self.user.userprofile.phone_verified
+        except Exception:
+            return None
+
+    def claim_website(self):
+        try:
+            return self.user.userprofile.website
+        except Exception:
+            return None
+
+    def claim_profile(self):
+        try:
+            return self.user.userprofile.profile_url
+        except Exception:
+            return None
+
+    def claim_picture(self):
+        try:
+            return self.user.userprofile.picture_url
         except Exception:
             return None
 
@@ -173,24 +225,6 @@ class UserProfileClaimProvider(BaseProvider):
         except Exception:
             return None
 
-    def claim_profile(self):
-        try:
-            return self.user.userprofile.profile
-        except Exception:
-            return None
-
-    def claim_picture(self):
-        try:
-            return self.user.userprofile.picture_url
-        except Exception:
-            return None
-
-    def claim_website(self):
-        try:
-            return self.user.userprofile.website
-        except Exception:
-            return None
-
     def claim_verifying_agent_email(self):
         try:
             return self.user.userprofile.verifying_agent_email
@@ -199,7 +233,7 @@ class UserProfileClaimProvider(BaseProvider):
 
 
 class SubjectClaimProvider(BaseProvider):
-    """"This claim is MANDATORY"""
+    """"This claim is Mandatory"""
 
     def claim_sub(self):
         try:
@@ -255,5 +289,25 @@ class PhoneNumberClaimProvider(BaseProvider):
     def claim_phone_verified(self):
         try:
             return self.user.userprofile.phone_verified
+        except Exception:
+            return None
+
+
+# Deprecated - Use AgentToOrganizationClaimProvider instead
+class OrganizationAgentClaimProvider(BaseProvider):
+
+    def claim_organization_agent(self):
+        try:
+            return self.user.userprofile.organization_agent
+        except Exception:
+            return None
+
+
+# Deprecated - Use MemberToOrganizationClaimProvider
+class MembershipClaimProvider(BaseProvider):
+
+    def claim_memberships(self):
+        try:
+            return self.user.userprofile.memberships
         except Exception:
             return None

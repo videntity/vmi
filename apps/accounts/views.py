@@ -101,13 +101,12 @@ def account_settings(request, subject=None):
             up.nickname = data['nickname']
             up.sex = data['sex']
             up.gender_identity = data['gender_identity']
-            up.gender_identity_custom_value = data[
-                'gender_identity_custom_value']
+            up.gender_identity_custom_value = data['gender_identity_custom_value']
             up.middle_name = data['middle_name']
             up.birth_date = data['birth_date']
+            up.website = data['website']
             up.save()
-            messages.success(request,
-                             _('Your account settings have been updated.'))
+            messages.success(request, _('Your account settings have been updated.'))
             if subject:
                 return HttpResponseRedirect(reverse('account_settings_subject', args=(subject,)))
             return HttpResponseRedirect(reverse('account_settings'))
@@ -126,6 +125,7 @@ def account_settings(request, subject=None):
             'email': user.email,
             'mobile_phone_number': up.mobile_phone_number,
             'sex': up.sex,
+            'website': up.website,
             'gender_identity': up.gender_identity,
             'gender_identity_custom_value': up.gender_identity_custom_value,
             'birth_date': up.birth_date,
