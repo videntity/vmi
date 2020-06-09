@@ -4,7 +4,8 @@
 {% load static %}
 {% block breadcrumbs %}
                     <ol class="breadcrumb">
-                        <li class="active"><a href="/">Home</a></li>
+                        <li ><a href="/">Home</a></li>
+                        <li><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
                     </ol>
 {% endblock %}
 {% block Content %}
@@ -18,12 +19,14 @@
 
                             {% ifequal profile.ial "1" %}
                                     <p>Your identity needs verified before you can gain full access.
-                                    Your identity level is <span class="badge badge-danger">{{profile.ial}}</span>,
-                                    but most services require level <span class="badge badge-success">2</span>. Please see your
-                                    point of contact so they can help you verify your identity.</p>
+                                    Your <a href="https://pages.nist.gov/800-63-3/sp800-63a.html#sec4">"You Are You Level" is
+                                    <span class="badge badge-danger">{{profile.ial}}</span>,
+                                    but most services require at least a level 2 <span class="badge badge-success">2</span>.
+                                    Please contact the group or organization in which you enrolled so they may verify your identity.</p>
                             {% else %}
-                                    <p>Your identity has been verified to level <span class="badge badge-success">{{profile.ial}}</span>.
-                                    You may now access the:</p>
+                                    <p>Your <a href="https://pages.nist.gov/800-63-3/sp800-63a.html#sec4">"You Are You Level" </a>
+                                    is <span class="badge badge-success">{{profile.ial}}</span>.
+                                    
                                     <h5><a href="{{settings.KILLER_APP_URI}}"> <button type="button" class="btn btn-primary">{{settings.KILLER_APP_TITLE}}</button> </a></h5>
                             {% endifequal %}
                             
