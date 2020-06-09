@@ -136,6 +136,9 @@ class IdentityAssuranceLevelDocumentation(models.Model):
             verified_by = ""
         return "%s%s" % (desc, verified_by)
 
+
+
+
     @property
     def level(self):
         # The Identity Assurance Level is derived.
@@ -148,7 +151,20 @@ class IdentityAssuranceLevelDocumentation(models.Model):
             return str(2)
         # The default level is 1
         return str(1)
+    
+    @property
+    def id_document_issuer_date_of_issuance_str(self):
+        if self.id_document_issuer_date_of_issuance:
+            return self.id_document_issuer_date_of_issuance
+        return ""
 
+    @property
+    def id_document_issuer_date_of_expiry_str(self):
+        if self.id_document_issuer_date_of_expiry:
+            return self.id_document_issuer_date_of_expiry
+        return ""
+    
+        
     @property
     def oidc_ia_evidence(self):
 
@@ -164,9 +180,9 @@ class IdentityAssuranceLevelDocumentation(models.Model):
             od['document']['issuer']['region'] = self.id_document_issuer_region
             od['document']['number'] = self.id_document_issuer_number
             od['document']['date_of_issuance'] = str(
-                self.id_document_issuer_date_of_issuance)
+                self.id_document_issuer_date_of_issuance_str)
             od['document']['date_of_expiry'] = str(
-                self.id_document_issuer_date_of_expiry)
+                self.id_document_issuer_date_of_expiry_str)
 
         if od['type'] == "utility_bill":
             od['provider'] = OrderedDict()
