@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li ><a href="/">Home</a></li>
+                        <li class="active"><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
+                        <li class="active">Organizations</li>
+                    </ol>
+{% endblock %}
+{% block Content %}
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Organization</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for o in organizations %}
+                        <tr>
+                            <th scope="row">{{o}}</th>
+                            <th scope="row">
+                                <a href="{% url 'remove_member_from_organization' up.subject o.slug %}">
+                                    <button type="button" class="btn btn-danger"> Remove from {{o}} </button>
+                                </a>
+                            </th>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+{% endblock %}
+

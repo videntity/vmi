@@ -22,6 +22,14 @@
                     </div>
                     <div class="row text-center">
                         <div class="col">
+                            
+                            <h2>Search<h2>
+                            <a href="{% url 'member_search_org_slug' organization.slug %}">
+                                    <button type="button" class="btn btn-primary">
+                            Search Members</button> </a></h5>
+                            
+
+                            
                             <h2>Signup URL<h2>
                             <pre style="overflow: visible;"><a href="{{signup_url}}">{{ signup_url }}</a></pre>
 
@@ -37,6 +45,19 @@
                                 {% if organization.point_of_contact == request.user %}
                                 |
                                 <a href={% url 'remove_agent_from_organization' organization.slug a.id  %}>Remove</a>
+                                {% endif %}
+                            </h4>
+                            {% endfor %}
+                            
+                            
+                            <h2>Members:</h2>
+                            {% for m in organization.members.all %}
+                            <h4>
+
+                                    {{m.first_name|title}} {{m.last_name|title}}
+
+                                {% if organization.point_of_contact == request.user %}
+                                | <a href={% url 'remove_agent_from_organization' organization.slug m.id  %}>Remove</a>
                                 {% endif %}
                             </h4>
                             {% endfor %}

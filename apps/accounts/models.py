@@ -229,7 +229,7 @@ class Organization(models.Model):
 
     members = models.ManyToManyField(
         get_user_model(), blank=True, related_name='org_members',
-        help_text="This field is a placeholder and is not supported in this version.")
+        help_text="These are the members of an organization. (i.e. customers)")
 
     users = models.ManyToManyField(
         get_user_model(), blank=True, related_name='org_staff', verbose_name="Organizational Agents",
@@ -242,6 +242,7 @@ class Organization(models.Model):
     default_groups_for_agents = models.ManyToManyField(Group, blank=True,
                                                        help_text="All new agents will be in these groups by default.")
 
+    open_member_enrollment = models.BooleanField(default=True, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 

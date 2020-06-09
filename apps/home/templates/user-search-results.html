@@ -4,10 +4,14 @@
 {% block breadcrumbs %}
                     <ol class="breadcrumb">
                         <li ><a href="/">Home</a></li>
-                        <li class="active"><a href="{% url 'user_search' %}">Search</a></li>
+                        <li class="active"><a href="{% url 'member_search_org_slug' organization.slug %}">Search {{organization.name}} </a></li>
                     </ol>
 {% endblock %}
 {% block Content %}
+            <div class="row">
+                        <h3>Results...</h3>
+            </div>
+           
             <div class="row">
                 <table class="table">
                     <thead>
