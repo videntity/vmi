@@ -248,13 +248,21 @@ OIDC_PROVIDER = {
         'apps.oidc.claims.UserClaimProvider',
 
         # Optional
-        # The UserProfileClaimProvider currently gets all claims fetch-able via the
-        # UserProfile.
+        # The UserProfileClaimProvider currently gets all claims non repeating
+        # claims.
         'apps.accounts.claims.UserProfileClaimProvider',
+
+        # Include address
         'apps.accounts.claims.AddressClaimProvider',
+
+        # Include documenet (identifiers) claim
         'apps.accounts.claims.IdentifierClaimProvider',
-        'apps.accounts.claims.OrganizationAgentClaimProvider',
-        'apps.accounts.claims.MembershipClaimProvider',
+        # Include this Member is in a part for Organizations 0..n
+        'apps.accounts.claims.MemberToOrganizationClaimProvider',
+        # Include this Agent is part of 0..n Organizations
+        'apps.accounts.claims.AgentToOrganizationClaimProvider',
+
+        # Identity Assurance for OIDC
         'apps.accounts.claims.VerifiedPersonDataClaimProvider',
         # 'apps.accounts.claims.SubjectClaimProvider',
         # 'apps.accounts.claims.EmailVerifiedClaimProvider',
@@ -273,9 +281,9 @@ SMS_STRATEGY = env('SMS_STRATEGY', 'AWS-SNS')
 # Add a prefix to the lugh checkdigit calculation.
 # This can help identify genuine subject ids and indicate provenance.
 SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
-APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE', "Share My Health Accounts")
-KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Share My Health Web Application')
-KILLER_APP_URI = env('KILLER_APP_URI', 'http://smhapp:8002')
+APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE', "Verify My Identity")
+KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Your Application Here')
+KILLER_APP_URI = env('KILLER_APP_URI', 'http://localhost:8002')
 
 TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity')
 PARTNER_REF = env('PARTNER_REF', '')
@@ -284,27 +292,25 @@ if len(PARTNER_REF) > 0:
 
 ORGANIZATION_TITLE = env(
     'DJANGO_ORGANIZATION_TITLE',
-    'Alliance for Better Health')
+    'Videntity')
 ORGANIZATION_URI = env('DJANGO_ORGANIZATION_URI',
-                       'http://transparenthealth.org')
+                       'https://videntity.com')
 POLICY_URI = env('DJANGO_POLICY_URI',
-                 'http://sharemy.health/privacy-policy-1.0.html')
+                 'https://static.verifymyidentity.com/privacy-policy-1.0.html')
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
 TOS_URI = env('DJANGO_TOS_URI',
-              'http://sharemy.health/terms-of-service-1.0.html')
+              'https://static.verifymyidentity.com/terms-of-service-1.0.html')
 AGENT_TOS_URI = env('DJANGO_AGENT_TOS_URI',
-                    'http://sharemy.health/agent-terms-of-service-1.0.html')
+                    'https://static.verifymyidentity.com/agent-terms-of-service-1.0.html')
 
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 
 # If True, display the training attestation on agent signup.
-REQUIRE_TRAINING_FOR_AGENT_SIGNUP = bool_env(env('REQUIRE_TRAINING_FOR_AGENT_SIGNUP', False))
+REQUIRE_TRAINING_FOR_AGENT_SIGNUP = bool_env(
+    env('REQUIRE_TRAINING_FOR_AGENT_SIGNUP', False))
 TRAINING_URI = env('TRAINING_URI',
-                   'http://example.com/training1.0.html')
+                   'https://static.verifymyidentity.com/training1.0.html')
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
-EXPLAINATION_LINE = ('This is an instance of Verify My Identity, \
-                     a standards-based OpenID Connect Identity Provider.')
-EXPLAINATION_LINE = env('DJANGO_EXPLAINATION_LINE ', EXPLAINATION_LINE)
 USER_DOCS_URI = "https://github.com/TransparentHealth/vmi"
 USER_DOCS_TITLE = "User Documentation"
 USER_DOCS = "User Docs"
@@ -313,8 +319,8 @@ USER_DOCS = "User Docs"
 DEVELOPER_DOCS_URI = "https://github.com/TransparentHealth/vmi"
 DEVELOPER_DOCS = "Developer Docs"
 DEFAULT_DISCLOSURE_TEXT = """
-    Unauthorized or improper use of this system or its data may result
-    in disciplinary action, as well as civil and criminal penalties.
+    Unauthorized or improper use of this system or its data may result in
+    disciplinary action, as well as civil and criminal penalties.
     This system may be monitored, recorded, and subject to audit.
     """
 
@@ -323,12 +329,12 @@ DISCLOSURE_TEXT = env('DJANGO_PRIVACY_POLICY_URI', DEFAULT_DISCLOSURE_TEXT)
 HOSTNAME_URL = env('HOSTNAME_URL', 'http://localhost:8000')
 
 ORG_SIGNUP_CONTACT = env('ORG_SIGNUP_CONTACT',
-                         'https://example.com/contact-us/')
+                         'https://videntity.com/contact-us/')
 
 # Allow Members to create accounts
 ALLOW_MEMBER_SIGNUP = bool_env(env('ALLOW_MEMBER_SIGNUP', False))
 
-CONTACT_EMAIL = env('DJANGO_CONTACT_EMAIL', 'sharemyhealth@abhealth.us')
+CONTACT_EMAIL = env('DJANGO_CONTACT_EMAIL', 'contact@verifymyidentity.com')
 
 SETTINGS_EXPORT = [
     'DEBUG',
@@ -344,7 +350,6 @@ SETTINGS_EXPORT = [
     'DISCLOSURE_TEXT',
     'TOS_URI',
     'TOS_TITLE',
-    'EXPLAINATION_LINE',
     'USER_DOCS_URI',
     'USER_DOCS',
     'DEVELOPER_DOCS',
@@ -482,9 +487,9 @@ IAL2_EVIDENCE_CLASSIFICATIONS = (
 # For creating agent users who have out of band _D verification on file.
 AUTO_IAL_2_DEFAULT_CLASSIFICATION = 'ONE-SUPERIOR-OR-STRONG-PLUS',
 AUTO_IAL_2_DEFAULT_SUBCLASSIFICATION = env(
-    'AUTO_IAL_2_DEFAULT_SUBCLASSIFICATION', "I9")
+    'AUTO_IAL_2_DEFAULT_SUBCLASSIFICATION', "OFFLINE")
 AUTO_IAL_2_DESCRIPTION = env(
-    'AUTO_IAL_2_DESCRIPTION', "Documents verified by i9 employment")
+    'AUTO_IAL_2_DESCRIPTION', "Verified offline. Documents on file.")
 
 LOGIN_RATELIMIT = env('LOGIN_RATELIMIT', '100/h')
 
