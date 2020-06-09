@@ -369,7 +369,8 @@ class UserProfile(models.Model):
     email_verified = models.BooleanField(default=False, blank=True)
     phone_verified = models.BooleanField(default=False, blank=True)
     mobile_phone_number = PhoneNumberField(blank=True, default="",
-                                           help_text=_('United States phone numbers only.'),)
+                                           help_text=_('United States phone numbers only.'),
+                                           region=settings.PHONENUMBER_DEFAULT_REGION)
     password_recovery_passphrase = models.TextField(default="", blank=True)
     password_recovery_passphrase_hash = models.TextField(
         default="", blank=True)
