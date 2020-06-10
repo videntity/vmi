@@ -17,7 +17,9 @@ from .mfa_views import (
     EnableSMSMFAView,
     ManageView,
 )
-from .organization_views import display_organization, remove_agent_from_organization
+from .organization_views import (display_organization, remove_agent_from_organization,
+                                 remove_member_from_organization,
+                                 display_member_organizations)
 from .phone_views import mobile_phone, verify_mobile_phone_number
 from .identifier_views import (display_individual_identifiers, add_new_individual_identifier,
                                delete_individual_identifier, edit_individual_identifier)
@@ -97,6 +99,12 @@ urlpatterns = [
 
     url(r'^request-org-affiliation/(?P<organization_slug>[^/]+)',
         request_org_affiliation, name='request_org_afiliation'),
+
+    url("^member-organizations/(?P<subject>[^/]+)",
+        display_member_organizations, name='display_member_organizations'),
+
+    url("^remove-member/(?P<subject>[^/]+)/from/(?P<organization_slug>[^/]+)/$",
+        remove_member_from_organization, name='remove_member_from_organization'),
 
     url("^individual-identifiers/(?P<subject>[^/]+)",
         display_individual_identifiers, name='display_individual_identifiers_subject'),

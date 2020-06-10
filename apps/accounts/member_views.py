@@ -38,6 +38,12 @@ def create_member_account(request, organization_slug,
                                         the username %s""" % (user.first_name, user.last_name,
                                                               up.subject, user.username)))
 
+            # Add member to organization
+            org.members.add(user)
+            org.save()
+            messages.success(request, _(
+                "You were added as a member to %s" % (org.name)))
+
             if user.is_active:
                 messages.success(request, _(
                     "Your account is active and you may log in."))

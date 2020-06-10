@@ -96,6 +96,8 @@ urlpatterns = [
          include('apps.oidc.wellknown_urls')),
     path('o/', include(('apps.oidc.urls', 'oidc'), namespace='oidc')),
     path('search', user_search, name='user_search'),
+    url("^search/organization/members/(?P<org_slug>[^/]+)/$", user_search,
+        name='member_search_org_slug'),
     path('device/',
          include(('apps.fido.urls', 'fido'), namespace='fido')),
     url("^profile/(?P<subject>[^/]+)$",

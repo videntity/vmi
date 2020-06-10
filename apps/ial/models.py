@@ -82,7 +82,8 @@ class IdentityAssuranceLevelDocumentation(models.Model):
     utility_bill_provider_country = models.CharField(max_length=2, blank=True,
                                                      default=settings.DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS)
     evidence = models.CharField(verbose_name=_('Identity Assurance Level 2 Classification'),
-                                choices=settings.IAL2_EVIDENCE_CLASSIFICATIONS[3:],
+                                choices=settings.IAL2_EVIDENCE_CLASSIFICATIONS[
+                                    3:],
                                 max_length=256,
                                 default='',
                                 blank=True)
@@ -150,6 +151,18 @@ class IdentityAssuranceLevelDocumentation(models.Model):
         return str(1)
 
     @property
+    def id_document_issuer_date_of_issuance_str(self):
+        if self.id_document_issuer_date_of_issuance:
+            return self.id_document_issuer_date_of_issuance
+        return ""
+
+    @property
+    def id_document_issuer_date_of_expiry_str(self):
+        if self.id_document_issuer_date_of_expiry:
+            return self.id_document_issuer_date_of_expiry
+        return ""
+
+    @property
     def oidc_ia_evidence(self):
 
         od = OrderedDict()
@@ -164,9 +177,9 @@ class IdentityAssuranceLevelDocumentation(models.Model):
             od['document']['issuer']['region'] = self.id_document_issuer_region
             od['document']['number'] = self.id_document_issuer_number
             od['document']['date_of_issuance'] = str(
-                self.id_document_issuer_date_of_issuance)
+                self.id_document_issuer_date_of_issuance_str)
             od['document']['date_of_expiry'] = str(
-                self.id_document_issuer_date_of_expiry)
+                self.id_document_issuer_date_of_expiry_str)
 
         if od['type'] == "utility_bill":
             od['provider'] = OrderedDict()

@@ -37,8 +37,8 @@ def authenticated_organization_home(request):
 
             msg = """%s %s (%s) is requesting to be an agent of %s.
                      Please <a href="%s">approve</a> or <a href="%s">deny</a>
-                     the request.""" % (oar.user.first_name,
-                                        oar.user.last_name,
+                     the request.""" % (oar.user.first_name.lower().title(),
+                                        oar.user.last_name.lower().title(),
                                         oar.user.email,
                                         oar.organization.name,
                                         reverse(
@@ -122,22 +122,39 @@ def authenticated_enduser_home(request):
 
 @login_required
 @permission_required('ial.change_identityassuranceleveldocumentation')
-def user_search(request):
-    name = _('User Search')
+def user_search(request, org_slug=""):
+
+    if not org_slug:
+        # TODO User needs global permission to perform this kind of search.
+        org = None
+    else:
+        org = get_object_or_404(Organization, slug=org_slug)
+
+    name = _('Search members of %s' % (org.name))
     context = {'name': name}
 
     if request.method == 'POST':
         form = UserSearchForm(request.POST)
         if form.is_valid():
             search_results = form.save()
+            if org_slug:
+                org = get_object_or_404(Organization, slug=org_slug)
+                redacted_results = []
+                all_members = org.members.all()
+                for r in search_results:
+                    if r.user in all_members:
+                        redacted_results.append(r)
+                search_results = redacted_results
+
             context['search_results'] = search_results
+            context['organization'] = org
             return render(request, 'user-search-results.html', context)
 
         else:
             # return the bound form with errors
             return render(request,
                           'generic/bootstrapform.html',
-                          {'name': name, 'form': form})
+                          {'name': name, 'form': form, 'organization': org})
 
     context['form'] = UserSearchForm
     template = 'generic/bootstrapform.html'

@@ -22,11 +22,9 @@
                     </div>
                     <div class="row text-center">
                         <div class="col">
-                            <h2>Signup URL<h2>
-                            <pre style="overflow: visible;"><a href="{{signup_url}}">{{ signup_url }}</a></pre>
+                            
+                            
 
-                            <h2>Point of Contact<h2>
-                            <h4>{{organization.point_of_contact.first_name|title}}  {{organization.point_of_contact.last_name|title}}</h4>
 
                             <h2>Agents:</h2>
                             {% for a in organization.users.all %}
@@ -36,10 +34,53 @@
 
                                 {% if organization.point_of_contact == request.user %}
                                 |
-                                <a href={% url 'remove_agent_from_organization' organization.slug a.id  %}>Remove</a>
+                                <a href={% url 'remove_agent_from_organization' organization.slug a.id  %}>Remove Agent from Organization</a>
                                 {% endif %}
                             </h4>
                             {% endfor %}
+                            
+                            {% if request.user in organization.members.all %}
+                            <a href="{% url 'remove_member_from_organization' request.user.userprofile.subject organization.slug %}">
+                                    <button type="button" class="btn btn-danger"> Remove Me from from {{organization}} </button>
+                                </a>
+                            {% endif %}
+                            
+                            {% if request.user in organization.users.all %}
+                            <h2>Member Signup URL</h2>
+                            <pre style="overflow: visible;"><a href="{{ organization.member_signup_url}}">
+                            {{ organization.member_signup_url}}></a></pre>
+                            
+
+
+                            
+                            <h2>Point of Contact</h2>
+                            <h4>{{organization.point_of_contact.first_name|title}}  {{organization.point_of_contact.last_name|title}}</h4>
+
+                             <h2>Agent Signup URL</h2>
+                            <pre style="overflow: visible;"><a href="{{signup_url}}">{{ signup_url }}</a></pre>
+                            
+                            
+                                                        
+                            <h2>Search</h2>
+                            <a href="{% url 'member_search_org_slug' organization.slug %}">
+                                    <button type="button" class="btn btn-primary">
+                            Search Members</button> </a></h5>
+                            
+                            
+                            
+                            
+                            <h2>Members:</h2>
+                            {% for m in organization.members.all %}
+                            <h4>
+
+                                    <a href="{% url 'user_profile_subject' m.userprofile.subject %}">{{m.first_name|title}} {{m.last_name|title}}</a>
+
+                                
+                                | <a href="{% url 'remove_member_from_organization' m.userprofile.subject organization.slug %}">Remove Member from {{organization.name}}</a>
+                                
+                            </h4>
+                            {% endfor %}
+                        {% endif %}
                         </div>
                     </div>
                 </div> <!-- /.col.well -->

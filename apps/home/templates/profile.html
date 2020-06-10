@@ -4,7 +4,7 @@
 {% block breadcrumbs %}
                     <ol class="breadcrumb">
                         <li ><a href="/">Home</a></li>
-                        <li class="active"><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
+                        <li><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
                     </ol>
 {% endblock %}
 {% block Content %}
@@ -104,23 +104,9 @@
 
                     <div class="row my-4">
                       
-                         {% if user.userprofile.ial == '1' and user != request.user %}
-                        <div class="col">
-                            <a href="{% url 'verify_id_with_card' user.userprofile.subject|default:'None' %}">
-                                <button type="button" class="btn btn-secondary">Verify Identity</button>
-                            </a>
-                        </div>
-                        {% endif %}
-
                         <div class="col">
                             <a href="{% url 'account_settings_subject' user.userprofile.subject|default:'None' %}">
-                                <button type="button" class="btn btn-secondary">Profile Details</button>
-                            </a>
-                        </div>
-
-                                                <div class="col">
-                            <a href="{% url 'display_addresses_subject' user.userprofile.subject|default:'None' %}">
-                                <button type="button" class="btn btn-secondary">Addresses</button>
+                                <button type="button" class="btn btn-secondary">Basic Info</button>
                             </a>
                         </div>
                         <div class="col">
@@ -128,6 +114,17 @@
                                 <button type="button" class="btn btn-secondary">Identifiers</button>
                             </a>
                         </div>
+                         <div class="col">
+                            <a href="{% url 'display_member_organizations' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-secondary">Organizations</button>
+                            </a>
+                        </div>
+                         <div class="col">
+                            <a href="{% url 'display_addresses_subject' user.userprofile.subject|default:'None' %}">
+                                <button type="button" class="btn btn-secondary">Addresses</button>
+                            </a>
+                        </div>
+
                     </div>
                 </div>
             </div>
