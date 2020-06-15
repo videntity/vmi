@@ -12,10 +12,11 @@
             
              <div class="row">
               <div class="col-lg-12">
-                Your account was successfully affiliated with {{ORGANIZATION_NAME}}.
-                You can now <a href="{{ KILLER_APP_URI }}">login to {{ KILLER_APP_URI }}</a>.
+                <p>Your agent account for {{ ORGANIZATION_NAME }} was approved.
+                </p>
                 <p>
-                Manage all your account settings at <a href="{{settings.HOSTNAME_URL}}">{{settings.HOSTNAME_URL}}</a>.
+                Manage your {{settings.APPLICATION_TITLE|title}} account here:
+                <a href="{{settings.HOSTNAME_URL}}">{{settings.HOSTNAME_URL}}</a>
                 </p>
               </div>
               </div>
@@ -24,7 +25,7 @@
               <div class="col-lg-12">
                <br/>
                <p>Thanks,</p>
-               <p>{{ORGANIZATION_NAME}} and the {{ APPLICATION_TITLE }} Team</p>
+               <p>{{ORGANIZATION_NAME}} and the {{ APPLICATION_TITLE|title }} Team</p>
               </div>
             </div>
         </div><!-- /.container -->  

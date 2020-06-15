@@ -6,4 +6,4 @@ A new user {{ABOUT_FIRST_NAME|title}} {{ABOUT_LAST_NAME|title}} (Email: {{ABOUT_
 
 Thanks,
 
-{{ORGANIZATION_NAME}} and the {{APPLICATION_TITLE}} Team
+{{ORGANIZATION_NAME}} and the {{APPLICATION_TITLE|title}} Team

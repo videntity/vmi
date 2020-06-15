@@ -48,10 +48,6 @@ class MemberSignupForm(forms.Form):
                                            help_text=_("""An mobile phone number is highly
                                                           recommended so we may send you important
                                                           updates on account activity."""))
-    pick_your_account_number = forms.CharField(max_length=10, label=_("Want to Customize Your Account Number?"),
-                                               help_text=_("""If you want, pick up to 10 easy-to-remember numbers
-                                                           to be included in your account number. If left blank,
-                                                           random numbers will be used."""), required=False)
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128, label=_("Password*"),
                                 help_text=_("Passwords must be at least 8 characters and not be too common."))
     password2 = forms.CharField(
@@ -143,8 +139,8 @@ class MemberSignupForm(forms.Form):
 
         up = UserProfile.objects.create(
             user=new_user,
-            number_str_include=self.cleaned_data.get(
-                'pick_your_account_number', ""),
+            number_str_include=str(self.cleaned_data.get(
+                'birth_date', "")).replace("-", ""),
             nickname=self.cleaned_data.get('nickname', ''),
             middle_name=self.cleaned_data.get('middle_name', ""),
             picture=self.cleaned_data.get('picture'),

@@ -303,7 +303,10 @@ class Organization(models.Model):
             return p
 
     def save(self, commit=True, *args, **kwargs):
-        self.slug = slugify(self.name)
+
+        if not self.slug:
+            self.slug = slugify(self.name)
+
         if not self.subject:
             self.subject = generate_subject_id(prefix=settings.SUBJECT_LUHN_PREFIX,
                                                starts_with="2",
