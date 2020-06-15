@@ -24,8 +24,19 @@ Download the project:
     git clone https://github.com/TransparentHealth/vmi.git
    
 
+Install dev libraries 
+``````````````````````
+
+(Ubuntu/Debian)
+
+    sudo apt-get install python3.6-dev libsasl2-dev python-dev libldap2-dev libssl-dev
+
+
+(RetHat/CentOS)
+
 Install supporting libraries. (Consider using virtualenv for your python setup).
 
+    sudo yum install python-devel openldap-devel
 
     cd vmi
     pip install -r requirements.txt
