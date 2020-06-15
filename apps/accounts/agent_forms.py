@@ -19,15 +19,12 @@ agree_tos_label = mark_safe(
     _('Do you agree to the <a href="%s" target="_blank">Terms of Use</a>?' % (settings.AGENT_TOS_URI)))
 
 # Todo re-ad training URL
-# attest_training_completed_label = mark_safe(
-#     """Yes, I attest I have completed the <a href="%s" target="_blank">training</a>
-#     and will abide by the code of conduct.""" % (settings.TRAINING_URI))
-
 attest_training_completed_label = mark_safe(
-    _("""Yes, I attest I have completed the training and will abide by the code of conduct."""))
+    """Yes, I attest I have completed the <a href="%s" target="_blank">training</a>
+     and will abide by the code of conduct.""" % (settings.TRAINING_URI))
 
 
-class StaffSignupForm(forms.Form):
+class AgentSignupForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

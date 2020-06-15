@@ -13,15 +13,13 @@
                        Welcome to
                         <b>{{settings.APPLICATION_TITLE }}</b>
                     </h1 class="page-title">
-                    <p> Already have an account? Maybe you want to login to
-                        <a href="{{settings.KILLER_APP_URI}}">{{settings.KILLER_APP_TITLE}}</a>.
-                    </p>
+                    <p>Already have an account? <a href="{% url 'mfa_login' %}">Login</a>.</p>
                 </div>
             </div>
 
 
                 <div class="col-lg-6 my-4">
-                    <h2>Create New Member Account</h2>
+                    <h2>Create Member Account</h2>
                     <h3>Find your organization</h3>
                     {% include "include/find-org-to-create-member-account.html" %}
 

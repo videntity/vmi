@@ -14,13 +14,17 @@ from .forms import (AccountSettingsForm,
 
 from .utils import validate_email_verify_key
 from django.conf import settings
-
+from django.views.decorators.cache import never_cache
+from ratelimit.decorators import ratelimit
 
 # Copyright Videntity Systems Inc.
 
 logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
 
+@never_cache
+@ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='GET', block=True)
+@ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='POST', block=True)
 def reset_password(request):
 
     name = _('Reset Password')
@@ -55,6 +59,8 @@ def mylogout(request):
 
 
 @login_required
+@ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='GET', block=True)
+@ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='POST', block=True)
 def delete_account(request):
     name = _('Delete Account Information')
     if request.method == 'POST':
@@ -101,12 +107,14 @@ def account_settings(request, subject=None):
             up.nickname = data['nickname']
             up.sex = data['sex']
             up.gender_identity = data['gender_identity']
-            up.gender_identity_custom_value = data['gender_identity_custom_value']
+            up.gender_identity_custom_value = data[
+                'gender_identity_custom_value']
             up.middle_name = data['middle_name']
             up.birth_date = data['birth_date']
             up.website = data['website']
             up.save()
-            messages.success(request, _('Your account settings have been updated.'))
+            messages.success(request, _(
+                'Your account settings have been updated.'))
             if subject:
                 return HttpResponseRedirect(reverse('account_settings_subject', args=(subject,)))
             return HttpResponseRedirect(reverse('account_settings'))
@@ -219,6 +227,9 @@ def activation_verify(request, activation_key):
     return HttpResponseRedirect(reverse('home'))
 
 
+@never_cache
+@ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='GET', block=True)
+@ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='POST', block=True)
 def forgot_password(request):
     name = _('Forgot Password?')
     if request.method == 'POST':
