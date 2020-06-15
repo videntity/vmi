@@ -296,12 +296,12 @@ ORGANIZATION_TITLE = env(
 ORGANIZATION_URI = env('DJANGO_ORGANIZATION_URI',
                        'https://videntity.com')
 POLICY_URI = env('DJANGO_POLICY_URI',
-                 'https://static.verifymyidentity.com/privacy-policy-1.0.html')
+                 'https://verifymyidentity.com/privacy-policy-1.0.html')
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
 TOS_URI = env('DJANGO_TOS_URI',
               'https://static.verifymyidentity.com/terms-of-service-1.0.html')
 AGENT_TOS_URI = env('DJANGO_AGENT_TOS_URI',
-                    'https://static.verifymyidentity.com/agent-terms-of-service-1.0.html')
+                    'https://verifymyidentity.com/agent-terms-of-service-1.0.html')
 
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 
@@ -309,7 +309,7 @@ TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 REQUIRE_TRAINING_FOR_AGENT_SIGNUP = bool_env(
     env('REQUIRE_TRAINING_FOR_AGENT_SIGNUP', False))
 TRAINING_URI = env('TRAINING_URI',
-                   'https://static.verifymyidentity.com/training1.0.html')
+                   'https://verifymyidentity.com/training-1.0.html')
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 USER_DOCS_URI = "https://github.com/TransparentHealth/vmi"
 USER_DOCS_TITLE = "User Documentation"
@@ -319,6 +319,9 @@ USER_DOCS = "User Docs"
 DEVELOPER_DOCS_URI = "https://github.com/TransparentHealth/vmi"
 DEVELOPER_DOCS = "Developer Docs"
 DEFAULT_DISCLOSURE_TEXT = """
+    Verify My Identity  provides standards-based identity verification,
+    digital credentials, and single sign-on services for people andd
+    organizations.
     Unauthorized or improper use of this system or its data may result in
     disciplinary action, as well as civil and criminal penalties.
     This system may be monitored, recorded, and subject to audit.
