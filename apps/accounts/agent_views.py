@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from .models import Organization, OrganizationAffiliationRequest
-from .staff_forms import StaffSignupForm
+from .agent_forms import AgentSignupForm
 from django.conf import settings
 from .emails import send_org_account_approved_email
 from django.contrib.auth.decorators import login_required
@@ -13,6 +13,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseForbidden
 from ..ial.models import IdentityAssuranceLevelDocumentation
+from django.views.decorators.cache import never_cache
+from ratelimit.decorators import ratelimit
 
 # Copyright Videntity Systems Inc.
 
@@ -95,12 +97,15 @@ def find_org_to_create_account(request):
         return HttpResponseRedirect(reverse('create_org_account', args=[org_slug]))
 
 
-def create_org_account(request, organization_slug,
-                       service_title=settings.APPLICATION_TITLE):
+@never_cache
+@ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='GET', block=True)
+@ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='POST', block=True)
+def create_agent_account(request, organization_slug,
+                         service_title=settings.APPLICATION_TITLE):
     org = get_object_or_404(Organization, slug=organization_slug)
-    name = _("Staff Signup for %s") % (org.name)
+    name = _("Create agent account for %s") % (org.name)
     if request.method == 'POST':
-        form = StaffSignupForm(request.POST, request.FILES)
+        form = AgentSignupForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
             if user.email:
@@ -110,7 +115,7 @@ def create_org_account(request, organization_slug,
                                          "address."))
             messages.warning(
                 request, _(
-                    """Your affiliation with %s must be approved by %s %s
+                    """Your agent affiliation with %s must be approved by %s %s
                     before you may log in.
                     You will receive an email when your account is approved.""" %
                     (org.name, org.point_of_contact.first_name.title(),
@@ -136,5 +141,5 @@ def create_org_account(request, organization_slug,
             'domain': org.domain}
         return render(request, 'generic/bootstrapform.html',
                       {'name': name, 'form':
-                       StaffSignupForm(initial=form_data),
+                       AgentSignupForm(initial=form_data),
                        'service_title': service_title})

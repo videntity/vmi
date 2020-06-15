@@ -6,7 +6,7 @@ from .views import (account_settings,
                     forgot_password, activation_verify,
                     reset_password, delete_account, password_reset_email_verified)
 from .member_views import create_member_account, find_org_to_create_member_account
-from .staff_views import (create_org_account,
+from .agent_views import (create_agent_account,
                           find_org_to_create_account,
                           approve_org_affiliation,
                           deny_org_affiliation,
@@ -71,8 +71,6 @@ urlpatterns = [
         name='create_account_enduser_affiliate'),
     url(r'^create-account', create_account, name='create_account_enduser'),
 
-
-
     url(r'^activation-verify/(?P<activation_key>[^/]+)/$',
         activation_verify, name='activation_verify'),
     url(r'^forgot-password', forgot_password, name='forgot_password'),
@@ -81,15 +79,15 @@ urlpatterns = [
     # Member Creates accounts.
     url(r'^find-org-to-create-member-account', find_org_to_create_member_account,
         name='find_org_to_create_member_account'),
-    url(r'^create-member/(?P<organization_slug>[^/]+)/',
+    url(r'^create-member-account/(?P<organization_slug>[^/]+)/',
         create_member_account, name='create_member_account'),
 
     # Organization related
     url(r'^find-org-to-create-account', find_org_to_create_account,
         name='find_org_to_create_account'),
 
-    url(r'^create-org-account/(?P<organization_slug>[^/]+)/',
-        create_org_account, name='create_org_account'),
+    url(r'^create-agent-account/(?P<organization_slug>[^/]+)/',
+        create_agent_account, name='create_org_account'),
 
     url(r'^approve-org-affiliation/(?P<organization_slug>[^/]+)/(?P<username>[^/]+)/',
         approve_org_affiliation, name='approve_org_affiliation'),
