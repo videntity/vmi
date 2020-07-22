@@ -186,7 +186,7 @@ class AccountSettingsForm(forms.Form):
     nickname = forms.CharField(max_length=100, required=False)
     email = forms.EmailField(label=_('Email'), required=False)
     mobile_phone_number = PhoneNumberField(required=False, label=_("Mobile Phone Number"))
-    website = forms.CharField(max_length=512, label=_("Personal Website"))
+    website = forms.CharField(max_length=512, label=_("Website"), required=False)
     sex = forms.ChoiceField(choices=SEX_CHOICES,
                             required=False,
                             help_text="Enter sex, not gender identity.")
