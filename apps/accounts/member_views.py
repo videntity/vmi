@@ -27,7 +27,7 @@ def find_org_to_create_member_account(request):
 def create_member_account(request, organization_slug,
                           service_title=settings.APPLICATION_TITLE):
     org = get_object_or_404(Organization, slug=organization_slug)
-    name = _("Member Signup via %s") % (org.name)
+    name = _("Create an account and become a member of %s") % (org.name)
     if request.method == 'POST':
         form = MemberSignupForm(request.POST, request.FILES)
         if form.is_valid():

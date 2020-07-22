@@ -1,15 +1,9 @@
-Hello {{TO_FIRST_NAME}} {{TO_LAST_NAME}},
+Hello {{TO_FIRST_NAME|title}} {{TO_LAST_NAME|title}},
 
-Your account was successfully affiliated with {{ ORGANIZATION_NAME }}.
+Your agent account for {{ ORGANIZATION_NAME }} was approved.
 
+Manage your {{settings.APPLICATION_TITLE|title}} account here: {{settings.HOSTNAME_URL}}
 
-You can now login to {{KILLER_APP_URI}}.
+Thank You,
 
-Manage all your account related settings here:
-
-{{settinga.HOSTNAME_URL}}
-
-
-Thanks,
-
-{{ ORGANIZATION_NAME }} and the {{settings.APPLICATION_TITLE}} Team
+{{ ORGANIZATION_NAME }} and the {{settings.APPLICATION_TITLE|title}} Team
