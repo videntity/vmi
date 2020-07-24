@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.ial',
     'apps.fido',
+    'apps.dynamicreg',
     'apps.mfa.backends.sms',
     'apps.api',
     # 'django_extensions',
