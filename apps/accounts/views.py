@@ -27,7 +27,7 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 @ratelimit(key='ip', rate=settings.LOGIN_RATELIMIT, method='POST', block=True)
 def reset_password(request):
 
-    name = _('Reset Password')
+    name = _('Change Password')
     if request.user.is_authenticated:
         if request.method == 'POST':
             form = PasswordResetForm(request.POST)
@@ -40,7 +40,7 @@ def reset_password(request):
                                     password=data['password1'])
                 login(request, user)
                 messages.success(request, _('Your password was updated.'))
-                return HttpResponseRedirect(reverse('account_settings'))
+                return HttpResponseRedirect(reverse('home'))
             else:
                 return render(request, 'generic/bootstrapform.html',
                               {'form': form, 'name': name})
