@@ -256,7 +256,7 @@ OIDC_PROVIDER = {
         # Include address
         'apps.accounts.claims.AddressClaimProvider',
 
-        # Include documenet (identifiers) claim
+        # Include document (identifiers) claim
         'apps.accounts.claims.IdentifierClaimProvider',
         # Include this Member is in a part for Organizations 0..n
         'apps.accounts.claims.MemberToOrganizationClaimProvider',
@@ -277,7 +277,16 @@ OIDC_PROVIDER = {
 }
 
 # Adding to allow other modes of SMS text delivery in the future.
-SMS_STRATEGY = env('SMS_STRATEGY', 'AWS-SNS')
+SMS_STRATEGY = env('SMS_STRATEGY', 'TWILIO')  # AWS-SNS or TWILIO
+
+# If Using TWILIO, set these credentials
+
+TWILIO_ACCOUNT_SID = env('TWILIO_ACCOUNT_SID',
+                         'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+TWILIO_TOKEN = env('TWILIO_TOKEN', 'your_auth_token')
+# Use your twilio number.
+TWILIO_FROM_NUMBER = env('TWILIO_FROM_NUMBER', "+15555555555")
+
 
 # Add a prefix to the lugh checkdigit calculation.
 # This can help identify genuine subject ids and indicate provenance.
@@ -297,12 +306,12 @@ ORGANIZATION_TITLE = env(
 ORGANIZATION_URI = env('DJANGO_ORGANIZATION_URI',
                        'https://videntity.com')
 POLICY_URI = env('DJANGO_POLICY_URI',
-                 'https://verifymyidentity.com/privacy-policy-1.0.html')
+                 'https://static.verifymyidentity.com/privacy-policy-1.0.html')
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
 TOS_URI = env('DJANGO_TOS_URI',
               'https://static.verifymyidentity.com/terms-of-service-1.0.html')
 AGENT_TOS_URI = env('DJANGO_AGENT_TOS_URI',
-                    'https://verifymyidentity.com/agent-terms-of-service-1.0.html')
+                    'https://static.verifymyidentity.com/agent-terms-of-service-1.0.html')
 
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 
@@ -310,14 +319,14 @@ TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 REQUIRE_TRAINING_FOR_AGENT_SIGNUP = bool_env(
     env('REQUIRE_TRAINING_FOR_AGENT_SIGNUP', False))
 TRAINING_URI = env('TRAINING_URI',
-                   'https://verifymyidentity.com/training-1.0.html')
+                   'https://static.verifymyidentity.com/training-1.0.html')
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
-USER_DOCS_URI = "https://github.com/TransparentHealth/vmi"
+USER_DOCS_URI = "https://github.com/videntity/vmi"
 USER_DOCS_TITLE = "User Documentation"
 USER_DOCS = "User Docs"
 
 # LINKS TO DOCS
-DEVELOPER_DOCS_URI = "https://github.com/TransparentHealth/vmi"
+DEVELOPER_DOCS_URI = "https://github.com/videntity/vmi"
 DEVELOPER_DOCS = "Developer Docs"
 DEFAULT_DISCLOSURE_TEXT = """
     Verify My Identity  provides standards-based identity verification,
@@ -338,7 +347,7 @@ ORG_SIGNUP_CONTACT = env('ORG_SIGNUP_CONTACT',
 # Allow Members to create accounts
 ALLOW_MEMBER_SIGNUP = bool_env(env('ALLOW_MEMBER_SIGNUP', False))
 
-CONTACT_EMAIL = env('DJANGO_CONTACT_EMAIL', 'contact@verifymyidentity.com')
+CONTACT_EMAIL = env('DJANGO_CONTACT_EMAIL', 'sales@videntity.com')
 
 SETTINGS_EXPORT = [
     'DEBUG',

@@ -29,7 +29,7 @@
 
                        {% if request.user|has_group:"OrganizationAgentReport" %}
                         <li class="dropdown col">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                                 Reports<b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
@@ -39,19 +39,26 @@
                             </ul>
                         </li>
                         {% endif %}
+                       
+                       
+                        {% if request.user.is_authenticated %}
 
-
-
-
+                        <li class="nav-item">
+                                <a class="nav-link" href="{% url 'oauth2_provider:authorized-token-list' %}"> Applications</a>
+                        </li>
+                                
+                        {% endif %}
+                       
+                       
                        {% if request.user|has_group:"OrganizationalAgent" %}
                         <li class="dropdown col">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                                 Organizations<b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
                             {% for org in request.user.userprofile.agent_organizations %}
                                 <li>
-                                    <a href="{% url 'display_organization' org.slug %}">{{org.name}}</a>
+                                    <a href="{% url 'display_organization' org.slug %}"><i class="fa fa-building"></i> {{org.name}}</a>
                                 </li>
                             {% endfor %}
                             </ul>
@@ -65,7 +72,7 @@
                             <ul class="dropdown-menu">
                             {% for org in request.user.userprofile.member_organizations %}
                                 <li>
-                                    <a href="{% url 'display_organization' org.slug %}">{{org.name}}</a>
+                                    <a href="{% url 'display_organization' org.slug %}"><i class="fa fa-building"></i> {{org.name}}</a>
                                 </li>
                             {% endfor %}
                             </ul>
@@ -77,12 +84,12 @@
 
                        {% if request.user|has_group:"ApplicationDeveloper" %}
                         <li class="dropdown col">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <a href="#" class="nav-link  dropdown-toggle" data-toggle="dropdown">
                                 Developer<b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="{% url 'oauth2_provider:list' %}">Register Applications</a>
+                                    <a href="{% url 'oauth2_provider:list' %}"><i class="fa fa-lightbulb-o"></i> Your Applications</a>
                                 </li>
                             </ul>
                         </li>
@@ -90,46 +97,47 @@
 
                         {% if request.user.is_authenticated %}
                         <li class="dropdown col">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                                 Settings<b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="{% url 'account_settings' %}">Basic Information</a>
+                                    <a href="{% url 'account_settings' %}"><i class="fa fa-user"></i> Basic Information</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'upload_profile_picture' %}">Profile Picture</a>
+                                    <a href="{% url 'upload_profile_picture' %}"> <i class="fa fa-photo"></i> Profile Picture</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'display_individual_identifiers' %}">Identifiers</a>
+                                    <a href="{% url 'display_individual_identifiers' %}"><i class="fa fa-tags"></i>  Identifiers</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'display_addresses' %}">Addresses</a>
+                                    <a href="{% url 'display_addresses' %}"><i class="fa fa-map"></i> Addresses</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'mobile_phone' %}">Mobile Phone</a>
+                                    <a href="{% url 'mobile_phone' %}"> <i class="fa fa-mobile"></i> Mobile Phone</a>
                                 </li>
+                                <div class="dropdown-divider"></div>
                                 <li>
-                                    <a href="{% url 'mfa-management' %}">Multi-Factor Authentication</a>
+                                    <a href="{% url 'mfa-management' %}"><i class="fa fa-key"></i> Multi-Factor Authentication</a>
                                 </li>
+                                
                                 <li>
-                                    <a href="{% url 'oauth2_provider:authorized-token-list' %}">Authorized Applications</a>
+                                    <a href="{% url 'password_recovery_passphrase_home' %}"><i class="fa fa-key"></i> Password Recovery Passphrase</a>
                                 </li>
+                          
                                 <li>
-                                    <a href="{% url 'password_recovery_passphrase_home' %}">Password Recovery Passphrase</a>
+                                    <a href="{% url 'reset_password' %}"> <i class="fa fa-key"></i>  Change Password</a>
                                 </li>
+                                <div class="dropdown-divider"></div>
                                 <li>
-                                    <a href="{% url 'reset_password' %}">Change Password</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'delete_account' %}">Delete Account</a>
+                                    <a href="{% url 'delete_account' %}"> <i class="fa fa-remove"></i> Delete Account</a>
                                 </li>
                             </ul>
                         </li>
                         {% endif %}
 
                         {% if request.user.is_authenticated %}
-                       <li class="col"><a href="{% url 'mylogout' %}">Logout <i class="fa fa-sign-out"></i></a></li>
+                       <li class="col nav-link "><a href="{% url 'mylogout' %}">Logout <i class="fa fa-sign-out"></i></a></li>
 
                         {% else %}
                         <a href="{% url 'mfa_login' %}">Login <i class="fa fa-sign-in fa-lg"></i></a>

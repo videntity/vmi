@@ -18,7 +18,10 @@ from .emails import (send_password_reset_url_via_email,
 from .subject_generator import generate_subject_id
 from collections import OrderedDict
 from ..ial.models import IdentityAssuranceLevelDocumentation
+from twilio.rest import Client
+import logging
 
+logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
 # Copyright Videntity Systems Inc.
 
@@ -654,9 +657,9 @@ class UserProfile(models.Model):
 
 MFA_CHOICES = (
     ('', 'None'),
-    ('EMAIL', "Email"),
-    ('FIDO', "FIDO U2F or FIDO 2.0"),
-    ('SMS', "Text Message (SMS)"),
+    ('EMAIL', _("Email")),
+    ('FIDO', _("FIDO U2F or FIDO 2.0")),
+    ('SMS', _("Text Message (SMS)")),
 )
 
 
@@ -679,19 +682,15 @@ class PhoneVerifyCode(models.Model):
     def save(self, commit=True, **kwargs):
         if not self.id:
             now = pytz.utc.localize(datetime.utcnow())
-            expires = now + timedelta(days=1)
-            self.expires = expires
+            self.expires = now + timedelta(days=1)
             self.code = str(random.randint(1000, 9999))
             up = UserProfile.objects.get(user=self.user)
             if up.mobile_phone_number:
+
+                number = "%s" % (up.mobile_phone_number)
                 # Send SMS to up.mobile_phone_number
                 if settings.SMS_STRATEGY == "AWS-SNS":
-                    sns = boto3.client(
-                        'sns',
-                        # aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                        # aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                        region_name='us-east-1')
-                    number = "%s" % (up.mobile_phone_number)
+                    sns = boto3.client('sns', region_name='us-east-1')
                     sns.publish(
                         PhoneNumber=number,
                         Message="Your verification code for %s is : %s" % (settings.ORGANIZATION_NAME,
@@ -703,6 +702,19 @@ class PhoneVerifyCode(models.Model):
                             }
                         }
                     )
+                    logger.info("Message sent to %s by AWS SNS." % (number))
+
+                if settings.SMS_STRATEGY == "TWILIO":
+                    client = Client(settings.TWILIO_ACCOUNT_SID,
+                                    settings.TWILIO_TOKEN)
+                    message = client.messages.create(
+                        to=str(number),
+                        from_=settings.TWILIO_FROM_NUMBER,
+                        body="Your verification code for %s is : %s" % (settings.ORGANIZATION_NAME,
+                                                                        self.code))
+                    logger.info("Message sent to %s by Twilio. %s" %
+                                (number, message.sid))
+
         if commit:
             super(PhoneVerifyCode, self).save(**kwargs)
 

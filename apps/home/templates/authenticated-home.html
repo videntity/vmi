@@ -19,16 +19,15 @@
 
                             {% ifequal profile.ial "1" %}
                                     <p>Your identity needs verified before you can gain full access.
-                                    Your <a href="https://pages.nist.gov/800-63-3/sp800-63a.html#sec4">"You Are You Level" is
+                                    Your <a href="https://pages.nist.gov/800-63-3/sp800-63a.html#sec4">"You Are You" Level is
                                     <span class="badge badge-danger">{{profile.ial}}</span>,
                                     but most services require at least a level 2 <span class="badge badge-success">2</span>.
                                     Please contact the group or organization in which you enrolled so they may verify your identity.</p>
                             {% else %}
                                     <p>Your <a href="https://pages.nist.gov/800-63-3/sp800-63a.html#sec4">"You Are You"</a>
                                     level is <span class="badge badge-success">{{profile.ial}}</span> so you should be
-                                    all set to access websites and apps that use VerifyMyIdentity.
-                                    
-                                    <h5><a href="{{settings.KILLER_APP_URI}}"> <button type="button" class="btn btn-primary">{{settings.KILLER_APP_TITLE}}</button> </a></h5>
+                                    all set to access websites and apps that use {{ settings.APPLICATION_TITLE }}.
+                        
                             {% endifequal %}
                             
                             

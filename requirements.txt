@@ -52,3 +52,4 @@ fido2==0.5.0
 social-auth-app-django==2.1.0
 social-auth-core==1.7.0
 requests-oauthlib==1.1.0
+twilio==6.44.1
