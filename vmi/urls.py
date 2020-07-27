@@ -92,6 +92,8 @@ urlpatterns = [
          include('apps.ial.urls')),
     path('reports/',
          include('apps.reports.urls')),
+    path('dcrp/',
+         include('apps.dynamicreg.urls')),
     path('.well-known/',
          include('apps.oidc.wellknown_urls')),
     path('o/', include(('apps.oidc.urls', 'oidc'), namespace='oidc')),

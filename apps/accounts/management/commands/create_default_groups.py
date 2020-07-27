@@ -10,7 +10,9 @@ groups = ["Member",
           "OrganizationalAgent",
           "IdentityAssuranceTrustedReferee",
           "OrganizationAdministrator",
-          "OrganizationAgentReport"]
+          "OrganizationAgentReport",
+          "DynamicClientRegistrationProtocol"
+          ]
 
 
 def create_groups():
