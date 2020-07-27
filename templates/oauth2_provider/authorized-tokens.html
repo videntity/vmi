@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% block Content %}
+    <div class="block-center">
+    <h1>{% trans "ApplicationTokens" %}</h1>
+    
+     <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Application</th>
+                            <th scope="col">Scopes</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for authorized_token in authorized_tokens %}
+                        <tr>
+                            <th scope="row">{{ authorized_token.application.name }}</th>
+                            <th scope="row"> {% for scope_name, scope_description in authorized_token.scopes.items %}
+                                {{ scope_name }}: {{ scope_description }}
+                                {% endfor %}
+                            </th>
+
+                            <th scope="row">
+                                <a href="{% url 'oauth2_provider:authorized-token-delete' authorized_token.pk %}"">
+                                    <button type="button" class="btn btn-danger">Revoke</button>
+                                </a>
+                            </th>
+                        </tr>
+                        {% empty %}
+                        <li>{% trans "There are no authorized tokens yet." %}</li>
+                        {% endfor %}
+                    </tbody>
+                </table>
+     </div>
+
+{% endblock %}

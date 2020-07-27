@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% block Content %}
+    <form action="" method="post">{% csrf_token %}
+        <p>{% trans "Are you sure you want to revoke this application's access token?" %}
+        
+        </p>
+        <input type="submit" class="btn btn-danger" value="{% trans "Revoke" %}" />
+        
+     
+        
+    </form>
+{% endblock %}
