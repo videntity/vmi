@@ -1,0 +1,68 @@
+[
+{
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$120000$N1k1xriNBxsi$CNHUhKsgIK9fcwRYoJQhEehhB7gCb41X1I7k9zSiBnA=",
+        "last_login": "2019-02-21T18:12:42.175Z",
+        "is_superuser": true,
+        "username": "alan",
+        "first_name": "",
+        "last_name": "",
+        "email": "alan",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2019-02-21T16:08:42.999Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+        "password": "!ESPhGEbSRK6385i3eD58tffbH9jTPBX9NMy5xBEh",
+        "last_login": "2019-02-21T18:19:57.548Z",
+        "is_superuser": false,
+        "username": "alan9f994dfed8a04ceb",
+        "first_name": "Alan",
+        "last_name": "",
+        "email": "alan@videntity.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-02-21T18:12:22.952Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "fhirproxy.crosswalk",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "fhir_source": "http://fhir-test.sharemy.health:8080/fhir/baseDstu3/",
+        "fhir_patient_id": "2",
+        "date_created": "2019-02-21T17:07:46.923Z",
+        "user_identifier": "A12345V",
+        "user_id_type": "CIN",
+        "user_id_hash": "",
+        "created_at": "2019-02-21T17:07:46.923Z",
+        "updated_at": "2019-02-21T17:07:46.923Z"
+    }
+},
+{
+    "model": "fhirproxy.crosswalk",
+    "pk": 2,
+    "fields": {
+        "user": 2,
+        "fhir_source": "http://fhir-test.sharemy.health:8080/fhir/baseDstu3/",
+        "fhir_patient_id": "131",
+        "date_created": "2019-02-21T18:14:16.223Z",
+        "user_identifier": "A12345A",
+        "user_id_type": "CIN",
+        "user_id_hash": "",
+        "created_at": "2019-02-21T18:14:16.223Z",
+        "updated_at": "2019-02-21T18:14:16.223Z"
+    }
+}
+]
