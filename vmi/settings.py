@@ -31,6 +31,10 @@ SECRET_KEY = env(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool_env(env('DEBUG', True))
 
+if DEBUG:
+    # Never run a production system in DEBUG or with insecure transport turned off (i.e. http instead of https)
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # Application definition
@@ -57,6 +61,7 @@ INSTALLED_APPS = [
     'apps.dynamicreg',
     'apps.mfa.backends.sms',
     'apps.api',
+    'apps.testclient',
     # 'django_extensions',
 ]
 

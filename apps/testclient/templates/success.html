@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block Content %}
+
+ <h1>Success!</h1>
+	
+	<p>The OpenID Connect id_token and the OAuth2 access_token were POSTed to the client's redirect URI.<p>
+    
+	
+	<h1>OAuth2</h1>
+					
+					<div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Item</th>
+                            <th scope="col">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+					
+							              <tr>
+                            <th scope="row">token_type</th>
+                            <th scope="row">{{token_response.token_type}}</th>
+																						</tr>
+																					
+							              <tr>
+                            <th scope="row">expires_at</th>
+                            <th scope="row">{{token_response.expires_at}}</th>
+																						</tr>
+																					
+							              <tr>
+                            <th scope="row">expires_in</th>
+                            <th scope="row">{{token_response.expires_in}}</th>
+																					</tr>
+																					
+							              <tr>
+                            <th scope="row">scopes</th>
+                            <th scope="row">{{token_response.scope}}</th>
+																					</tr>
+
+							              <tr>
+                            <th scope="row">id_token</th>
+                            <th scope="row">{{token_response.id_token|truncatechars:20}}</th>
+																					</tr>
+																					</tbody>
+																			</table>
+													</div>
+																												
+
+    
+<p>The access_token is stored in the session and will expire in a few minutes.
+After that, you will need to go through <a href="{% url 'authorize_link' %}">Authorize</a> process again.</p>
+    
+    
+ <h2>API calls</h2>
+			
+			<div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+																												<th scope="col">Details</th>
+                            <th scope="col">Call</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+					
+							             <tr>
+                        <th scope="row">User Profile</th>
+																								<th scope="row">Get a user's profile information using the Oauth2 access_token.</th>
+                        <th scope="row"><pre>curl -H "Authorization: Bearer {{token_response.access_token}}" "{{settings.HOSTNAME_URL}}{% url 'oidc:userinfo' %}"</pre></th>
+																				</tr>
+							             <tr>
+                        <th scope="row">OpenID Connect Discovery</th>
+																								<th scope="row">Get Information about an OpenID Connect Provider. No Oauth2 Access token is needed. Its public.</th>
+                        <th scope="row"><pre>curl "{{settings.HOSTNAME_URL}}{% url 'openid-configuration' %}"</pre></th>
+																				</tr>
+																		</tbody>
+																				</table>
+																</div>
+
+<h1>OpenID Connect</h1>
+
+
+			<div class="row">
+         <table class="table">
+												<thead>
+																<tr>
+																				<th scope="col">Name</th>
+																				<th scope="col">Value</th>
+																				<th scope="col">Details</th>
+																</tr>
+												</thead>
+												<tbody>
+
+												<tr>
+																<th scope="row">JWT Payload</th>
+																<th scope="row"><a href="{% url 'jwt-payload' %}?jwt={{token_response.id_token}}">{{token_response.id_token|truncatechars:20}}</a></th>
+																<th scope="row">The entire id_token payload rendered as JSON.</th>
+												</tr>
+
+												<tr>
+																<th scope="row">sub</th>
+																<th scope="row">{{ id_token_payload.sub }}</th>
+																<th scope="row">The subject id for this user.</th>
+												</tr>
+												
+													<tr>
+																<th scope="row">iss</th>
+																<th scope="row">{{ id_token_payload.iss }}</th>
+																<th scope="row">The ID provider who is the the issuer of this id_token.</th>
+												</tr>
+													
+												<tr>
+																<th scope="row">Name</th>
+																<th scope="row">{{ id_token_payload.name }}</th>
+																<th scope="row">The name of the subject.</th>
+												</tr>
+												
+												<tr>
+																<th scope="row">Vectors of Trust</th>
+																<th scope="row">{{ id_token_payload.vot }}</th>
+																<th scope="row">Identity assurance information.</th>
+												</tr>		
+												
+													<tr>
+																<th scope="row">Vectors of Trust Trustmark</th>
+																<th scope="row"><a href="{{ id_token_payload.vtm }}">{{ id_token_payload.vtm }}</a></th>
+																<th scope="row">NIST 800 63-3 mappings for meanings of VoT</th>
+												</tr>										
+	
+														<tr>
+																<th scope="row">Identity Assurance Level (IAL)</th>
+																<th scope="row">{{ id_token_payload.ial }}</th>
+																<th scope="row">NIST 800 63-3 code for identity assurance.</th>
+												</tr>
+														
+														<tr>
+																<th scope="row">Authenticator Assurcance Level (AAL)</th>
+																<th scope="row">{{ id_token_payload.aal }}</th>
+																<th scope="row">NIST 800 63-3 code for authenticator assurance (e.g. MFA)</th>
+												</tr>
+	
+												
+										</tbody>
+												</table>
+									</div>
+
+					
+     <h2><a href="{% url 'logout' %}">Logout</a></h1>
+
+      {% endblock%}
+    
+</body>
+
+</html>

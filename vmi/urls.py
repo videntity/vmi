@@ -94,6 +94,8 @@ urlpatterns = [
          include('apps.reports.urls')),
     path('dcrp/',
          include('apps.dynamicreg.urls')),
+    path('testclient/',
+         include('apps.testclient.urls')),
     path('.well-known/',
          include('apps.oidc.wellknown_urls')),
     path('o/', include(('apps.oidc.urls', 'oidc'), namespace='oidc')),

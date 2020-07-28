@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block Content %}
+ <h1>{{error}}</h1>
+ {% if error == "access_denied" %}
+  <p>You have chosen not to approve access to the application. </p>
+ {% endif %}
+     
+{% endblock %}
