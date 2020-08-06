@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block Content %}
+ <h1>Test Client for {{ settings.APPLICATION_TITLE }}</h1> 
+ <h2><a href="{% url 'authorize_link' %}">Authorize</h2>
+	
+{% endblock %}
+
+
