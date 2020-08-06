@@ -55,13 +55,14 @@ You might add lines like the following to `/etc/hosts` file:
 
 
      127.0.0.1       verifymyidentity
-     127.0.0.1       smhapp
-     127.0.0.1       sharemyhealth
+     127.0.0.1       oauth2org
 
 
 
 
-Setup some local environment variables. 
+Setup some local environment variables via whatever stategy you choose.
+The default is using a `.env` file containing the following.
+Set this variable specific toy your hostname and environment
 
 
     export EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES=".ENV" 
@@ -69,6 +70,7 @@ Setup some local environment variables.
     export AWS_SECRET_ACCESS_KEY="YOUR_SECRET"
     export OIDC_PROVIDER="http://verifymyidentity:8000"
     export OIDC_ISSUER="http://verifymyidentity:8000"
+    export HOSTNAME_URL="http://verifymyidentity:8000"
     export ALLOWED_HOSTS="*"
     export DJANGO_SUPERUSER_USERNAME="youruser"
     export DJANGO_SUPERUSER_PASSWORD="yourpassword"
@@ -77,12 +79,31 @@ Setup some local environment variables.
     export DJANGO_SUPERUSER_LAST_NAME="User"
 
 
+    export FROM_EMAIL="no-reply@verifymyidentity.org"
+    export ADMIN_EMAIL="no-reply@verifymyidentity.org"
 
 
-The `EC2PARAMSTORE_4_ENVIRONMENT_VARIABLES` setting says to look for env vars in a file called `.env`.
-If this string is `EC2_PARAMSTORE`, the anything in `.env` will be overridden with parameters in
-an AWS EC2 Parameter store. There are a number of variables that can be set based on your
-specific environment and setup.  This is how you can brand the project to your needs.
+
+    # If using Twilio for SMS  delivery 
+    export TWILIO_ACCOUNT_SID="ACcccXXXXXXXXXXXXXXXXXXXXXX"
+    export TWILIO_TOKEN="4161XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    export TWILIO_FROM_NUMBER="+12025555555"
+    
+    # If using Sendgrid for email delivery 
+    export SENDGRID_API_KEY="SG.FyxxxXXXXXXXXXXXXXXXXXXXXXX.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXi0c0MuH3Af_g"
+    
+    # Do some basic branding. (See the settings file for more options.)
+    export SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '012345')
+    export ORGANIZATION_NAME = env('DJANGO_APPLICATION_TITLE', "Diamond Health")
+    
+    # You may also override the top left project name
+    export TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity2')
+    export PARTNER_REF = env('PARTNER_REF', 'Diamond Health')
+    
+
+
+
+This is how you can brand the project to your needs.
 See the `settings.py` and for a full list.  Below are some basic variable you may want to set.
 
 Just add the above to a `.env` and then do a `source .env`. Without valid 
