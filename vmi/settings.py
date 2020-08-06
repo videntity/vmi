@@ -32,7 +32,8 @@ SECRET_KEY = env(
 DEBUG = bool_env(env('DEBUG', True))
 
 if DEBUG:
-    # Never run a production system in DEBUG or with insecure transport turned off (i.e. http instead of https)
+    # Never run a production system in DEBUG or with insecure transport turned
+    # off (i.e. http instead of https)
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
@@ -296,14 +297,12 @@ TWILIO_FROM_NUMBER = env('TWILIO_FROM_NUMBER', "+15555555555")
 # Add a prefix to the lugh checkdigit calculation.
 # This can help identify genuine subject ids and indicate provenance.
 SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
-APPLICATION_TITLE = env('DJANGO_APPLICATION_TITLE', "Verify My Identity")
+APPLICATION_TITLE = env('APPLICATION_TITLE', "Verify My Identity")
 KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Your Application Here')
 KILLER_APP_URI = env('KILLER_APP_URI', 'http://localhost:8002')
 
 TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity')
-PARTNER_REF = env('PARTNER_REF', '')
-if len(PARTNER_REF) > 0:
-    PARTNER_REF += "/"
+PARTNER_REF = env('PARTNER_REF', '')  # a subtitle
 
 ORGANIZATION_TITLE = env(
     'DJANGO_ORGANIZATION_TITLE',
@@ -335,11 +334,11 @@ DEVELOPER_DOCS_URI = "https://github.com/videntity/vmi"
 DEVELOPER_DOCS = "Developer Docs"
 DEFAULT_DISCLOSURE_TEXT = """
     Verify My Identity  provides standards-based identity verification,
-    digital credentials, and single sign-on services for people andd
-    organizations.
-    Unauthorized or improper use of this system or its data may result in
-    disciplinary action, as well as civil and criminal penalties.
-    This system may be monitored, recorded, and subject to audit.
+    digital credentials, and single sign-on services for people and
+    organizations. Unauthorized or improper use of this system or
+    its data may result in disciplinary action, as well as civil
+    and criminal penalties. This system may be monitored, recorded,
+    and subject to audit.
     """
 
 DISCLOSURE_TEXT = env('DJANGO_PRIVACY_POLICY_URI', DEFAULT_DISCLOSURE_TEXT)
@@ -382,36 +381,40 @@ SETTINGS_EXPORT = [
     'PUBLIC_HOME_TEMPLATE',
 ]
 
-# Emails
+
+# Emails ----------------------------------------------------------
+# Verify My Identity REQUIRES A WORKING OUTBOUND EMAIL AND SMS SERVICE TO
+# FUNCTION!
 DEFAULT_FROM_EMAIL = env('FROM_EMAIL', 'no-reply@example.com')
 DEFAULT_ADMIN_EMAIL = env('ADMIN_EMAIL',
                           'no-reply@example.com')
 
 # Select the right Email delivery system that works for you.
-# Django's default is 'django.core.mail.backends.smtp.EmailBackend'. This will work with most email systems.
-# Set the other email settings according to your configuration.
-
-# If using the AWS Simple Email Service backend, 'django_ses.SESBackend', you need
-# only to have the values for AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY ,
-# and AWS_DEFAULT_REGION set.
-
+# Django's default is 'django.core.mail.backends.smtp.EmailBackend'. This will work with most
+# email systems including Sendgrid. Sendgrid is the new default and will work with Azure.
+# Set email settings according to your own configuration in your .env file.
+# Use SMTP Backend for SendGrid, Sendmail or other SMTP.  SMTP may also be used for AWS SES.
 # You can use 'django.core.mail.backends.console.EmailBackend' to send
-# emails to stdout instead of sending them.
-
-
-EMAIL_BACKEND = env('EMAIL_BACKEND', 'django_ses.SESBackend')
-
-# These values are important when using another email service such as your own email server (e.g. Exchange, Sendmail)
-# or a service such as Twilio SendGrid (available on the Azure Marketplace)
-# https://azuremarketplace.microsoft.com/en-us/marketplace/apps/SendGrid.SendGrid
-
-# Values default to Django default values
-EMAIL_HOST = env('EMAIL_HOST', 'localhost')
-EMAIL_PASSWORD = env('EMAIL_PASSWORD', '')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', '')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', '')
-EMAIL_PORT = int(env('EMAIL_PORT', 25))
+# emails to stdout instead of sending them. This is good for a local dev setup.
+# If using the AWS Simple Email Service (SES) you may also use,
+# 'django_ses.SESBackend'. You only need the settings for for AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY ,
+# and AWS_DEFAULT_REGION set for this to work. Those should also be set in
+# as environment variables.
 EMAIL_SUBJECT_PREFIX = env('EMAIL_SUBJECT_PREFIX', '[VerifyMyIdentity] ')
+EMAIL_BACKEND = env(
+    'EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+SENDGRID_API_KEY = env('SENDGRID_API_KEY', 'Set this in your envvar')
+# Use localhost for local dev. No needed for AWS SES
+EMAIL_HOST = env('EMAIL_HOST', 'smtp.sendgrid.net')
+# this is exactly the value 'apikey' (for Sendgrid.)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', 'apikey')
+EMAIL_HOST_PASSWORD = env('SENDGRID_API_KEY', SENDGRID_API_KEY)
+EMAIL_PORT = int(env('EMAIL_PORT', 587))
+EMAIL_USE_TLS = True
+
+# These emails settings are not used but provided as an envvars for
+# compatibility/completeness.
+EMAIL_PASSWORD = env('EMAIL_PASSWORD', '')
 EMAIL_USE_LOCALTIME = bool_env(env('EMAIL_USE_LOCALTIME', False))
 EMAIL_USE_TLS = bool_env(env('EMAIL_USE_TLS', False))
 EMAIL_USE_SSL = bool_env(env('EMAIL_USE_SSL', False))
@@ -420,7 +423,7 @@ EMAIL_SSL_KEYFILE = env('EMAIL_SSL_KEYFILE', None)
 
 
 SIGNUP_TIMEOUT_DAYS = 3
-ORGANIZATION_NAME = "Verify My Identity"
+ORGANIZATION_NAME = env('ORGANIZATION_NAME', "Verify My Identity")
 
 # 4 MB Default
 MAX_PROFILE_PICTURE_SIZE = env(
