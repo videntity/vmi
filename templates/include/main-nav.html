@@ -8,20 +8,14 @@
                             <img id="logo-img" src="{% static 'img/logo.png' %}"/>
 
                             <span id="logo-type" class="my-auto mx-1">
-                                {{ settings.TOP_LEFT_TITLE }}{% if settings.PARTNER_REF|length > 0 %}:{% endif %}
+                                {{ settings.TOP_LEFT_TITLE }}
+                                {% if settings.PARTNER_REF|length > 0 %}
+                                : {{ settings.PARTNER_REF }}
+                            {% endif %}
                             </span>
                         </div>
                     </a>
-                    <div class="navbar-brand d-flex">
-                        {% if settings.PARTNER_REF|length > 0 %}
-                            <a href="{{settings.KILLER_APP_URI}}" alt="{{settings.KILLER_APP_TITLE}}">
-                                {% with 'img/layout/'|add:settings.PARTNER_REF|add:'partner_logo.png' as logofile %}
-                               <img src="{% static logofile %}"
-                                    style="vertical-align:text-top;max-height:88px;max-width:64px;padding:5px;">
-                                {% endwith %}
-                            </a>
-                        {% endif %}
-                    </div>
+
                 </div>
 
                 <div class="navbar-expand">
