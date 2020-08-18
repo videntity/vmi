@@ -42,7 +42,7 @@ body {
 
 #oidc-cert-img {
     width: 150px;
-    height: 80px;
+    height: auto;
 }
 
 
