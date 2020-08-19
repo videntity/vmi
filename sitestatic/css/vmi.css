@@ -192,3 +192,8 @@ h3 {
 .help-block-invalid {
     color: red;
 }
+
+#oidc-cert-img {
+    width: 150px;
+    height: auto;
+}
