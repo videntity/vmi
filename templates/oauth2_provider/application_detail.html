@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-
 {% load i18n %}
-{% block content %}
+{% block Content %}
     <div class="block-center">
         <h3 class="block-center-heading">{{ application.name }}</h3>
 
@@ -38,4 +37,4 @@
             <a class="btn btn-danger" href="{% url "oauth2_provider:delete" application.id %}">{% trans "Delete" %}</a>
         </div>
     </div>
-{% endblock content %}
+{% endblock %}
