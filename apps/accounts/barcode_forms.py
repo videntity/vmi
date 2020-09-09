@@ -155,8 +155,8 @@ class ConfirmForm(forms.Form):
         idc.delete()
 
         # Send activated message
-        msg = "Your %s account is now active.  You may log in at %s" % (settings.APPLICATION_TITLE,
-                                                                        settings.HOSTNAME_URL)
+        msg = "Your %s account is now active. Your patient safety identifier is %s" % (settings.APPLICATION_TITLE,
+                                                                                       settings.HOSTNAME_URL)
         send_text(msg, str(up.mobile_phone_number))
 
 
@@ -168,25 +168,3 @@ class BarcodeForm(forms.Form):
     org_slug = forms.CharField(
         widget=forms.HiddenInput(), max_length=128, required=True)
     required_css_class = 'required'
-
-    def clean_barcode(self):
-        barcode = self.cleaned_data.get('barcode', "")
-        if barcode:
-            # Parse barcode
-            print("clean")
-        return barcode
-
-    def parse_barcode(self):
-        barcode = self.cleaned_data.get('barcode', "")
-        if barcode:
-            splitlines = barcode.splitlines()
-            for line in splitlines:
-                # print("line:", line)
-                if line.startswith("ANSI"):
-                    print("MAINLINE")
-                    mainline = line
-                    for l in re.split("\x0a", mainline):
-                        print(l)
-            # Parse barcode
-            print("parse")
-        return barcode
