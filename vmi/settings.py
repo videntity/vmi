@@ -282,7 +282,7 @@ OIDC_PROVIDER = {
 }
 
 # Adding to allow other modes of SMS text delivery in the future.
-SMS_STRATEGY = env('SMS_STRATEGY', 'TWILIO')  # AWS-SNS or TWILIO
+SMS_STRATEGY = env('SMS_STRATEGY', 'AWS-SNS')  # AWS-SNS or TWILIO
 
 # If Using TWILIO, set these credentials
 
@@ -293,7 +293,7 @@ TWILIO_TOKEN = env('TWILIO_TOKEN', 'your_auth_token')
 TWILIO_FROM_NUMBER = env('TWILIO_FROM_NUMBER', "+15555555555")
 
 
-# Add a prefix to the lugh checkdigit calculation.
+# Add a prefix to the luhn checkdigit calculation.
 # This can help identify genuine subject ids and indicate provenance.
 SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
 APPLICATION_TITLE = env('APPLICATION_TITLE', "Verify My Identity")
@@ -488,7 +488,7 @@ AUTHENTICATED_HOME_TEMPLATE = env(
 IAL2_EVIDENCE_CLASSIFICATIONS = (
     # Generic
     ('ONE-SUPERIOR-OR-STRONG-PLUS',
-     'One Superior or Strong+ pieces of identity evidence'),
+     'One Superior or one Strong+ piece of identity evidence'),
     ('ONE-STRONG-TWO-FAIR', 'One Strong and Two Fair pieces of identity evidence'),
     ('TWO-STRONG', 'Two Pieces of Strong identity evidence'),
 
@@ -497,8 +497,7 @@ IAL2_EVIDENCE_CLASSIFICATIONS = (
     ('ONE-SUPERIOR-OR-STRONG-PLUS-2', "Identification Card"),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-3', 'Veteran ID Card'),
     ('ONE-SUPERIOR-OR-STRONG-PLUS-4', 'Passport'),
-    ('ONE-SUPERIOR-OR-STRONG-PLUS-5', 'NY Medicaid ID Card'),
-    ('ONE-SUPERIOR-OR-STRONG-PLUS-6', 'Medicare ID'),
+    ('ONE-SUPERIOR-OR-STRONG-PLUS-5', 'RealID'),
     ('TWO-STRONG-1', 'Original Birth Certificate and a Social Security Card'),
     ('TRUSTED-REFEREE-VOUCH', 'I am a Trusted Referee Vouching for this person'),
 )
