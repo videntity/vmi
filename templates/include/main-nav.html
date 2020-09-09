@@ -44,7 +44,6 @@
                         {% endif %}
                        
                        
-                       {% if request.user|has_group:"OrganizationalAgent" %}
                         <li class="dropdown col">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                                 Organizations<b class="caret"></b>
@@ -52,29 +51,21 @@
                             <ul class="dropdown-menu">
                             {% for org in request.user.userprofile.agent_organizations %}
                                 <li>
-                                    <a href="{% url 'display_organization' org.slug %}"><i class="fa fa-building"></i> {{org.name}}</a>
+                                    <a href="{% url 'display_organization' org.slug %}"><i class="fa fa-building"></i>Agent for {{org.name}}</a>
                                 </li>
                             {% endfor %}
-                            </ul>
-                        </li>
-                        {% else %}
-                        {% if request.user.userprofile %}
-                        <li class="dropdown col">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                Organizations<b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
+                            
                             {% for org in request.user.userprofile.member_organizations %}
                                 <li>
-                                    <a href="{% url 'display_organization' org.slug %}"><i class="fa fa-building"></i> {{org.name}}</a>
+                                    <a href="{% url 'display_organization' org.slug %}"><i class="fa fa-building"></i>Member of {{org.name}}</a>
                                 </li>
-                            {% endfor %}
+                            {% endfor %}  
+                            
+                            
                             </ul>
                         </li>
-                        {% endif%}
-                        
-                        
-                        {% endif %}
+                       
+  
 
                        {% if request.user|has_group:"ApplicationDeveloper" %}
                         <li class="dropdown col">
