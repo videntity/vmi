@@ -110,3 +110,6 @@ Pipfile
 /.vs
 .vs/
 .vs
+
+# Ignore DevSpace cache and log folder
+.devspace/

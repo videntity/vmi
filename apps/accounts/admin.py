@@ -3,7 +3,7 @@ from .models import (UserProfile, Organization,
                      Address, OrganizationIdentifier,
                      IndividualIdentifier,
                      OrganizationAffiliationRequest, PhoneVerifyCode,
-                     PersonToPersonRelationship)
+                     PersonToPersonRelationship, IDCardConfirmation)
 
 
 # Copyright Videntity Systems Inc.
@@ -57,6 +57,17 @@ admin.site.register(
     OrganizationAffiliationRequestAdmin)
 
 
+class IDCardConfirmationAdmin(admin.ModelAdmin):
+    list_display = ('mobile_phone_number', 'url', )
+    search_fields = [
+        'mobile_phone_number',
+        'confirmation_uuid', ]
+    empty_value_display = ''
+
+
+admin.site.register(IDCardConfirmation, IDCardConfirmationAdmin)
+
+
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('name', 'user', 'birth_date',
                     'sex', 'subject', 'picture_url', 'verifying_agent_email')
@@ -73,7 +84,8 @@ admin.site.register(UserProfile, UserProfileAdmin)
 
 
 class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'point_of_contact', 'domain', 'subject', 'status',)
+    list_display = ('name', 'slug', 'point_of_contact',
+                    'domain', 'subject', 'status',)
     search_fields = ['name', 'slug', 'org_identifiers__name', 'subject']
     raw_id_fields = ("point_of_contact", "members", "users", "addresses")
     empty_value_display = ''
