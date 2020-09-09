@@ -134,6 +134,7 @@ class Command(BaseCommand):
                 "Enter the confirmation code received:")
             if confirm_code_from_user == confirmation_code:
                 confirmation_code_confirm = True
+                print("Confirmation code is correct.")
             else:
                 print("Incorrect confirmation code. Please try again.")
 

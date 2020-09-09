@@ -157,7 +157,7 @@ class ConfirmForm(forms.Form):
         # Send activated message
         msg = "Your %s account is now active.  You may log in at %s" % (settings.APPLICATION_TITLE,
                                                                         settings.HOSTNAME_URL)
-        send_text(up.mobile_phone_number, msg)
+        send_text(msg, str(up.mobile_phone_number))
 
 
 class BarcodeForm(forms.Form):
