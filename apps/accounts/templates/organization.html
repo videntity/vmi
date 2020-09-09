@@ -46,9 +46,14 @@
                             {% endif %}
                             
                             {% if request.user in organization.users.all %}
-                            <h2>Member Signup URL</h2>
+                            <h2>Agent Creates Verified Member With Driver's License</h2>
+                            <a href="{% url 'agent_creates_member_from_drivers_license' organization.slug %}">
+                                    <i class="fa fa--barcode"></i>Scan Barcode</a>
+                            
+                             <h2>Member Self-Signup URL</h2>
                             <pre style="overflow: visible;"><a href="{{ organization.member_signup_url}}">
                             {{ organization.member_signup_url}}></a></pre>
+                            
                             
 
 

@@ -43,6 +43,28 @@ GENDER_CHOICES = (('', 'Blank'),
 # For Passports, SSNs, URIs, MPIs, etc.
 
 
+class IDCardConfirmation(models.Model):
+    username = models.CharField(max_length=30, blank=True, default='')
+    org_slug = models.CharField(max_length=255, blank=True, default='')
+    confirmation_uuid = models.CharField(
+        max_length=255, blank=True, default=uuid.uuid4)
+    mobile_phone_number = PhoneNumberField(blank=True, default="",
+                                           help_text=_('United States phone numbers only.'))
+    mobile_phone_number_verified = models.BooleanField(
+        blank=True, default=False)
+    email = models.CharField(max_length=254, blank=True, default='')
+    email_verified = models.BooleanField(blank=True, default=False)
+    details = models.TextField(blank=True, default='')
+
+    def __str__(self):
+        return "%s" % (self.confirmation_uuid)
+
+    @property
+    def url(self):
+        return "%s%s" % (settings.HOSTNAME_URL, reverse(
+            'member_confirm', args=(self.confirmation_uuid, )))
+
+
 class IndividualIdentifier(models.Model):
     user = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, null=True)

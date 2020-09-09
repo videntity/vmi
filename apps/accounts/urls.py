@@ -32,7 +32,7 @@ from .address_views import (display_addresses, add_new_address,
 
 from .profile_picture_views import upload_profile_picture
 from .change_account_views import activate_subject, deactivate_subject
-
+from .license_create_views import member_confirm
 
 # Copyright Videntity Systems Inc.
 
@@ -81,6 +81,9 @@ urlpatterns = [
         name='find_org_to_create_member_account'),
     url(r'^create-member-account/(?P<organization_slug>[^/]+)/',
         create_member_account, name='create_member_account'),
+    url(r'^member-confirm/(?P<confirmation_uuid>[^/]+)/',
+        member_confirm,
+        name='member_confirm'),
 
     # Organization related
     url(r'^find-org-to-create-account', find_org_to_create_account,
