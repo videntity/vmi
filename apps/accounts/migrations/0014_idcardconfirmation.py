@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('username', models.CharField(blank=True, default='', max_length=30)),
                 ('confirmation_uuid', models.CharField(blank=True, default=uuid.uuid4, max_length=255)),
-                ('mobile_phone_number', phonenumber_field.modelfields.PhoneNumberField(blank=True, default='', help_text='United States phone numbers only.', max_length=128, region=None)),
+                ('mobile_phone_number', phonenumber_field.modelfields.PhoneNumberField(blank=True, default='', help_text='United States phone numbers only.', max_length=128)),
                 ('mobile_phone_number_verified', models.BooleanField(blank=True, default=False)),
                 ('email', models.CharField(blank=True, default='', max_length=254)),
                 ('email_verified', models.BooleanField(blank=True, default=False)),
