@@ -41,7 +41,7 @@
                                 <a class="nav-link" href="{% url 'oauth2_provider:authorized-token-list' %}"> Applications</a>
                         </li>
                                 
-                        {% endif %}
+                        
                        
                        
                         <li class="dropdown col">
@@ -65,7 +65,7 @@
                             </ul>
                         </li>
                        
-  
+                        {% endif %}
 
                        {% if request.user|has_group:"ApplicationDeveloper" %}
                         <li class="dropdown col">

@@ -6,8 +6,8 @@ Verify My Identity is a certified OpenID Connect Provider. Its supports role-bas
 VMI manages relationships between organizations, staff users, and consumer users. Other features include:
 
 
-* Trusted Referee Support - According to NIST SP 800-63-3.
-* FIDO U2F / FIDO 2 Support
+* Trusted Referee Support - According to NIST Digital Identity Guidelines (SP 800-63-3).
+* FIDO U2F / FIDO 2 Multi-factor authentication support
 * Text Message Multi-factor authentication support 
 * Vectors of Trust Support
 * Support for `document` and `address` claims as defined in the iGov Profile for OIDC.
@@ -16,7 +16,7 @@ VMI manages relationships between organizations, staff users, and consumer users
 Installation
 ------------
 
-This project is based on Python 3.6 and Django 2.1.x. 
+This project is based on Python 3.6 and Django 2.2.x. 
 
 Download the project:
 
@@ -49,15 +49,13 @@ compiler and python-dev.
 Add some entries to your `/etc/hosts` file.
 
 
-If running this OIDC server in conjunction with `smh_app` or `sharemyhealth` (OAuth2 server)
+If running this OIDC server in conjunction with `oauth2org` (OAuth2 server)
 on the same machine for development, then we recommend setting up names for each server host in `/etc/hosts`.
 You might add lines like the following to `/etc/hosts` file:
 
 
      127.0.0.1       verifymyidentity
      127.0.0.1       oauth2org
-
-
 
 
 Setup some local environment variables via whatever stategy you choose.
@@ -94,11 +92,11 @@ Set this variable specific toy your hostname and environment
     
     # Do some basic branding. (See the settings file for more options.)
     export SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '012345')
-    export ORGANIZATION_NAME = env('DJANGO_APPLICATION_TITLE', "Diamond Health")
+    export ORGANIZATION_NAME = env('DJANGO_APPLICATION_TITLE', "ACME Health")
     
     # You may also override the top left project name
     export TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity2')
-    export PARTNER_REF = env('PARTNER_REF', 'Diamond Health')
+    export PARTNER_REF = env('PARTNER_REF', 'Partner Health')
     
 
 
@@ -130,7 +128,7 @@ Create a superuser (Optional)
     python manage.py create_super_user_from_envars
 
 
-In development our convention is to run `vmi` on port `8000`, `sharemyhealth` on 8001, and `smh_app` on `8002`.
+In development our convention is to run `vmi` on port `8000`, `oauth2orgh` on 8001, and `smh_app` on `8002`.
 To start this server on port 8001 issue the following command.
 
 
@@ -172,14 +170,13 @@ commands like so:
 `docker-compose -f .development/docker-compose.yml exec web python manage.py`
 
 
-Connecting ShareMyHealth ShareMyHealth App, and VerifyMyIdentity
-------------------------------------------====================---
+Connecting OAuth2org and VerifyMyIdentity
+-----------------------------------------
 
-The following link outlines some settings for getting Verify My Identity and Share My Health working in
+The following link outlines some settings for getting Verify My Identity and OAuth2org working in
 a in a local development environment.
 
-[Local Verify My Identity and Share My Health](https://gist.github.com/whytheplatypus/4b11eec09df978656b9007155a96c7dd)
-
+[Local Verify My Identity and OAuth2org](https://gist.github.com/whytheplatypus/4b11eec09df978656b9007155a96c7dd)
 
 
 ## Associated Projects
@@ -188,18 +185,10 @@ a in a local development environment.
 a standards-focused OpenID Connect Identity Provider.
 
 
-[ShareMyHealth](https://github.com/TransparentHealth/sharemyhealth) is designed as a 
+[Oauth2org](https://github.com/TransparentHealth/oauth2org) is designed as a 
 consumer-mediated health information exchange. It is an OAuth2 Provider and FHIR Server.  
 ShareMyHealth acts as a relying party to 
 [vmi](https://github.com/TransparentHealth/vmi).
-
-
-[ShareMyHealth App](https://github.com/TransparentHealth/sharemyhealth) is a web application
-for community members and community-based organizations.  It functions as a personal health record
-and allows users to selectivly share information with organizations they choose.
-
-ShareMyHealth App is an OAuth2 client to [ShareMyHealth](https://github.com/TransparentHealth/sharemyhealth).
-It gets healkth information as FHIR.  It is also a relying party to [vmi](https://github.com/TransparentHealth/vmi).
 
 
 ## Supporting Resources

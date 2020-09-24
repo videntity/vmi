@@ -5,6 +5,8 @@ from collections import OrderedDict
 from signal import signal, SIGINT
 from ...models import IDCardConfirmation, random_number, Organization
 from ...texts import send_text
+import pyttsx3
+from django.conf import settings
 
 
 def handler(signal_received, frame):
@@ -89,6 +91,8 @@ def parse_realid(binary_input):
         # Postal code DAK
         if s.startswith(b'DAK'):
             response['postal_code'] = s.split(b'DAK')[1].decode('ascii')
+
+    # shimcode to return first name, when non-RealID.
     if 'first_name' not in response.keys() and 'first_and_middle' in response.keys():
         response['first_name'] = response['first_and_middle'].split(' ')[0]
 
@@ -103,6 +107,7 @@ class Command(BaseCommand):
         # Positional arguments
         parser.add_argument('organization_slug', nargs='?',
                             default="acme-health")
+        parser.add_argument('username', nargs='?', default="alan")
 
     def handle(self, *args, **options):
 
@@ -112,33 +117,81 @@ class Command(BaseCommand):
             org = Organization.objects.get(slug=options['organization_slug'])
         except Organization.DoesNotExist:
             print('The organization specified does not exist.')
+            pyttsx3.speak("The organization specified does not exist.")
             sys.exit(1)
+        msg = """Running RealID enrollment for the organization %s.
+        The agent controlling this kiosk has the username %s.""" % (
+            org.name, options['username'])
+        print(msg)
+        pyttsx3.speak(msg)
 
-        print('Running RealID enrollment for organization', org.name)
+        msg = """The kiosk is now accepting keypad input
+                 from user or from the agent on behalf of the user."""
+        print(msg)
+        pyttsx3.speak(msg)
+
         print('Press CTRL-C to exit.')
+
         confirmation_code_confirm = False
         phone_number_valid = False
         while not phone_number_valid:
-            mobile_number = input("Enter the person's US mobile number:")
-            if not mobile_number.startswith("+"):
-                mobile_number = "+%s" % (mobile_number)
-            phone_number_valid = True
 
-        while confirmation_code_confirm is False:
-            print("Sending code to the person's phone")
-            confirmation_code = str(random_number(4))
-            msg = "Your confirmation code is: %s" % (confirmation_code)
-            send_text(msg, mobile_number)
+            msg = "Enter user's mobile number: "
+            pyttsx3.speak(msg)
+            mobile_number = input(msg)
 
-            confirm_code_from_user = input(
-                "Enter the confirmation code received:")
-            if confirm_code_from_user == confirmation_code:
-                confirmation_code_confirm = True
-                print("Confirmation code is correct.")
+            if len(mobile_number) != 10:
+                msg = """The phone number was invalid.""" + \
+                    """Please enter a valid 10 digits US phone number.""" + \
+                    """Do not preface with a 'one'"""
+                print(msg)
+                pyttsx3.speak(msg)
+
             else:
-                print("Incorrect confirmation code. Please try again.")
+                # standardize the phone number with a "+1" in front
+                mobile_number = "+1%s" % (mobile_number)
+                phone_number_valid = True
 
-        print("Please scan the barcode on the back of the REAL ID....")
+                while confirmation_code_confirm is False:
+
+                    # Send and confirm code.
+                    confirmation_code = str(random_number(4))
+                    msg = "Your confirmation code is: %s" % (confirmation_code)
+                    send_text(msg, mobile_number)
+
+                    msg = ("""Thank you. A confirmation code is being sent to %s.
+                           Please enter this code on the keypad or provide it to the attendant.""" % (
+                        mobile_number))
+
+                    print(msg)
+                    pyttsx3.speak(msg)
+
+                    msg = "Please enter the confirmation code received:"
+                    pyttsx3.speak(msg)
+                    confirm_code_from_user = input(msg)
+                    if confirm_code_from_user == confirmation_code:
+                        confirmation_code_confirm = True
+                        phone_number_valid = True
+                        msg = "Thank you. Your mobile phone number was verified."
+                        print(msg)
+                        pyttsx3.speak(msg)
+
+                    else:
+                        phone_number_valid = False
+                        msg = """The confirmation code was incorrect.
+                        Please re-enter your phone number for a new code."""
+                        print(msg)
+                        pyttsx3.speak(msg)
+
+        msg = """Reading information from the back of your license saves time and prevents errors.
+                 Information including name, date of birth, and address will be collected."""
+        print(msg)
+        pyttsx3.speak(msg)
+
+        msg = "Please present the barcode on the back of your state-issued driver's license or ID."
+        print(msg)
+        pyttsx3.speak(msg)
+
         for chunk in sys.stdin.buffer:
             if chunk.startswith(b'@^[[B^[[20~'):
                 print("Barcode detected......................")
@@ -148,13 +201,28 @@ class Command(BaseCommand):
                 break
 
             elif chunk.startswith(b'ANSI'):
-                print("Possible RealID detected. Scanning....")
+
+                print("Possible Real ID detected. Scanning....")
                 response = parse_realid(chunk)
                 idc = IDCardConfirmation.objects.create(details=json.dumps(response),
                                                         mobile_phone_number=mobile_number,
                                                         mobile_phone_number_verified=True,
                                                         org_slug=options['organization_slug'])
                 print("Sending link to user to complete signup.")
-                msg = "To complete signup, Go to %s" % (idc.url)
+                msg = """Thank you %s for enrolling in %s. You should shortly get a text
+                         message with a link to complete your account signup.
+                         You can complete this now or later.
+                         The account login you create will allow you to access
+                         your health information including your test results.""" % (response['first_name'],
+                                                                                    settings.APPLICATION_TITLE)
+                pyttsx3.speak(msg)
+
+                msg = """Hello %s %s. Welcome to %s.
+                         To complete your account signup please
+                         complete the online form at %s""" % (
+                        response['first_name'].title(),
+                        response['last_name'].title(),
+                        settings.APPLICATION_TITLE,
+                        idc.url)
                 send_text(msg, mobile_number)
-                print("Done.")
+                print("User's link to complete account is: %s " % idc.url)
