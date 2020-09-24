@@ -217,8 +217,9 @@ class Command(BaseCommand):
                                                                                     settings.APPLICATION_TITLE)
                 pyttsx3.speak(msg)
 
-                msg = """Hello %s %s. Welcome to %s.""" + \
-                    """To complete your account signup please complete the online form at %s""" % (
+                msg = """Hello %s %s. Welcome to %s.
+                         To complete your account signup please
+                         complete the online form at %s""" % (
                         response['first_name'].title(),
                         response['last_name'].title(),
                         settings.APPLICATION_TITLE,
