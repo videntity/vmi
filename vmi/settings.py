@@ -309,12 +309,12 @@ ORGANIZATION_TITLE = env(
 ORGANIZATION_URI = env('DJANGO_ORGANIZATION_URI',
                        'https://videntity.com')
 POLICY_URI = env('DJANGO_POLICY_URI',
-                 'https://static.verifymyidentity.com/privacy-policy-1.0.html')
+                 '/static/legal/privacy-policy-1.0.html')
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
 TOS_URI = env('DJANGO_TOS_URI',
-              'https://static.verifymyidentity.com/terms-of-service-1.0.html')
+              '/static/legal/terms-of-service-1.0.html')
 AGENT_TOS_URI = env('DJANGO_AGENT_TOS_URI',
-                    'https://static.verifymyidentity.com/agent-terms-of-service-1.0.html')
+                    '/static/legal/terms-of-service-1.0.html')
 
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 
