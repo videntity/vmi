@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li><a href="/">Home</a></li>
+                        <li class="active"><a href=".">{{organization.name}}</a></li>
+                    </ol>
+{% endblock %}
+{% block Content %}
+            <div class="row">
+                <div class="col well">
+                    <div class="row">
+                        <div class="col">
+                            <h1 class="page-title text-center">{{organization.name}}</h1>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="org-logo__block">
+                            <img src="{{organization.picture_url}}" alt="image" class="org-logo__img"/>
+                        </div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col">
+                            
+                            
+
+                            
+                            {% if request.user in organization.members.all %}
+                            <a href="{% url 'remove_member_from_organization' request.user.userprofile.subject organization.slug %}">
+                                    <button type="button" class="btn btn-danger"> Remove Me from from {{organization}} </button>
+                                </a>
+                            {% endif %}
+                            
+                        </div>
+                    </div>
+                </div> <!-- /.col.well -->
+            </div> <!-- /.row -->
+{% endblock %}

@@ -296,6 +296,11 @@ class Organization(models.Model):
             'create_member_account', args=(self.slug,)))
 
     @property
+    def agent_signup_url(self):
+        return "%s%s" % (settings.HOSTNAME_URL, reverse(
+            'create_agent_account', args=(self.slug,)))
+
+    @property
     def formatted_organization(self):
         od = OrderedDict()
         od['name'] = self.name

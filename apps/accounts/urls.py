@@ -17,12 +17,16 @@ from .mfa_views import (
     EnableSMSMFAView,
     ManageView,
 )
-from .organization_views import (display_organization, remove_agent_from_organization,
+from .organization_views import (display_organization_agent_view,
+                                 display_organization_member_view,
+                                 remove_agent_from_organization,
                                  remove_member_from_organization,
                                  display_member_organizations)
 from .phone_views import mobile_phone, verify_mobile_phone_number
-from .identifier_views import (display_individual_identifiers, add_new_individual_identifier,
-                               delete_individual_identifier, edit_individual_identifier)
+from .identifier_views import (display_individual_identifiers,
+                               add_new_individual_identifier,
+                               delete_individual_identifier,
+                               edit_individual_identifier)
 from .password_recovery_passphrase_views import (password_recovery_passphrase_home,
                                                  generate_password_recovery_passphrase,
                                                  reset_password_with_recovery_passphrase,
@@ -52,8 +56,10 @@ urlpatterns = [
     url(r"^organization/(?P<organization_slug>[^/]+)/remove-agent/(?P<user_id>[^/]+)",
         remove_agent_from_organization,
         name='remove_agent_from_organization'),
-    url(r"^organization/(?P<organization_slug>[^/]+)/", display_organization,
-        name='display_organization'),
+    url(r"^organization/agent/(?P<organization_slug>[^/]+)/", display_organization_agent_view,
+        name='display_organization_agent_view'),
+    url(r"^organization/member/(?P<organization_slug>[^/]+)/", display_organization_member_view,
+        name='display_organization_member_view'),
     url(r'^reset-forgotten-password(?P<reset_password_key>[^/]+)/$',
         password_reset_email_verified, name='password_reset_email_verified'),
     url(r'^mobile-phone', mobile_phone, name='mobile_phone'),
@@ -69,7 +75,7 @@ urlpatterns = [
         name='upload_profile_picture'),
     url(r'^create-account/(?P<service_title>[^/]+)/', create_account,
         name='create_account_enduser_affiliate'),
-    url(r'^create-account', create_account, name='create_account_enduser'),
+    # url(r'^create-account', create_account, name='create_account_enduser'),
 
     url(r'^activation-verify/(?P<activation_key>[^/]+)/$',
         activation_verify, name='activation_verify'),
@@ -90,7 +96,7 @@ urlpatterns = [
         name='find_org_to_create_account'),
 
     url(r'^create-agent-account/(?P<organization_slug>[^/]+)/',
-        create_agent_account, name='create_org_account'),
+        create_agent_account, name='create_agent_account'),
 
     url(r'^approve-org-affiliation/(?P<organization_slug>[^/]+)/(?P<username>[^/]+)/',
         approve_org_affiliation, name='approve_org_affiliation'),

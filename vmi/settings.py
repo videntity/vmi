@@ -309,21 +309,22 @@ ORGANIZATION_TITLE = env(
 ORGANIZATION_URI = env('DJANGO_ORGANIZATION_URI',
                        'https://videntity.com')
 POLICY_URI = env('DJANGO_POLICY_URI',
-                 '/static/legal/privacy-policy-1.0.html')
+                 '/static/legal/privacy-policy.html')
 POLICY_TITLE = env('DJANGO_POLICY_TITLE', 'Privacy Policy')
-TOS_URI = env('DJANGO_TOS_URI',
-              '/static/legal/terms-of-service-1.0.html')
-AGENT_TOS_URI = env('DJANGO_AGENT_TOS_URI',
-                    '/static/legal/terms-of-service-1.0.html')
+
+# These may be different depending on your organization/config.
+
+TOS_URI = env('TOS_URI',
+              '/static/legal/terms-of-service.html')
+AGENT_TOS_URI = env('AGENT_TOS_URI',
+                    '/static/legal/terms-of-service.html')
 
 TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
 
 # If True, display the training attestation on agent signup.
 REQUIRE_TRAINING_FOR_AGENT_SIGNUP = bool_env(
     env('REQUIRE_TRAINING_FOR_AGENT_SIGNUP', False))
-TRAINING_URI = env('TRAINING_URI',
-                   'https://static.verifymyidentity.com/training-1.0.html')
-TOS_TITLE = env('DJANGO_TOS_TITLE', 'Terms of Service')
+TRAINING_URI = env('TRAINING_URI', '/static/training/training.html')
 USER_DOCS_URI = "https://github.com/videntity/vmi"
 USER_DOCS_TITLE = "User Documentation"
 USER_DOCS = "User Docs"
@@ -340,18 +341,15 @@ DEFAULT_DISCLOSURE_TEXT = """
     and subject to audit.
     """
 
-DISCLOSURE_TEXT = env('DJANGO_PRIVACY_POLICY_URI', DEFAULT_DISCLOSURE_TEXT)
+DISCLOSURE_TEXT = env('DISCLOSURE_TEXT', DEFAULT_DISCLOSURE_TEXT)
 
 HOSTNAME_URL = env('HOSTNAME_URL', 'http://localhost:8000')
 
 ORG_SIGNUP_CONTACT = env('ORG_SIGNUP_CONTACT',
                          'https://videntity.com/contact-us/')
 
-# Allow Members to create accounts
-ALLOW_MEMBER_SIGNUP = bool_env(env('ALLOW_MEMBER_SIGNUP', False))
-
-CONTACT_EMAIL = env('DJANGO_CONTACT_EMAIL', 'sales@videntity.com')
-
+CONTACT_EMAIL = env('CONTACT_EMAIL', 'sales@videntity.com')
+ALLOW_MEMBER_SIGNUP = bool_env(env('ALLOW_MEMBER_SIGNUP', 'True'))
 SETTINGS_EXPORT = [
     'DEBUG',
     'CONTACT_EMAIL',
