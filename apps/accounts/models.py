@@ -68,11 +68,11 @@ class IDCardConfirmation(models.Model):
 class IndividualIdentifier(models.Model):
     user = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, null=True)
+    title = models.CharField(max_length=255, blank=True, default='')
     type = models.CharField(choices=settings.INDIVIDUAL_ID_TYPE_CHOICES,
                             max_length=255, blank=True, default='', db_index=True)
     name = models.SlugField(max_length=255, blank=True,
                             default='', db_index=True)
-
     issuer = models.CharField(max_length=255, blank=True, default='')
     # ISO 3166-1
     country = models.CharField(max_length=2, blank=True,
@@ -86,7 +86,6 @@ class IndividualIdentifier(models.Model):
 
     value = models.CharField(max_length=250, blank=True,
                              default='', db_index=True)
-
     uri = models.TextField(blank=True, default='', db_index=True)
 
     metadata = models.TextField(
@@ -134,6 +133,7 @@ class IndividualIdentifier(models.Model):
 class OrganizationIdentifier(models.Model):
     name = models.SlugField(max_length=250, default='',
                             blank=True, db_index=True)
+    title = models.CharField(max_length=255, blank=True, default='')
     value = models.CharField(
         max_length=250,
         blank=True,
@@ -142,14 +142,28 @@ class OrganizationIdentifier(models.Model):
         blank=True,
         default='',
         help_text="JSON Object")
-    type = models.CharField(max_length=16, blank=True, default='', )
+    type = models.CharField(choices=settings.ORGANIZATION_ID_TYPE_CHOICES,
+                            max_length=255, blank=True, default='', db_index=True)
+    issuer = models.CharField(max_length=255, blank=True, default='')
+    uri = models.TextField(blank=True, default='', db_index=True)
 
     def __str__(self):
         return self.value
 
+    def save(self, commit=True, **kwargs):
+        self.name = self.type
+        if commit:
+            super(OrganizationIdentifier, self).save(**kwargs)
+
+    @property
+    def doc_oidc_format(self):
+        od = OrderedDict()
+        od['type'] = self.type
+        od['num'] = self.value
+        return od
+
+
 # For Addresses
-
-
 class Address(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, db_index=True, editable=False)
     user = models.ForeignKey(
@@ -198,7 +212,7 @@ class Address(models.Model):
         od['country'] = self.country
         return od
 
-# Future Version - Experimental
+# Added for Future Compat.
 
 
 class PersonToPersonRelationship(models.Model):
@@ -243,6 +257,8 @@ class Organization(models.Model):
     registration_code = models.CharField(max_length=100,
                                          default='',
                                          blank=True)
+
+    about = models.TextField(default='', blank=True)
     domain = models.CharField(
         max_length=512,
         blank=True,
@@ -261,6 +277,8 @@ class Organization(models.Model):
         related_name="organization_point_of_contact")
     addresses = models.ManyToManyField(
         Address, blank=True, related_name="organization_addresses")
+    identifiers = models.ManyToManyField(
+        OrganizationIdentifier, blank=True, related_name="organization_identifiers")
 
     members = models.ManyToManyField(
         get_user_model(), blank=True, related_name='org_members',
@@ -275,8 +293,8 @@ class Organization(models.Model):
                                                          blank=True)
 
     default_groups_for_agents = models.ManyToManyField(Group, blank=True,
-                                                       help_text="All new agents will be in these groups by default.")
-
+                                                       help_text="All new agents will be added to these groups by default.")
+    joined_date = models.DateField(null=True, blank=True)
     open_member_enrollment = models.BooleanField(
         default=True, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -294,6 +312,11 @@ class Organization(models.Model):
     def member_signup_url(self):
         return "%s%s" % (settings.HOSTNAME_URL, reverse(
             'create_member_account', args=(self.slug,)))
+
+    @property
+    def agent_signup_url(self):
+        return "%s%s" % (settings.HOSTNAME_URL, reverse(
+            'create_agent_account', args=(self.slug,)))
 
     @property
     def formatted_organization(self):
@@ -379,7 +402,7 @@ class OrganizationAffiliationRequest(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE,
-                                db_index=True, null=False)
+                                db_index=True, null=False, related_name='user_profile')
     subject = models.CharField(max_length=64, default='', blank=True,
                                help_text='Subject for identity token',
                                db_index=True)

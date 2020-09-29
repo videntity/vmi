@@ -16,10 +16,20 @@ logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
 
 @login_required
-def display_organization(request, organization_slug):
+def display_organization_agent_view(request, organization_slug):
     org = get_object_or_404(Organization, slug=organization_slug)
-    return render(request, 'organization.html', {"organization": org,
-                                                 'signup_url': org.signup_url})
+    if request.user not in org.users.all():
+        raise Http404()
+    return render(request, 'organization_agent_view.html', {"organization": org})
+
+
+@login_required
+def display_organization_member_view(request, organization_slug):
+    org = get_object_or_404(Organization, slug=organization_slug)
+    if request.user not in org.members.all():
+        raise Http404()
+
+    return render(request, 'organization_member_view.html', {"organization": org})
 
 
 @login_required

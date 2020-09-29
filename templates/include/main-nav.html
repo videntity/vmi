@@ -51,13 +51,13 @@
                             <ul class="dropdown-menu">
                             {% for org in request.user.userprofile.agent_organizations %}
                                 <li>
-                                    <a href="{% url 'display_organization' org.slug %}"><i class="fa fa-building"></i>Agent for {{org.name}}</a>
+                                    <a href="{% url 'display_organization_agent_view' org.slug %}"><i class="fa fa-building"></i> Agent for {{org.name}}</a>
                                 </li>
                             {% endfor %}
                             
                             {% for org in request.user.userprofile.member_organizations %}
                                 <li>
-                                    <a href="{% url 'display_organization' org.slug %}"><i class="fa fa-building"></i>Member of {{org.name}}</a>
+                                    <a href="{% url 'display_organization_member_view' org.slug %}"><i class="fa fa-building"></i> Member of {{org.name}}</a>
                                 </li>
                             {% endfor %}  
                             
