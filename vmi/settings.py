@@ -376,6 +376,7 @@ SETTINGS_EXPORT = [
     'ALLOW_MEMBER_SIGNUP',
     'PARTNER_REF',
     'PUBLIC_HOME_TEMPLATE',
+    'INDIVIDUAL_ID_TYPE_CHOICES',
 ]
 
 
@@ -445,10 +446,17 @@ ORGANIZATION_ID_TYPE_CHOICES = env('ORGANIZATION_ID_TYPE_CHOICES', (
     ('FEIN', 'Federal Employer ID Number (Tax ID)'),
     ('NPI', 'National Provider Identifier'),
     ('OEID', 'Other Entity Identifier'),
-    ('PECOS', 'PECOS Medicare ID'),))
+    ('PECOS', 'PECOS Medicare ID'),
+    ('MEDICAID', 'State Provider  /Medicaid ID'),
+    ('NETWORK_ID', 'Insurance/Network ID'),
+    ('DIRECT_DOMAIN', 'Direct Domain'),
+    ('DIRECT_ADDRESS', 'Direct Address'),
+    ('EMAIL', 'Email Address (Additional)'),
+    ('FHIR', 'FHIR Endpoint'),
+    ))
 
 DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS = env(
-    'DEFAULT_COUNTRY_CODE_FOR_IDENTIFIERS', "US")
+    'DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS', "US")
 
 PHONENUMBER_DEFAULT_REGION = env('PHONENUMBER_DEFAULT_REGION', "US")
 
