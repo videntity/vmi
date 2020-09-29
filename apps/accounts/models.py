@@ -146,16 +146,14 @@ class OrganizationIdentifier(models.Model):
                             max_length=255, blank=True, default='', db_index=True)
     issuer = models.CharField(max_length=255, blank=True, default='')
     uri = models.TextField(blank=True, default='', db_index=True)
-    
+
     def __str__(self):
         return self.value
-
 
     def save(self, commit=True, **kwargs):
         self.name = self.type
         if commit:
             super(OrganizationIdentifier, self).save(**kwargs)
-
 
     @property
     def doc_oidc_format(self):
@@ -163,9 +161,6 @@ class OrganizationIdentifier(models.Model):
         od['type'] = self.type
         od['num'] = self.value
         return od
-
-
-
 
 
 # For Addresses
@@ -218,6 +213,8 @@ class Address(models.Model):
         return od
 
 # Added for Future Compat.
+
+
 class PersonToPersonRelationship(models.Model):
     grantor = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, null=True,
@@ -260,7 +257,7 @@ class Organization(models.Model):
     registration_code = models.CharField(max_length=100,
                                          default='',
                                          blank=True)
-    
+
     about = models.TextField(default='', blank=True)
     domain = models.CharField(
         max_length=512,
@@ -296,9 +293,10 @@ class Organization(models.Model):
                                                          blank=True)
 
     default_groups_for_agents = models.ManyToManyField(Group, blank=True,
-                                    help_text="All new agents will be added to these groups by default.")
+                                                       help_text="All new agents will be added to these groups by default.")
     joined_date = models.DateField(null=True, blank=True)
-    open_member_enrollment = models.BooleanField(default=True, blank=True, db_index=True)
+    open_member_enrollment = models.BooleanField(
+        default=True, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
