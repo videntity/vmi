@@ -8,63 +8,97 @@
                     </ol>
 {% endblock %}
 {% block Content %}
-            <div class="row">
-                <div class="col well">
+            
+            
+              <div class="row">
+                <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="row">
-                        <div class="col">
-                            <h1 class="page-title text-center">{{organization.name}}</h1>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="org-logo__block">
-                            <img src="{{organization.picture_url}}" alt="image" class="org-logo__img"/>
-                        </div>
-                    </div>
-                    <div class="row text-center">
                         <div class="col">
                             
-                        
+                                <img alt="image" style="max-width:100%;"
+                                    src="{% if organization.picture_url %} {{organization.picture_url}}{% else %}{% static '/img/avatar_default.png' %}{% endif %}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col my-3">
+                             <h3><span class="label">{{organization.name}}</span></h3>
+                             <h2><span class="badge badge-primary">{{organization.slug}}</span></h2>
+                             
+                             <p>{{organization.about}}</p>
+                             <p>Joined {{organization.joined_date|default:"Not Claimed"}}</p>
+                        </div>
+                    </div>
+                    
+               
+                </div>
+                <div class="col">
+                    <p>Name: {{organization.name}}</p>
+                    <p>Website: <a href="{{organization.website}}">{{organization.website|default:"—"}}</a></p>
+                    <p>Agent Signup: <a href="{{ organization.agent_signup_url}}">{{ organization.agent_signup_url|default:"—"}}</a></p>
+                    <p>Member Signup: <a href="{{ organization.member_signup_url}}">{{ organization.member_signup_url|default:"—"}}</a></p>
+                    <p>Phone: {{organization.phone_number|default:"—"}}</p>
+                   
+                    <p>Addresses:</p>
+                    <table class="table table-borderless table-sm ml-2">
+                        {% for address in organization.addresses.all %}
+                        <tr><td>{{ address }}</td></tr>
+                        {% endfor %}
+                    </table>
 
-                            <h2>Agents:</h2>
-                            {% for a in organization.users.all %}
-                            <h4>
+                    
+                    <p>Identifiers:</p>
+                    <table class="table table-borderless table-sm ml-2">
 
-                                    {{a.first_name|title}} {{a.last_name|title}}
+                    <tr>
+                            <td>Value</td>
+                            <td>Type</td>
+                            <td>Issuer</td>
+                            <td>URI</td>
+                     </tr>
+                                
+                    {% for identifier in organization.identifiers.all %}           
+                        <tr>
+                            <td>{{identifier.value|default:"-"}}</td>
+                            <td>{{identifier.type|default:"-"}}</td>
+                            <td>{{identifier.issuer|default:"-"}}</td>
+                            <td>{{identifier.uri|default:"-"}}</td>                        
+                        </tr>
+                    {% endfor %}
+                    </table>
+                    
 
-                                {% if organization.point_of_contact == request.user %}
-                                |
-                                <a href={% url 'remove_agent_from_organization' organization.slug a.id  %}>Remove Agent from Organization</a>
+
+                    <p>Agents:</p>
+                    <table class="table table-borderless table-sm ml-2">
+
+                    <tr>
+                            <td>Name</td>
+                            <td>Actions</td>
+                     </tr>
+                                
+                    {% for agent in organization.users.all %}           
+                        <tr>
+                            <td><a href="{% url 'user_profile_subject' agent.userprofile.subject|default:'None' %}" >{{agent.first_name|title }} {{agent.last_name|title }} </a></td>
+                            <td>
+                                    
+                            {% if organization.point_of_contact == request.user %}
+                                
+                                <a href={% url 'remove_agent_from_organization' organization.slug agent.id  %}>Remove Agent from Organization</a>
+                                {% else %}
+                                 -
                                 {% endif %}
-                            </h4>
-                            {% endfor %}
-                            
-                            
-                        
+                            </td>                     
+                        </tr>
+                    {% endfor %}
+                    </table>
 
-                            
-                        <h2>Member Self-Signup URL</h2>
-                            <pre style="overflow: visible;"><a href="{{ organization.member_signup_url}}">
-                            {{ organization.member_signup_url}}></a></pre>
-                            
 
-                            
-                            <h2>Point of Contact</h2>
-                            <h4>{{organization.point_of_contact.first_name|title}}  {{organization.point_of_contact.last_name|title}}</h4>
-
-                             <h2>Agent Signup URL</h2>
-                            <pre style="overflow: visible;"><a href="{{ organization.agent_signup_url }}">{{ organization.agent_signup_url }}</a></pre>
-                            
-                            
-                                                        
-                            <h2>Search</h2>
+                    <p>Actions:</p>         
                             <a href="{% url 'member_search_org_slug' organization.slug %}">
-                                    <button type="button" class="btn btn-primary">
-                            Search Members</button> </a></h5>
-                            
-                            
+                                    <button type="button" class="btn btn-primary"> Search Members of {{organization}} </button>
+                                </a>
+            
+                </div>
+            </div>
 
-                        </div>
-                    </div>
-                </div> <!-- /.col.well -->
-            </div> <!-- /.row -->
 {% endblock %}

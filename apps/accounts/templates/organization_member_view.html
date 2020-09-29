@@ -8,32 +8,71 @@
                     </ol>
 {% endblock %}
 {% block Content %}
-            <div class="row">
-                <div class="col well">
+           
+              <div class="row">
+                <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="row">
                         <div class="col">
-                            <h1 class="page-title text-center">{{organization.name}}</h1>
+                            
+                                <img alt="image" style="max-width:100%;"
+                                    src="{% if organization.picture_url %} {{organization.picture_url}}{% else %}{% static '/img/avatar_default.png' %}{% endif %}"/>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="org-logo__block">
-                            <img src="{{organization.picture_url}}" alt="image" class="org-logo__img"/>
+                        <div class="col my-3">
+                             <h3><span class="label">{{organization.name}}</span></h3>
+                             <h2><span class="badge badge-primary">{{organization.slug}}</span></h2>
+                             <p>{{organization.about}}</p>
+                             <p>Joined {{organization.joined_date|default:"Not Claimed"}}</p>
                         </div>
                     </div>
-                    <div class="row text-center">
-                        <div class="col">
-                            
-                            
+                    
+               
+                </div>
+                <div class="col">
+                    <p>Name: {{organization.name}}</p>
+                    <p>Website: <a href="{{organization.website}}">{{organization.website|default:"—"}}</a></p>
+                    <p>Phone: {{organization.phone_number|default:"—"}}</p>
+                   
+                    <p>Addresses:</p>
+                    <table class="table table-borderless table-sm ml-2">
+                        {% for address in organization.addresses.all %}
+                        <tr><td>{{ address }}</td></tr>
+                        {% endfor %}
+                    </table>
 
-                            
-                            {% if request.user in organization.members.all %}
+                    {% if user.individualidentifier_set.exists %}
+                    <p>Identifiers:</p>
+                    <table class="table table-borderless table-sm ml-2">
+
+                    <tr>
+                            <td>Value</td>
+                            <td>Type</td>
+                            <td>Issuer</td>
+                            <td>URI</td>
+                     </tr>
+                                
+                    {% for identifier in organization.identifiers.all %}           
+                        <tr>
+                            <td>{{identifier.value|default:"-"}}</td>
+                            <td>{{identifier.type|default:"-"}}</td>
+                            <td>{{identifier.issuer|default:"-"}}</td>
+                            <td>{{identifier.uri|default:"-"}}</td>                        
+                        </tr>
+                    {% endfor %}
+                    </table>
+                    {% endif %}
+
+                    <p>Actions:</p> 
+                    {% if request.user in organization.members.all %}
                             <a href="{% url 'remove_member_from_organization' request.user.userprofile.subject organization.slug %}">
-                                    <button type="button" class="btn btn-danger"> Remove Me from from {{organization}} </button>
+                                    <button type="button" class="btn btn-danger"> Remove Me from {{organization}} </button>
                                 </a>
-                            {% endif %}
-                            
-                        </div>
-                    </div>
-                </div> <!-- /.col.well -->
-            </div> <!-- /.row -->
+                     {% endif %}
+
+                </div>
+            </div>
+           
+           
+
 {% endblock %}
