@@ -94,7 +94,7 @@ def find_org_to_create_account(request):
         return HttpResponseRedirect(reverse('home'))
     else:
         org_slug = request.POST.get('organization_slug')
-        return HttpResponseRedirect(reverse('create_org_account', args=[org_slug]))
+        return HttpResponseRedirect(reverse('create_agent_account', args=[org_slug]))
 
 
 @never_cache
