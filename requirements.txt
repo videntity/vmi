@@ -44,7 +44,7 @@ python-dotenv==0.10.3
 djangorestframework==3.10.2
 django-filter==2.0.0
 drf-nested-routers==0.91
-cryptography==2.3.1
+cryptography==3.2
 psycopg2==2.7.5
 psycopg2-binary==2.8.2
 luhn==0.2.0
