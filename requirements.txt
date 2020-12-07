@@ -49,7 +49,7 @@ psycopg2==2.7.5
 psycopg2-binary==2.8.2
 luhn==0.2.0
 fido2==0.5.0
-social-auth-app-django==2.1.0
-social-auth-core==1.7.0
+social-auth-app-django==4.0.0
+social-auth-core==3.3.3
 requests-oauthlib==1.1.0
 twilio==6.44.1
