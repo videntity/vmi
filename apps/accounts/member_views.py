@@ -37,7 +37,6 @@ def create_member_account(request, organization_slug,
                                         Your account %s was created with
                                         the username %s""" % (user.first_name, user.last_name,
                                                               up.subject, user.username)))
-
             # Add member to organization
             org.members.add(user)
             org.save()
