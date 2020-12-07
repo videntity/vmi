@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from .forms import (PasswordResetForm, PasswordResetRequestForm)
 from .models import UserProfile, ValidPasswordResetKey, ActivationKey
 from .forms import (AccountSettingsForm,
@@ -18,6 +18,7 @@ from django.views.decorators.cache import never_cache
 from ratelimit.decorators import ratelimit
 
 # Copyright Videntity Systems Inc.
+User = get_user_model()
 
 logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 

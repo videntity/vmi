@@ -22,7 +22,6 @@ class DynRegTest(TestCase):
         self.user.save()
         self.auth_headers = {'HTTP_AUTHORIZATION': 'Basic ' +
                              base64.b64encode(b'deanna:somepassword').decode("ascii")}
-
         self.client = Client()
         self.registration_endpoint = reverse('registration_endpoint')
         self.register_test = {"client_name": "foo",
@@ -40,3 +39,4 @@ class DynRegTest(TestCase):
                                     **self.auth_headers)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'client_secret')
+        self.assertContains(response, 'client_id')

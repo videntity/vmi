@@ -82,24 +82,47 @@ MIDDLEWARE = [
 
 
 AUTHENTICATION_BACKENDS = (
-    # 'social_core.backends.google_openidconnect.GoogleOpenIdConnect',
     'django.contrib.auth.backends.ModelBackend',
     'apps.accounts.authentication_backends.EmailBackend',
     'apps.accounts.authentication_backends.SubjectBackend',
+    # Uncomment next line for LDAP support.
     # apps.accounts.ldap_auth_backends.LDAPBackend',
+    # Okta OIDC support
+    'social_core.backends.okta_openidconnect.OktaOpenIdConnect',
+    # Google OIDC Support
+    'social_core.backends.google_openidconnect.GoogleOpenIdConnect',
 )
 
+# Python Social Auth for upstream identity providers
+SOCIAL_AUTH_GOOGLE_URL = env("SOCIAL_AUTH_GOOGLE_URL", 'https://accounts.google.com')
+SOCIAL_AUTH_GOOGLE_OIDC_ENDPOINT = env("SOCIAL_AUTH_GOOGLE_OIDC_ENDPOINT", 'https://accounts.google.com')
 
-SOCIAL_AUTH_GOOGLE_URL = env(
-    "SOCIAL_AUTH_GOOGLE_URL", 'https://accounts.google.com')
-SOCIAL_AUTH_GOOGLE_OIDC_ENDPOINT = env(
-    "SOCIAL_AUTH_GOOGLE_OIDC_ENDPOINT", 'https://accounts.google.com')
-
-SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY = env(
-    'SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY', '')
-SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_SECRET = env(
-    'SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_SECRET', '')
+SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY = env('SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY', '')
+SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_SECRET = env('SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_SECRET', '')
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+
+SOCIAL_AUTH_OKTA_OPENIDCONNECT_API_URL = env("SOCIAL_AUTH_OKTA_OPENIDCONNECT_API_URL",
+                                             'https://example.okta.com/oauth2')
+
+SOCIAL_AUTH_OKTA_OPENIDCONNECT_KEY = env('SOCIAL_AUTH_OKTA_OPENIDCONNECT_KEY', '')
+SOCIAL_AUTH_OKTA_OPENIDCONNECT_SECRET = env('SOCIAL_AUTH_OKTA_OPENIDCONNECT_SECRET', '')
+
+
+SOCIAL_AUTH_PING_OPENIDCONNECT_KEY = env('SOCIAL_AUTH_PING_OPENIDCONNECT_KEY', '')
+SOCIAL_AUTH_PING_OPENIDCONNECT_SECRET = env('SOCIAL_AUTH_PING_OPENIDCONNECT_SECRET', '')
+
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
 
 
 VERIFICATION_BACKENDS = [
@@ -453,7 +476,7 @@ ORGANIZATION_ID_TYPE_CHOICES = env('ORGANIZATION_ID_TYPE_CHOICES', (
     ('DIRECT_ADDRESS', 'Direct Address'),
     ('EMAIL', 'Email Address (Additional)'),
     ('FHIR', 'FHIR Endpoint'),
-    ))
+))
 
 DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS = env(
     'DEFAULT_COUNTRY_CODE_FOR_INDIVIDUAL_IDENTIFIERS', "US")
