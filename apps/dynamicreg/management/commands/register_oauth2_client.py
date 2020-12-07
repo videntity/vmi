@@ -1,10 +1,13 @@
 from django.core.management.base import BaseCommand, CommandError
 from oauth2_provider.models import Application
+from django.contrib.auth import get_user_model
 from collections import OrderedDict
 import json
 import uuid
 
 __author__ = "Alan Viars"
+
+User = get_user_model()
 
 
 def delete_app(client_id):
@@ -18,7 +21,7 @@ def delete_app(client_id):
 
 
 def register_app(client_id, client_name, redirect_uris=[],
-                 skip_authorization=False):
+                 skip_authorization=False, username=None):
 
     dynreg = OrderedDict()
     dynreg['client_name'] = client_name
@@ -31,7 +34,12 @@ def register_app(client_id, client_name, redirect_uris=[],
     application.client_type = 'confidential'
     application.authorization_grant_type = 'authorization-code'
     application.skip_authorization = skip_authorization
-    application.save('')
+    application.save()
+
+    if username:
+        user = User.objects.get(username=username)
+        application.user = user
+        application.save()
     dynreg['client_secret'] = application.client_secret
     dynreg['grant_types'] = [
         application.authorization_grant_type, "refresh_token"]
@@ -51,6 +59,7 @@ class Command(BaseCommand):
         parser.add_argument('--client_secret', nargs='?', default=None)
         parser.add_argument('--skip_authorization', nargs='?',
                             default=False, type=int)
+        parser.add_argument('--username', nargs='?', default=None)
 
         # Perform a delete
         parser.add_argument(
@@ -68,5 +77,8 @@ class Command(BaseCommand):
         else:
 
             dynreg = register_app(options['client_id'], options['client_name'],
-                                  options['redirect_uris'], options['skip_authorization'])
+                                  options['redirect_uris'],
+                                  options['skip_authorization'],
+                                  options['username'],
+                                  )
             self.stdout.write(json.dumps(dynreg, indent=4))

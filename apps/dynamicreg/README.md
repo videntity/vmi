@@ -26,7 +26,7 @@ The command to issue will look like:
 
     curl -X POST -d @dr.json http://verifymyidentity:8000/dcrp/register --user your-username:your-password
 
-A successfult HTTP result will contain the client key in its body as JSON....
+A successful HTTP result will contain the client key in its body as JSON....
 
 
     {
