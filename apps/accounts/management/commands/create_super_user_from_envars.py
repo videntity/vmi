@@ -1,11 +1,12 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from getenv import env
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 import logging
 
+User = get_user_model()
 logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
 
