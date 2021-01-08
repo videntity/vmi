@@ -47,8 +47,9 @@ def callback(request):
         token = oas.fetch_token(token_uri,
                                 client_secret=get_client_secret(),
                                 authorization_response=auth_uri)
-    except MissingTokenError:
+    except MissingTokenError as e:
         logmsg = "Failed to get token from %s" % (request.session['token_uri'])
+        print(e)
         logger.error(logmsg)
         return JsonResponse({'error': 'Failed to get token from',
                              'code': 'MissingTokenError',
