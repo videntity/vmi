@@ -235,9 +235,9 @@ class UpstreamIdentityProviderToUser(models.Model):
 
     def __str__(self):
         return 'Upstream IDP %s @ %s is %s %s' % (self.upstream_idp_sub,
-                                     self.upstream_idp_vendor,
-                                     self.user.first_name,
-                                     self.user.last_name)
+                                                  self.upstream_idp_vendor,
+                                                  self.user.first_name,
+                                                  self.user.last_name)
 
     class Meta:
         unique_together = [['upstream_idp_sub', 'upstream_idp_vendor', 'user']]
