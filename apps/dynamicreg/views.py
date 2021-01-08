@@ -32,11 +32,13 @@ def registration_endpoint(request):
                                                     username=user.username)
                             return JsonResponse(response)
                         else:
-                            return JsonResponse({"error": "Not Authorized."})
+                            return JsonResponse({"error": "Insufficient permissions." +
+                                                          "You need to be in the DynamicClientRegistrationProtocol group."})
                     else:
-                        return JsonResponse({"error": "Not Authorized -inactive"})
+                        return JsonResponse({"error": "Authentication Failed." +
+                                                      "You have supplied invalid credentials or your account is inactive."})
     # Request methos is GET:
     message = "Welcome to Verify My Identity OAuth 2.0 Dynamic Client Registration Protocol." +\
-              "POST here with proper credentials to register an application." + \
+              "POST here with proper credentials to register an application." +\
               "See https://github.com/videntity/vmi/blob/master/apps/dynamicreg/README.md"
     return JsonResponse({"message": message})
