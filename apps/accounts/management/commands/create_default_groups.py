@@ -11,7 +11,8 @@ groups = ["Member",
           "IdentityAssuranceTrustedReferee",
           "OrganizationAdministrator",
           "OrganizationAgentReport",
-          "DynamicClientRegistrationProtocol"
+          "DynamicClientRegistrationProtocol",
+          "PersonToPersonAPI"
           ]
 
 

@@ -3,7 +3,8 @@ from .models import (UserProfile, Organization,
                      Address, OrganizationIdentifier,
                      IndividualIdentifier,
                      OrganizationAffiliationRequest, PhoneVerifyCode,
-                     PersonToPersonRelationship, IDCardConfirmation)
+                     PersonToPersonRelationship, IDCardConfirmation,
+                     UpstreamIdentityProviderToUser)
 
 
 # Copyright Videntity Systems Inc.
@@ -11,20 +12,38 @@ from .models import (UserProfile, Organization,
 __author__ = "Alan Viars"
 
 
-class PersonToPersonRelationshipAdmin(admin.ModelAdmin):
-    list_display = ('grantor', 'grantee', 'description', 'created_at')
+class UpstreamIdentityProviderToUserAdmin(admin.ModelAdmin):
+    list_display = ('user', 'upstream_idp_sub', 'upstream_idp_vendor',
+                    'created_at')
     search_fields = [
-        'grantor__first_name',
-        'grantor__last_name',
-        'grantee__first_name',
-        'grantee__last_name',
-        'grantor__email',
-        'grantee__email',
-        'grantor__username',
-        'grantee__username',
+        'upstream_idp_sub',
+        'upstream_idp_vendor',
+        'user__first_name',
+        'user__last_name',
+        'user__email', 'user__username']
+
+
+admin.site.register(UpstreamIdentityProviderToUser,
+                    UpstreamIdentityProviderToUserAdmin)
+
+
+class PersonToPersonRelationshipAdmin(admin.ModelAdmin):
+    list_display = ('delegate', 'subject', 'relationship_type', 'created_by',
+                    'created_at')
+
+    search_fields = [
+        'relationship_type',
+        'subject__first_name',
+        'subject__last_name',
+        'delegate__first_name',
+        'delegate__last_name',
+        'subject__email',
+        'delegate__email',
+        'subject__username',
+        'delegate__username',
     ]
 
-    raw_id_fields = ("grantor", "grantee")
+    raw_id_fields = ("subject", "delegate",)
 
 
 admin.site.register(PersonToPersonRelationship,
