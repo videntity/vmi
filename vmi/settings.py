@@ -60,9 +60,10 @@ INSTALLED_APPS = [
     'apps.fido',
     'apps.dynamicreg',
     'apps.mfa.backends.sms',
-    'apps.api',
+    'apps.chop',
     'apps.testclient',
-    # 'django_extensions',
+    'apps.api',
+
 ]
 
 MIDDLEWARE = [
@@ -104,9 +105,11 @@ SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_OKTA_OPENIDCONNECT_API_URL = env("SOCIAL_AUTH_OKTA_OPENIDCONNECT_API_URL",
                                              'https://example.okta.com/oauth2')
 
+SOCIAL_AUTH_OKTA_OPENIDCONNECT_URL = SOCIAL_AUTH_OKTA_OPENIDCONNECT_API_URL.rsplit('/', 1)[0]
+
 SOCIAL_AUTH_OKTA_OPENIDCONNECT_KEY = env('SOCIAL_AUTH_OKTA_OPENIDCONNECT_KEY', '')
 SOCIAL_AUTH_OKTA_OPENIDCONNECT_SECRET = env('SOCIAL_AUTH_OKTA_OPENIDCONNECT_SECRET', '')
-
+SOCIAL_AUTH_OKTA_OPENIDCONNECT_AUTO_IAL2 = bool_env(env('SOCIAL_AUTH_OKTA_OPENIDCONNECT_AUTO_IAL2', True))
 
 SOCIAL_AUTH_PING_OPENIDCONNECT_KEY = env('SOCIAL_AUTH_PING_OPENIDCONNECT_KEY', '')
 SOCIAL_AUTH_PING_OPENIDCONNECT_SECRET = env('SOCIAL_AUTH_PING_OPENIDCONNECT_SECRET', '')
@@ -122,6 +125,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
+    'apps.chop.backends.okta.get_upstream_sub',  # get the up stream IdP sub
 )
 
 
@@ -248,7 +252,6 @@ REST_FRAMEWORK = {
 OAUTH2_PROVIDER = {
     'SCOPES': {'openid': 'open id connect access'},
     'DEFAULT_SCOPES': ['openid'],
-
     'OAUTH2_VALIDATOR_CLASS': 'vmi.oauth2_validators.SingleAccessTokenValidator',
     'OAUTH2_SERVER_CLASS': 'apps.oidc.server.Server',
     'REQUEST_APPROVAL_PROMPT': 'auto',
@@ -290,6 +293,8 @@ OIDC_PROVIDER = {
         'apps.accounts.claims.MemberToOrganizationClaimProvider',
         # Include this Agent is part of 0..n Organizations
         'apps.accounts.claims.AgentToOrganizationClaimProvider',
+
+        'apps.chop.claims.PersonToPersonClaimProvider',
 
         # Identity Assurance for OIDC
         'apps.accounts.claims.VerifiedPersonDataClaimProvider',
@@ -356,8 +361,9 @@ USER_DOCS = "User Docs"
 DEVELOPER_DOCS_URI = "https://github.com/videntity/vmi"
 DEVELOPER_DOCS = "Developer Docs"
 DEFAULT_DISCLOSURE_TEXT = """
-    Verify My Identity  provides standards-based identity verification,
-    digital credentials, and single sign-on services for people and
+    Verify My Identity is standards-based identity provider.
+    It provides verification, digital credentials,
+    and single sign-on services for people and
     organizations. Unauthorized or improper use of this system or
     its data may result in disciplinary action, as well as civil
     and criminal penalties. This system may be monitored, recorded,
@@ -400,6 +406,7 @@ SETTINGS_EXPORT = [
     'PARTNER_REF',
     'PUBLIC_HOME_TEMPLATE',
     'INDIVIDUAL_ID_TYPE_CHOICES',
+    'SOCIAL_AUTH_OKTA_OPENIDCONNECT_URL'
 ]
 
 
@@ -500,7 +507,8 @@ SESSION_COOKIE_AGE = int(env('SESSION_COOKIE_AGE', int(30 * 60)))
 # customization.
 
 # Pick a login template and title.
-LOGIN_TEMPLATE_PICKER = {"default": 'login.html',
+LOGIN_TEMPLATE_PICKER = {"default": env('DEFAULT_LOGIN_TEMPLATE', "login.html"),
+                         "okta": 'okta.html',
                          'share-my-health': 'login.html',
                          # Add others here to create a custom login template.
                          }
@@ -516,6 +524,8 @@ AUTHENTICATED_HOME_TEMPLATE = env(
 # (e.g.  not "") will be an IAL2.""
 IAL2_EVIDENCE_CLASSIFICATIONS = (
     # Generic
+    ('IAL2-GENERIC', 'Identity Assurance Level 2 (Generic)'),
+    ('IAL2-ON-FILE', 'Identity Assurance Level 2 is on file and/or managed by business rules.)'),
     ('ONE-SUPERIOR-OR-STRONG-PLUS',
      'One Superior or one Strong+ piece of identity evidence'),
     ('ONE-STRONG-TWO-FAIR', 'One Strong and Two Fair pieces of identity evidence'),
@@ -533,13 +543,14 @@ IAL2_EVIDENCE_CLASSIFICATIONS = (
 
 
 # For creating agent users who have out of band _D verification on file.
-AUTO_IAL_2_DEFAULT_CLASSIFICATION = 'ONE-SUPERIOR-OR-STRONG-PLUS',
+AUTO_IAL_2_DEFAULT_CLASSIFICATION = env('AUTO_IAL_2_DEFAULT_CLASSIFICATION', 'IAL2-GENERIC')
 AUTO_IAL_2_DEFAULT_SUBCLASSIFICATION = env(
     'AUTO_IAL_2_DEFAULT_SUBCLASSIFICATION', "OFFLINE")
 AUTO_IAL_2_DESCRIPTION = env(
     'AUTO_IAL_2_DESCRIPTION', "Verified offline. Documents on file.")
 
 LOGIN_RATELIMIT = env('LOGIN_RATELIMIT', '100/h')
+PERSON_TO_PERSON_API_RATELIMIT = env('PERSON_TO_PERSON_API_RATELIMIT', '100/h')
 
 # These are used to encrypt the passphrase. Change these for production
 PASSPHRASE_SALT = env('PASSPHRASE_SALT', "FA6F747468657265616C706570706573")

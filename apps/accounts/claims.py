@@ -1,9 +1,8 @@
 from apps.oidc.claims import BaseProvider
 from django.conf import settings
 
+
 # For address Claim
-
-
 class AddressClaimProvider(BaseProvider):
 
     def claim_address(self):
@@ -47,18 +46,7 @@ class AgentToMemberClaimProvider(BaseProvider):
 # Reserved for future versions
 
 
-class MemberToMemberClaimProvider(BaseProvider):
-    # For familiy and  family relationships
-
-    def claim_agent_to_member(self):
-        try:
-            return self.user.userprofile.member_to_member
-        except Exception:
-            return None
-
 # Member to
-
-
 class MemberToOrganizationClaimProvider(BaseProvider):
 
     def claim_member_to_organization(self):

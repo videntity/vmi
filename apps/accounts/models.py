@@ -163,7 +163,7 @@ class OrganizationIdentifier(models.Model):
         return od
 
 
-# For Addresses
+# Address Model.
 class Address(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, db_index=True, editable=False)
     user = models.ForeignKey(
@@ -212,27 +212,98 @@ class Address(models.Model):
         od['country'] = self.country
         return od
 
-# Added for Future Compat.
 
-
-class PersonToPersonRelationship(models.Model):
-    grantor = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, null=True,
-        related_name="persontoperson_grantor")
-    grantee = models.ForeignKey(
-        get_user_model(), on_delete=models.PROTECT, null=True,
-        related_name="persontoperson_grantee")
-    description = models.TextField(blank=True, default='')
+class UpstreamIdentityProviderToUser(models.Model):
+    upstream_idp_sub = models.TextField(db_index=True)
+    upstream_idp_vendor = models.TextField(db_index=True, blank=True, default='')
+    upstream_idp_iss = models.TextField(db_index=True, blank=True, default='')
+    upstream_idp_aud = models.TextField(db_index=True, blank=True, default='')
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True,
+                             related_name="UpstreamIdentityProviderToUser_user")
+    name = models.TextField(blank=True, default='')
+    email = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
+    def structured_response(self):
+        od = OrderedDict()
+        od['upstream_idp_sub'] = self.upstream_idp_sub
+        od['upstream_idp_vendor'] = self.upstream_idp_vendor
+        od['name'] = self.name.title()
+        od['email'] = self.email
+        return od
+
+    def __str__(self):
+        return 'Upstream IDP %s @ %s is %s %s' % (self.upstream_idp_sub,
+                                                  self.upstream_idp_vendor,
+                                                  self.user.first_name,
+                                                  self.user.last_name)
+
     class Meta:
-        unique_together = [['grantor', 'grantee']]
+        unique_together = [['upstream_idp_sub', 'upstream_idp_vendor', 'user']]
 
-# For Organizations such as governments, companies, non-profits,
+
+PERSON_TO_PERSON_RELATIONSHIP_TYPES = (('SELF', 'Self'),
+                                       ('PARENT-OR-GUARDIAN', 'Parent Guardian of Minor'),
+                                       ('SPOUSE', 'Spouse'),
+                                       ('ADULT-DELEGATE', 'Adult Delegate'),)
+
+
+class PersonToPersonRelationship(models.Model):
+    relationship_text = models.TextField(blank=True, default='')
+    relationship_type = models.TextField(blank=True, default='',
+                                         choices=PERSON_TO_PERSON_RELATIONSHIP_TYPES)
+    subject = models.ForeignKey(get_user_model(), verbose_name="Subject",
+                                on_delete=models.CASCADE, null=True,
+                                related_name="persontoperson_subject")
+    delegate = models.ForeignKey(get_user_model(), verbose_name="Delegate",
+                                 on_delete=models.CASCADE, null=True,
+                                 related_name="persontoperson_delegate")
+    scope = models.TextField(blank=True, default='')
+    created_by = models.TextField(blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True,
+                                      blank=True)
+
+    def structured_response(self):
+        od = OrderedDict()
+        subject_up = UserProfile.objects.get(user=self.subject)
+        od['sub'] = subject_up.sub
+        od['name'] = "%s %s" % (self.subject.first_name.title(), self.subject.last_name.title())
+        od['given_name'] = self.subject.first_name.title()
+        od['family_name'] = self.subject.last_name.title()
+        od['username'] = self.subject.username
+        od['email'] = self.subject.email
+        od['picture_url'] = subject_up.picture_url
+        od['phone_number'] = subject_up.phone_number
+        od['relationship_type'] = self.relationship_type
+        od['relationship_text'] = self.relationship_text
+        od['vot'] = subject_up.vot_ial_only
+
+        return od
+
+    def __str__(self):
+        return 'PersonToPerson %s %s --> %s %s by %s' % (self.subject.first_name,
+                                                         self.subject.last_name,
+                                                         self.delegate.first_name,
+                                                         self.delegate.last_name,
+                                                         self.created_by)
+
+    def save(self, commit=True, **kwargs):
+        if not self.relationship_text:
+            self.relationship_text = self.relationship_type
+        if not self.created_by:
+            self.created_by = "system"
+        if commit:
+            super(PersonToPersonRelationship, self).save(**kwargs)
+
+    class Meta:
+        unique_together = [['delegate', 'subject']]
+
+
+# Organizations such as governments, companies, non-profits,
 # professional groups, etc.
-
-
 class Organization(models.Model):
     ORG_STATUS_CHOICES = (('ACTIVE', 'Active'),
                           ("INACTIVE", "Inactive"),
@@ -430,7 +501,6 @@ class UserProfile(models.Model):
                                help_text='A personal website.',)
     mobile_phone_number_verified = models.BooleanField(
         blank=True, default=False)
-
     number_str_include = models.CharField(
         max_length=10, blank=True, default="",
         verbose_name="Pick Your Own ID",
@@ -448,8 +518,7 @@ class UserProfile(models.Model):
                                            'Gender Identity is not necessarily the same as birth sex.'),
                                        )
     gender_identity_custom_value = models.CharField(max_length=64, default="", blank=True,
-                                                    help_text=_(
-                                                        'Enter a custom value for gender_identity.'),
+                                                    help_text=_('Enter a custom value for gender_identity.'),
                                                     )
     birth_date = models.DateField(blank=True, null=True)
     agree_tos = models.CharField(max_length=64, default="", blank=True,
@@ -616,6 +685,10 @@ class UserProfile(models.Model):
             return p
 
     @property
+    def vot_ial_only(self):
+        return "P%s" % (self.ial)
+
+    @property
     def vot(self):
         """Vectors of Trust rfc8485"""
         # https://tools.ietf.org/html/rfc8485
@@ -631,7 +704,7 @@ class UserProfile(models.Model):
         elif ial == "3":
             response = "%sP3." % (response)
         else:
-            response = "%sP0." % (response)
+            response = "%sP1." % (response)
 
         if aal == "1":
             response = "%sC1" % (response)
