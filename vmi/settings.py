@@ -310,7 +310,6 @@ OIDC_PROVIDER = {
         # 'apps.accounts.claims.EmailVerifiedClaimProvider',
         # 'apps.accounts.claims.PhoneNumberClaimProvider',
         # 'apps.accounts.claims.IdentityAssuranceLevelClaimProvider',
-        # 'apps.accounts.claims.AuthenticatorAssuranceLevelClaimProvider',
         # 'apps.accounts.claims.VectorsOfTrustClaimProvider',
         'apps.fido.claims.AuthenticatorAssuranceProvider',
         'apps.mfa.backends.sms.claims.AuthenticatorAssuranceProvider',
