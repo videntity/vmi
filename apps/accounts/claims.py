@@ -11,6 +11,14 @@ class AddressClaimProvider(BaseProvider):
         except Exception:
             return None
 
+# For amr Claim
+
+
+class AMRClaimProvider(BaseProvider):
+
+    def claim_amr(self):
+        return ["pwd", ]
+
 # For document claim. For paper and electronic identifiers.
 # Passports, URL pointers, Master Patient IDs, SSN, etc.
 

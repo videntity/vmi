@@ -20,6 +20,7 @@ from collections import OrderedDict
 from ..ial.models import IdentityAssuranceLevelDocumentation
 from twilio.rest import Client
 import logging
+import json
 
 logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
@@ -213,13 +214,46 @@ class Address(models.Model):
         return od
 
 
-class UpstreamIdentityProviderToUser(models.Model):
+class UpstreamIdentityProviderUserAuthenticatorAssurance(models.Model):
+    """NOTE: Only tested with Okta. Expecting amr claim"""
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     upstream_idp_sub = models.TextField(db_index=True)
+    upstream_idp_vendor = models.TextField(blank=True, default='')
+    upstream_idp_iss = models.TextField(blank=True, default='')
+    upstream_idp_aud = models.TextField(blank=True, default='')
+    amr = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+
+    def __str__(self):
+        return 'Upstream Authenticator Assurance %s @ %s/%s' % (self.upstream_idp_sub, self.amr, self.aal)
+
+    @property
+    def aal(self):
+        aal_str = "1"
+        amr_list = self.amr_list
+        acceptable_ial2_list = settings.AMR_TO_AAL2
+
+        if "pwd" in amr_list and len(amr_list) == 1:
+            aal_str = "1"
+        elif any(x in amr_list for x in acceptable_ial2_list):
+            aal_str = "2"
+        else:
+            aal_str = "1"
+        return aal_str
+
+    @property
+    def amr_list(self):
+        return json.loads(self.amr)
+
+
+class UpstreamIdentityProviderToUser(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True,
+                             related_name="UpstreamIdentityProviderToUser_user")
+    upstream_idp_sub = models.TextField(db_index=True, default='')
     upstream_idp_vendor = models.TextField(db_index=True, blank=True, default='')
     upstream_idp_iss = models.TextField(db_index=True, blank=True, default='')
     upstream_idp_aud = models.TextField(db_index=True, blank=True, default='')
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True,
-                             related_name="UpstreamIdentityProviderToUser_user")
     name = models.TextField(blank=True, default='')
     email = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -583,7 +617,9 @@ class UserProfile(models.Model):
 
     @property
     def preferred_birthdate(self):
-        return str(self.birth_date)
+        if self.birth_date:
+            return str(self.birth_date)
+        return ""
 
     @property
     def sub(self):
@@ -603,7 +639,10 @@ class UserProfile(models.Model):
 
     @property
     def birthdate(self):
-        return self.birth_date
+        if self.birth_date:
+            return self.birth_date
+        else:
+            return ""
 
     @property
     def name(self):
@@ -669,6 +708,7 @@ class UserProfile(models.Model):
 
     @property
     def aal(self):
+        # Default value only
         return "1"
 
     @property
@@ -683,6 +723,8 @@ class UserProfile(models.Model):
             if p.count('http') == 2:
                 return self.picture.url
             return p
+        else:
+            return ""
 
     @property
     def vot_ial_only(self):
@@ -879,8 +921,7 @@ class ValidPasswordResetKey(models.Model):
 
         # send an email with reset url
         if self.user.email:
-            send_password_reset_url_via_email(
-                self.user, self.reset_password_key)
+            send_password_reset_url_via_email(self.user, self.reset_password_key)
         if commit:
             super(ValidPasswordResetKey, self).save(**kwargs)
 

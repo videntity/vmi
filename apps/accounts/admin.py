@@ -4,12 +4,22 @@ from .models import (UserProfile, Organization,
                      IndividualIdentifier,
                      OrganizationAffiliationRequest, PhoneVerifyCode,
                      PersonToPersonRelationship, IDCardConfirmation,
-                     UpstreamIdentityProviderToUser)
+                     UpstreamIdentityProviderToUser,
+                     UpstreamIdentityProviderUserAuthenticatorAssurance)
 
 
 # Copyright Videntity Systems Inc.
 
 __author__ = "Alan Viars"
+
+
+class UpstreamIdentityProviderUserAuthenticatorAssuranceAdmin(admin.ModelAdmin):
+    list_display = ('user', 'upstream_idp_sub', 'upstream_idp_vendor',
+                    'amr', 'amr_list', 'aal', 'created_at')
+
+
+admin.site.register(UpstreamIdentityProviderUserAuthenticatorAssurance,
+                    UpstreamIdentityProviderUserAuthenticatorAssuranceAdmin)
 
 
 class UpstreamIdentityProviderToUserAdmin(admin.ModelAdmin):

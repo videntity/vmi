@@ -4,6 +4,13 @@ from .auth import has_fido_device
 
 class AuthenticatorAssuranceProvider(BaseProvider):
 
+    def claim_amr(self):
+        try:
+            if has_fido_device(self.user):
+                return ["pwd", "hwk", ]
+        except Exception:
+            return None
+
     def claim_aal(self):
         try:
             # we can say that if a user has a device
