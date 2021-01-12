@@ -1,6 +1,9 @@
 from apps.oidc.claims import BaseProvider
 from .backend import has_sms_device
 
+# Copyright Videntity Systems Inc.
+__author__ = "Alan Viars"
+
 
 class AuthenticatorAssuranceProvider(BaseProvider):
 

@@ -9,7 +9,6 @@ from .models import (UserProfile, Organization,
 
 
 # Copyright Videntity Systems Inc.
-
 __author__ = "Alan Viars"
 
 
