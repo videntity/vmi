@@ -35,7 +35,6 @@ class Wellknown(APIView):
             # TODO get this from oauth server config
             "grant_types_supported": [
                 "authorization_code",
-                "implicit",
                 "refresh_token",
             ],
             # TODO get this from settings or other
@@ -62,6 +61,7 @@ class Wellknown(APIView):
             "scopes_supported": Scopes.get_all_scopes().keys(),
             "claims_supported": ClaimsProvider.get_supported_claims(),
             "jwks_uri": oidc_settings.OIDC_ISSUER + reverse("jwks_uri"),
+            "subject_types_supported": ["public", ],
         })
 
 
