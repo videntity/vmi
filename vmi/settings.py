@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     'apps.chop',
     'apps.testclient',
     'apps.api',
-    #'apps.developer_portal',
+    # 'apps.developer_portal',
 
 ]
 
