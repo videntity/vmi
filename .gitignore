@@ -113,3 +113,4 @@ Pipfile
 
 # Ignore DevSpace cache and log folder
 .devspace/
+./apps/developer_portal/
