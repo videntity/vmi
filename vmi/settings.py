@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'apps.chop',
     'apps.testclient',
     'apps.api',
+    #'apps.developer_portal',
 
 ]
 
@@ -485,7 +486,7 @@ ORGANIZATION_ID_TYPE_CHOICES = env('ORGANIZATION_ID_TYPE_CHOICES', (
     ('NPI', 'National Provider Identifier'),
     ('OEID', 'Other Entity Identifier'),
     ('PECOS', 'PECOS Medicare ID'),
-    ('MEDICAID', 'State Provider  /Medicaid ID'),
+    ('MEDICAID', 'State Provider/Medicaid ID'),
     ('NETWORK_ID', 'Insurance/Network ID'),
     ('DIRECT_DOMAIN', 'Direct Domain'),
     ('DIRECT_ADDRESS', 'Direct Address'),
