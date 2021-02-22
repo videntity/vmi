@@ -199,3 +199,5 @@ h3 {
 .help-block-invalid {
 	 color: red;
 }
+
+.top-buffer { margin-top:20px; }
