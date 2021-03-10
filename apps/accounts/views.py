@@ -55,7 +55,12 @@ def reset_password(request):
 def mylogout(request):
     logger.info("$s logged out.", request.user)
     logout(request)
-    # messages.success(request, _('You have been logged out.'))
+    url_next = request.GET.get('next', '') or request.POST.get('next', '')
+    if url_next:
+        logger.debug('redirect to %s' % (url_next))
+        return HttpResponseRedirect(url_next)
+    # otherwise just go to home.
+    logger.debug('redirect to home')
     return HttpResponseRedirect(reverse('home'))
 
 

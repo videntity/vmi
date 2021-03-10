@@ -1,38 +1,20 @@
 """vmi URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import (
-    path,
-    include,
-)
+from django.urls import path, include
 from django.conf.urls import url
 from oauth2_provider import views as oauth2_views
-from .oauth2_views import (
-    ApplicationRegistration,
-    ApplicationUpdate,
-)
+from .oauth2_views import ApplicationRegistration, ApplicationUpdate
 from apps.oidc import views as oidc_views
 from apps.home.views import home, user_search, user_profile
 from django.conf import settings
 from django.conf.urls.static import static
 
+# Copyright Videntity Systems, Inc.
 
-admin.site.site_header = "Verify My Identity Admin"
-admin.site.site_title = "Verify My Identity Admin Portal"
-admin.site.index_title = "OpenID Connect Site Administration"
+admin.site.site_header = "Verify My Identity (VMI) Admin"
+admin.site.site_title = "Verify My Identity (VMI) Admin Portal"
+admin.site.index_title = "VMI Administration"
 
 oauth2_base_urlpatterns = [
     url(r"^authorize/$",
@@ -79,8 +61,7 @@ oauth2_management_urlpatterns = [
 
 urlpatterns = [
     path('', home, name='home'),
-    path('admin/',
-         admin.site.urls),
+    path('admin/', admin.site.urls),
     path('o/',
          include((oauth2_management_urlpatterns + oauth2_base_urlpatterns,
                   'oauth2_provider'))),
@@ -111,5 +92,7 @@ urlpatterns = [
     url('social-auth/', include('social_django.urls', namespace='social')),
     path('chop/', include('apps.chop.urls')),
     path('home/', include('apps.home.urls')),
+    # path('portal/', include('apps.developer_portal.urls')),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

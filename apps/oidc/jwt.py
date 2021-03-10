@@ -16,17 +16,18 @@ class DefaultBuilder(object):
         # TODO update lib: https://jwt.io/
         jwks = self.get_jwks()
         kid = jwks.get('kid', "")
+
         return jwt.encode(
             claims,
             RSA256Keys().get_private_key(),
             algorithm='RS256',
             headers={
                 'kid': kid,
-            }).decode("utf-8")
+            })
 
     def decode(self, token, *args, **kwargs):
         return jwt.decode(
             token,
             RSA256Keys().get_public_key(),
-            algorithm='RS256',
+            algorithms=['RS256', ],
             **kwargs)

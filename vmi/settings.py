@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'apps.chop',
     'apps.testclient',
     'apps.api',
+    # 'apps.developer_portal',
 
 ]
 
@@ -334,7 +335,7 @@ TWILIO_FROM_NUMBER = env('TWILIO_FROM_NUMBER', "+15555555555")
 SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
 APPLICATION_TITLE = env('APPLICATION_TITLE', "Verify My Identity")
 KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Your Application Here')
-KILLER_APP_URI = env('KILLER_APP_URI', 'http://localhost:8002')
+KILLER_APP_URI = env('KILLER_APP_URI', '')
 
 TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity')
 PARTNER_REF = env('PARTNER_REF', '')  # a subtitle
@@ -485,7 +486,7 @@ ORGANIZATION_ID_TYPE_CHOICES = env('ORGANIZATION_ID_TYPE_CHOICES', (
     ('NPI', 'National Provider Identifier'),
     ('OEID', 'Other Entity Identifier'),
     ('PECOS', 'PECOS Medicare ID'),
-    ('MEDICAID', 'State Provider  /Medicaid ID'),
+    ('MEDICAID', 'State Provider/Medicaid ID'),
     ('NETWORK_ID', 'Insurance/Network ID'),
     ('DIRECT_DOMAIN', 'Direct Domain'),
     ('DIRECT_ADDRESS', 'Direct Address'),
