@@ -94,4 +94,5 @@ urlpatterns = [
     path('home/', include('apps.home.urls')),
     # path('portal/', include('apps.developer_portal.urls')),
 
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
