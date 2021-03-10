@@ -92,6 +92,6 @@ urlpatterns = [
     url('social-auth/', include('social_django.urls', namespace='social')),
     path('chop/', include('apps.chop.urls')),
     path('home/', include('apps.home.urls')),
-    # path('portal/', include('apps.developer_portal.urls')),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
