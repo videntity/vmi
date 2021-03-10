@@ -27,7 +27,12 @@
                                     <p>Your <a href="https://pages.nist.gov/800-63-3/sp800-63a.html#sec4">"You Are You"</a>
                                     level is <span class="badge badge-success">{{profile.ial}}</span> so you should be
                                     all set to access websites and apps that use {{ settings.APPLICATION_TITLE }}.
-                        
+                                    {% if settings.KILLER_APP_URI %}
+                                
+                                    <p>
+                                             <a href="{{settings.KILLER_APP_URI}}"><button type="button" class="btn btn-primary"> {{settings.KILLER_APP_TITLE}}</button></a>
+                                    </p>
+                                    {% endif %}
                             {% endifequal %}
                             
                             
