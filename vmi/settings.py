@@ -62,8 +62,7 @@ INSTALLED_APPS = [
     'apps.mfa.backends.sms',
     'apps.chop',
     'apps.testclient',
-    'apps.api',
-    'apps.developer_portal',
+    'apps.api'
 ]
 
 MIDDLEWARE = [
