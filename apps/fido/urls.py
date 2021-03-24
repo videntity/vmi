@@ -9,8 +9,8 @@ from .views import (
 router = routers.SimpleRouter()
 # Post Edit route.
 router.routes[2].mapping['post'] = 'partial_update'
-router.register(r'devices', manage.ManageViewSet, base_name='fido'),
-router.register(r'devices', manage.DetailViewSet, base_name='fido'),
+router.register(r'devices', manage.ManageViewSet, basename='fido'),
+router.register(r'devices', manage.DetailViewSet, basename='fido'),
 
 
 urlpatterns = [

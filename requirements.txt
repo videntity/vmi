@@ -5,7 +5,7 @@ certifi==2018.8.24
 chardet==3.0.4
 coverage==4.0.3
 dj-database-url==0.5.0
-Django==2.2.13
+Django==2.2.18
 #django-bootstrap-form==3.4
 -e git+https://github.com/TransparentHealth/django-bootstrap-form.git@master#egg=django-bootstrap-form
 django-phonenumber-field==2.1.0
@@ -22,7 +22,7 @@ mccabe==0.6.1
 mnemonic==0.18
 -e git+https://github.com/TransparentHealth/oauthlib.git@patch-ui_locales#egg=oauthlib
 # oauthlib==3.0.2 - TODO Use this lib. requires OIDC server code changes.
-Pillow==7.1.1
+Pillow==8.1.1
 phonenumbers==8.10.2
 pluggy==0.7.1
 py==1.6.0
@@ -41,7 +41,7 @@ pycryptodome==3.6.6
 pyjwkest
 pyldap==3.0.0.post1
 python-dotenv==0.10.3
-djangorestframework==3.10.2
+djangorestframework==3.11.2
 django-filter==2.0.0
 drf-nested-routers==0.91
 cryptography==3.3.2

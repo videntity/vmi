@@ -14,8 +14,8 @@ router.register(r'user', UserViewSet)
 owned_by_user_router = routers.NestedSimpleRouter(
     router, r'user', lookup='user')
 owned_by_user_router.register(
-    r'id-assurance', IdentifierViewSet, base_name='identifier')
-owned_by_user_router.register(r'address', AddressViewSet, base_name='address')
+    r'id-assurance', IdentifierViewSet, basename='identifier')
+owned_by_user_router.register(r'address', AddressViewSet, basename='address')
 
 v1 = [
     path('', include(router.urls)),

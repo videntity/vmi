@@ -18,10 +18,10 @@ logger = logging.getLogger('verifymyidentity.%s' % __name__)
 
 
 def jwt_payload(request):
+    """ Refactor.  This fails if the JWT is large due to normal default Webserver restraints..Nginx, etc."""
     if 'jwt' not in request.GET:
-        return JsonResponse({"error": "you just supply a jwt as a GET parmeter."})
+        return JsonResponse({"error": "Supply a JWT as a GET parmeter."})
     myjwt = request.GET.get("jwt")
-
     try:
         parsed_id_token = JWT().unpack(myjwt)
         parsed_id_token = parsed_id_token.payload()

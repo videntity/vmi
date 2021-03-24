@@ -16,7 +16,7 @@ VMI manages relationships between organizations, staff users, and consumer users
 Installation
 ------------
 
-This project is based on Python 3.6 and Django 2.2.x. 
+This project is based on Python 3.6 and Django 2.2.18. 
 
 Download the project:
 
