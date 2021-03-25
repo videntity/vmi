@@ -30,7 +30,7 @@ pycodestyle==2.5.0
 pyflakes==2.1.1
 python-coveralls==2.9.1
 pytz==2018.5
-PyYAML==4.2b1
+PyYAML==5.4
 requests==2.20.0
 six==1.11.0
 tox==3.2.1
