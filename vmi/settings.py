@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'apps.chop',
     'apps.testclient',
     'apps.api',
+    'apps.healthcards',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load has_group %}
+{% load i18n %}
+{% load static %}
+{% block breadcrumbs %}
+                    <ol class="breadcrumb">
+                        <li ><a href="/">Home</a></li>
+                        <li><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
+                    </ol>
+{% endblock %}
+{% block Content %}
+            <div class="row">
+                <div class="col-lg-12 well">
+                    <div class="row text-center">
+                        <div class="col-lg-12">
+                            <h3>Hello {{request.user.first_name|title}} {{request.user.last_name|title}}.</h3>
+                            <p>Your username is <span class="badge badge-primary">{{ request.user }}</span>.</p>
+                            <p>Your account number  is <span class="badge badge-primary">{{profile.subject}}</span>.</p>
+                            <p>Your identity assurance level (IAL) is <span class="badge badge-primary">{{profile.ial}}</span>.</p>    
+                        </p>
+
+                            {% for shc in smart_health_cards %}
+                            <p> <span class="badge badge-default">{{shc}}</span>:   </p> 
+                            <p> <img src="{{ shc.shc_qrcode.url }}" alt="SMART Health Card QR code" /> </p>
+                            {% endfor %}                  
+                        </div>
+                    </div> <!-- /.row -->
+                </div> <!-- /.well -->
+            </div><!-- /.row -->
+{% endblock %}
+
