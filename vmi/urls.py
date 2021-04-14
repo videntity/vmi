@@ -14,7 +14,7 @@ from django.conf.urls.static import static
 
 admin.site.site_header = "Verify My Identity (VMI) Admin"
 admin.site.site_title = "Verify My Identity (VMI) Admin Portal"
-admin.site.index_title = "VMI Administration"
+admin.site.index_title = "Verify My Identity Administration"
 
 oauth2_base_urlpatterns = [
     url(r"^authorize/$",

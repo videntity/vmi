@@ -63,7 +63,6 @@ INSTALLED_APPS = [
     'apps.chop',
     'apps.testclient',
     'apps.api',
-    'apps.developer_portal',
 ]
 
 MIDDLEWARE = [
@@ -119,9 +118,12 @@ SOCIAL_AUTH_OKTA_OPENIDCONNECT_KEY = env('SOCIAL_AUTH_OPENEPIC_KEY', '')
 SOCIAL_AUTH_OKTA_OPENIDCONNECT_SECRET = env('SOCIAL_AUTH_OPENEPIC_SECRET', '')
 SOCIAL_AUTH_OKTA_OPENIDCONNECT_AUTO_IAL2 = bool_env(env('SOCIAL_AUTH_OPENEPIC_AUTO_IAL2', True))
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 88c8d52774ecc4680f58f9c7663dbdab2595ca52
 SOCIAL_AUTH_PING_OPENIDCONNECT_KEY = env('SOCIAL_AUTH_PING_OPENIDCONNECT_KEY', '')
 SOCIAL_AUTH_PING_OPENIDCONNECT_SECRET = env('SOCIAL_AUTH_PING_OPENIDCONNECT_SECRET', '')
 
@@ -520,11 +522,13 @@ SESSION_COOKIE_AGE = int(env('SESSION_COOKIE_AGE', int(30 * 60)))
 
 # Whitelabeling.The next settings allow for homepage and login screen
 # customization.
+# Note since VMI is a GPL2 code, any additions made to the VMI code must be contributed back to the open source project.
+# To use VMI under a non-GPL license, a paid support license agreement is needed. Please contact sales@videntity.com
+# for more information.
 
 # Pick a login template and title.
 LOGIN_TEMPLATE_PICKER = {"default": env('DEFAULT_LOGIN_TEMPLATE', "login.html"),
                          "okta": 'okta.html',
-                         'share-my-health': 'login.html',
                          # Add others here to create a custom login template.
                          }
 

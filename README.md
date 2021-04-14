@@ -2,26 +2,28 @@
 
 [![OpenID Certified](https://cloud.githubusercontent.com/assets/1454075/7611268/4d19de32-f97b-11e4-895b-31b2455a7ca6.png)](https://openid.net/certification/)
 
-Verify My Identity is a certified OpenID Connect Provider. Its supports role-based permissions by using Django groups.
-VMI manages relationships between organizations, staff users, and consumer users. Other features include:
+Verify My Identity is a certified OpenID Connect Provider. Its supports advanced feastures such as role-based permissions
+relationships between organizations, staff users, and consumer users. Other features include:
 
 
 * Trusted Referee Support - According to NIST Digital Identity Guidelines (SP 800-63-3).
+* Support for upstream IdPs such as Okta, Ping and Google.
+* Support for setting user's identity assurance and authenticator assurance levels.
 * FIDO U2F / FIDO 2 Multi-factor authentication support
 * Text Message Multi-factor authentication support 
-* Vectors of Trust Support
+* Vectors of Trust  `vot` Support
 * Support for `document` and `address` claims as defined in the iGov Profile for OIDC.
 
 
 Installation
 ------------
 
-This project is based on Python 3.6 and Django 2.2.x. 
+This project is based on Python 3.6 and Django 2.2.18. 
 
 Download the project:
 
 
-    git clone https://github.com/TransparentHealth/vmi.git
+    git clone https://github.com/videntity/vmi.git
    
 
 Install dev libraries 
@@ -75,11 +77,8 @@ Set this variable specific toy your hostname and environment
     export DJANGO_SUPERUSER_EMAIL="super@example.com"
     export DJANGO_SUPERUSER_FIRST_NAME="Super"
     export DJANGO_SUPERUSER_LAST_NAME="User"
-
-
     export FROM_EMAIL="no-reply@verifymyidentity.org"
     export ADMIN_EMAIL="no-reply@verifymyidentity.org"
-
 
 
     # If using Twilio for SMS  delivery 
@@ -99,9 +98,8 @@ Set this variable specific toy your hostname and environment
     export PARTNER_REF = env('PARTNER_REF', 'Partner Health')
     
 
+This is how you can brand the project to your needs.  A paid license is required to modify/brand VMI for your needs.
 
-
-This is how you can brand the project to your needs.
 See the `settings.py` and for a full list.  Below are some basic variable you may want to set.
 
 Just add the above to a `.env` and then do a `source .env`. Without valid 
@@ -128,8 +126,10 @@ Create a superuser (Optional)
     python manage.py create_super_user_from_envars
 
 
-In development our convention is to run `vmi` on port `8000`, `oauth2orgh` on 8001, and `smh_app` on `8002`.
-To start this server on port 8001 issue the following command.
+In development our convention is to run `vmi` on port `8000` and `oauth2org` on 8001.
+
+
+To start this server on port 8000 issue the following command.
 
 
      python manage.py runserver 
@@ -170,25 +170,16 @@ commands like so:
 `docker-compose -f .development/docker-compose.yml exec web python manage.py`
 
 
-Connecting OAuth2org and VerifyMyIdentity
------------------------------------------
-
-The following link outlines some settings for getting Verify My Identity and OAuth2org working in
-a in a local development environment.
-
-[Local Verify My Identity and OAuth2org](https://gist.github.com/whytheplatypus/4b11eec09df978656b9007155a96c7dd)
-
-
 ## Associated Projects
 
-[VerifyMyIdentity - VMI](https://github.com/TransparentHealth/vmi), 
+[VerifyMyIdentity - VMI](https://github.com/videntity/vmi), 
 a standards-focused OpenID Connect Identity Provider.
 
 
 [Oauth2org](https://github.com/TransparentHealth/oauth2org) is designed as a 
 consumer-mediated health information exchange. It is an OAuth2 Provider and FHIR Server.  
 ShareMyHealth acts as a relying party to 
-[vmi](https://github.com/TransparentHealth/vmi).
+[vmi](https://github.com/videntity/vmi).
 
 
 ## Supporting Resources
