@@ -40,12 +40,9 @@ def display_jws(request):
     pass
 
 @require_GET
-def display_user_index(request, sub=None):
-    if sub:
-        up = get_object_or_404(UserProfile, subject=sub)
-        smart_health_cards = get_list_or_404(SmartHealthCard, user=up.user)
-    else: 
-        smart_health_cards = SmartHealthCard.objects.filter(user=request.user)
+@login_required
+def display_user_index(request):
+    smart_health_cards = SmartHealthCard.objects.filter(user=request.user)
     return render(request, "user_index.html", context={"smart_health_cards": smart_health_cards})
 
 
