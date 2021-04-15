@@ -16,7 +16,6 @@ User = get_user_model()
 __author__ = "Alan Viars"
 
 @require_GET
-@login_required
 def jwks_json(request):
     """
     Views that returns smart health card /.well-known/jwks.json
