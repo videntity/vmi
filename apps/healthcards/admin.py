@@ -4,10 +4,10 @@ from .models import SmartHealthJWKS, SmartHealthCard
 __author__ = "Alan Viars"
 
 
-
 class SmartHealthJWKSAdmin(admin.ModelAdmin):
     list_display = ('nickname', 'kid')
     search_fields = ['kid', 'nickname']
+
 
 admin.site.register(SmartHealthJWKS, SmartHealthJWKSAdmin)
 
@@ -20,5 +20,6 @@ class SmartHealthCardAdmin(admin.ModelAdmin):
         'user__username',
         'user__email']
     raw_id_fields = ("user", )
+
 
 admin.site.register(SmartHealthCard, SmartHealthCardAdmin)
