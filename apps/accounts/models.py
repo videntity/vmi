@@ -21,6 +21,9 @@ from ..ial.models import IdentityAssuranceLevelDocumentation
 from twilio.rest import Client
 import logging
 import json
+from io import BytesIO
+from django.core.files import File
+import qrcode
 
 logger = logging.getLogger('verifymyidentity_.%s' % __name__)
 
@@ -555,6 +558,8 @@ class UserProfile(models.Model):
                                                     help_text=_('Enter a custom value for gender_identity.'),
                                                     )
     birth_date = models.DateField(blank=True, null=True)
+    subject_qrcode = models.ImageField(upload_to='subject_qrcodes', blank=True, null=True)
+    subject_qrcode_public = models.BooleanField(default=True, blank=True)
     agree_tos = models.CharField(max_length=64, default="", blank=True,
                                  help_text=_('Do you agree to the terms and conditions?'))
     agree_privacy_policy = models.CharField(max_length=64, default="", blank=True,
@@ -582,6 +587,8 @@ class UserProfile(models.Model):
                                                        number_str_include=self.number_str_include)
                     if not UserProfile.objects.filter(subject=self.subject).exists():
                         break
+        if self.subject_qrcode_public is True and not self.subject_qrcode:
+            self.make_subject_qrcode()
 
         if commit:
             super(UserProfile, self).save(**kwargs)
@@ -591,6 +598,21 @@ class UserProfile(models.Model):
                                   self.user.last_name.lower().title(),
                                   self.user.username)
         return display
+
+    def make_subject_qrcode(self):
+        url = "%s%s" % (settings.HOSTNAME_URL, reverse('shc_psi', args=[str(self.sub)]))
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=6,
+            border=0)
+        qr.add_data(url)
+        qr.make(fit=True)
+        img = qr.make_image()
+        buffer = BytesIO()
+        img.save(buffer)
+        filename = 'psi-%s.png' % (self.sub)
+        self.subject_qrcode.save(filename, File(buffer), save=False)
 
     @property
     def given_name(self):

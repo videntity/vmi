@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'apps.chop',
     'apps.testclient',
     'apps.api',
+    'apps.healthcards',
 ]
 
 MIDDLEWARE = [
@@ -342,7 +343,7 @@ TWILIO_FROM_NUMBER = env('TWILIO_FROM_NUMBER', "+15555555555")
 # This can help identify genuine subject ids and indicate provenance.
 SUBJECT_LUHN_PREFIX = env('SUBJECT_LUHN_PREFIX', '')
 APPLICATION_TITLE = env('APPLICATION_TITLE', "Verify My Identity")
-KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Your Application Here')
+KILLER_APP_TITLE = env('KILLER_APP_TITLE', 'Example Application: SMART Health Cards')
 KILLER_APP_URI = env('KILLER_APP_URI', '')
 
 TOP_LEFT_TITLE = env('TOP_LEFT_TITLE', 'verify my identity')
