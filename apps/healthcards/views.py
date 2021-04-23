@@ -46,7 +46,7 @@ def display_user_index(request):
 
 
 @require_GET
-def display_all_shc(request, sub):
+def shc_psi(request, sub):
     up = get_object_or_404(UserProfile, subject=sub)
     smart_health_cards = get_list_or_404(SmartHealthCard, user=up.user)
     return render(request, "smart_health_cards.html", context={"smart_health_cards": smart_health_cards,

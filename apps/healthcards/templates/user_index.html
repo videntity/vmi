@@ -3,8 +3,8 @@
 {% load static %}
 {% block breadcrumbs %}
                     <ol class="breadcrumb">
+                        <li ><a href="{% url 'home' %}">Home</a></li>
                         <li ><a href="{% url 'shc_index' %}">Smart Health Cards</a></li>
-                        <li><a href="{% url 'user_profile_subject' user.userprofile.subject %}">{{user.userprofile}}</a></li>
                     </ol>
 {% endblock %}
 {% block Content %}
@@ -38,32 +38,23 @@
                 </div>
                 <div class="col">
                     <p>User: {{user.userprofile}} {% if user.userprofile.nickname %}(“{{ user.userprofile.nickname }}”){% endif %}</p>
-                    <p>Account Active: {{user.is_active }}
-                           {% if user.is_active %}
-                               (<a href="{% url 'deactivate_subject' user.userprofile.subject %}">Deactivate</a>)
-                           {% else %}
-                               (<a href="{% url 'activate_subject' user.userprofile.subject %}">Activate</a>)
-                           {% endif %}</p>
-                    <p>Subject ID: {{user.userprofile.subject}}</p>
+                    <p>Patient Safety Identifier(PSI): {{user.userprofile.subject}}</p>
                     <p>Email: {{ user.email|default:"—" }}</p>
                     <p>Birthdate: {{user.userprofile.birthdate}}</p>
                     <p>Sex: {{user.userprofile.get_sex_display|default:"—"}}</p>
                     <p>Gender: {{user.userprofile.gender_flattened|default:"—"}}</p>
                     <p>Phone: {{user.userprofile.mobile_phone_number|default:"—"}}</p>
+                    <p>Patient Safety Page Links: <a href="{% url 'shc_psi'  user.userprofile.subject %}"> Webpage </a>
+                    | <a href="{{ user.userprofile.subject_qrcode.url }}">QR Code</a>  
+                    </p>
                     <p>SMART Health Cards: 
                         {% for shc in smart_health_cards %}
-                        <a href="{{ shc.shc_qrcode.url }}">{{ shc.shc_qrcode.url }}</a> 
+                        <a href="{{ shc.shc_qrcode.url }}"> QR Code #{{ forloop.counter }}</a> 
                         <br>
                         {% endfor %}
                         
                         </p>
-                    <p>SMART Health Card Public Pointers: 
-                            {% for shc in smart_health_cards %}
-                            <a href="{{ shc.qrcode.url }}">{{ shc.qrcode.url }}</a> 
-                            <br>
-                            {% endfor %}
-                            
-                            </p>
+                    </p>
 
                     <p>
                         Identity Assurance Level: {{user.userprofile.ial|default:"-"}}
@@ -116,30 +107,6 @@
                     </table>
                     {% endif %}
 
-                    <div class="row my-4">
-                      
-                        <div class="col">
-                            <a href="{% url 'account_settings_subject' user.userprofile.subject|default:'None' %}">
-                                <button type="button" class="btn btn-secondary">Basic Info</button>
-                            </a>
-                        </div>
-                        <div class="col">
-                            <a href="{% url 'display_individual_identifiers_subject' user.userprofile.subject|default:'None' %}">
-                                <button type="button" class="btn btn-secondary">Identifiers</button>
-                            </a>
-                        </div>
-                         <div class="col">
-                            <a href="{% url 'display_member_organizations' user.userprofile.subject|default:'None' %}">
-                                <button type="button" class="btn btn-secondary">Organizations</button>
-                            </a>
-                        </div>
-                         <div class="col">
-                            <a href="{% url 'display_addresses_subject' user.userprofile.subject|default:'None' %}">
-                                <button type="button" class="btn btn-secondary">Addresses</button>
-                            </a>
-                        </div>
-
-                    </div>
                 </div>
             </div>
 
