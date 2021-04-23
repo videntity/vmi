@@ -5,7 +5,7 @@ certifi==2018.8.24
 chardet==3.0.4
 coverage==4.0.3
 dj-database-url==0.5.0
-Django==2.2.18
+Django==2.2.20
 #django-bootstrap-form==3.4
 -e git+https://github.com/TransparentHealth/django-bootstrap-form.git@master#egg=django-bootstrap-form
 django-phonenumber-field==2.1.0
@@ -25,7 +25,7 @@ mnemonic==0.18
 Pillow==8.1.1
 phonenumbers==8.10.2
 pluggy==0.7.1
-py==1.6.0
+py==1.10.0
 pycodestyle==2.5.0
 pyflakes==2.1.1
 python-coveralls==2.9.1
@@ -55,3 +55,4 @@ social-auth-core[openidconnect]==3.3.3
 requests-oauthlib==1.1.0
 twilio==6.44.1
 python-jose==3.2.0
+shc

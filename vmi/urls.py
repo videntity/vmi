@@ -77,8 +77,8 @@ urlpatterns = [
          include('apps.dynamicreg.urls')),
     path('testclient/',
          include('apps.testclient.urls')),
-    path('.well-known/',
-         include('apps.oidc.wellknown_urls')),
+    path('.well-known/', include('apps.oidc.wellknown_urls')),
+    path('.well-known/', include('apps.healthcards.wellknown_urls')),
     path('o/', include(('apps.oidc.urls', 'oidc'), namespace='oidc')),
     path('search', user_search, name='user_search'),
     url("^search/organization/members/(?P<org_slug>[^/]+)/$", user_search,
@@ -92,6 +92,7 @@ urlpatterns = [
     url('social-auth/', include('social_django.urls', namespace='social')),
     path('chop/', include('apps.chop.urls')),
     path('home/', include('apps.home.urls')),
+    path('smart-health-cards/', include('apps.healthcards.urls')),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
