@@ -7,13 +7,13 @@
                 <div class="col-lg-12 well">
                     <div class="row text-center">
                         <div class="col-lg-12">
-                            <h3> Personal Safety Page for </h3>
+                            <h3> Personal Safety Page for:</h3>
                                 
                               <h1> {{profile.user.first_name|title}} {{profile.user.last_name|title}}</h1>
                             
-                            <p><label>Personal Safety Identifier (PSI)</label> <span class="badge badge-primary">{{profile.subject}}</span></p>
+                            <p><label><a href="https://github.com/TransparentHealth/uhi">Personal Safety Identifier (PSI)</a></label> <span class="badge badge-primary">{{profile.subject}}</span></p>
                             <p><label>Date of Birth</label> <span class="badge badge-primary">{{profile.birth_date}}</span></p>
-                            <p><label>Identity Assurance Level (IAL)</label>
+                            <p><label><a href="https://github.com/TransparentHealth/healthcare-trustmark">Identity Assurance Level (IAL)</a></label>
                                 <span class="badge badge-primary">{{profile.ial}}</span> </p>
 
 
@@ -23,11 +23,14 @@
 
             
                         {% for shc in smart_health_cards %}
-                        <h3>SMART Health Card #{{ forloop.counter }}</h3>
+                        <h3><a href=https://smarthealth.cards>SMART Health Card</a> #{{ forloop.counter }}</h3>
                             
                             <p> <img src="{{ shc.shc_qrcode.url }}" alt="SMART Health Card QR code" /> </p>
-                        {% endfor %}    
-                        
+                             
+                            <p>{{shc.human_readable_vax_info}}</p>
+
+               
+                        {% endfor %}     
                     {% if profile.user.address_set.exists %}
                     <h3>Addresses:</h3>
                     <table class="table table-borderless table-sm ml-2">

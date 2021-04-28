@@ -9,10 +9,12 @@ from django.contrib.auth import get_user_model
 from shc.generate_random_jwks import (generate_signing_key, generate_encryption_key, generate_keyset)
 from shc.utils import (encode_to_numeric, SMART_HEALTH_CARD_PREFIX, encode_vc)
 import qrcode
+import uuid
 from django.urls import reverse
 from io import BytesIO
 from django.core.files import File
 from ..accounts.models import Organization
+from collections import OrderedDict
 
 __author__ = "Alan Viars"
 
@@ -55,7 +57,6 @@ class SmartHealthJWKS(models.Model):
 class SmartHealthCard(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE, blank=True, null=True)
     name = models.CharField(max_length=512, blank=True, null=True)
-    version = models.CharField(max_length=255, default='')
     groups = models.ForeignKey(Group, on_delete=CASCADE, blank=True, null=True)
     payload = models.TextField(max_length=4096, blank=True, default='')
     shc_jws = models.TextField(max_length=4096, blank=True, default='')
@@ -72,14 +73,36 @@ class SmartHealthCard(models.Model):
     # def get_absolute_url(self):
     #    return "" % (reverse('events.views.details', args=[str(self.id)])
 
-    def shc(self):
-        pass
+    @property
+    def payload_dict(self):
+        return json.loads(self.payload, object_pairs_hook=OrderedDict)
+
+    @property
+    def human_readable_vax_info(self):
+        result = ""
+        payload_dict = self.payload_dict
+        for r in payload_dict['vc']['credentialSubject']['fhirBundle']['entry']:
+            if r['resource']['resourceType'] == 'Patient':
+                result = "%s %s, with the birthday %s, received the following Immunizations: " % (r['resource']['name'][0]['given'][0],
+                                                                                                  r['resource']['name'][0]['family'],
+                                                                                                  r['resource']['birthDate'])
+            vaccine = ""
+            if r['resource']['resourceType'] == 'Immunization':
+                if r['resource']['vaccineCode']['coding'][0]['system'] == "http://hl7.org/fhir/sid/cvx" and \
+                   r['resource']['vaccineCode']['coding'][0]['code'] == "207":
+                    vaccine = "COVID-19"
+
+                result += "%s %s immunization on %s by %s (Lot #%s).\n" % (r['resource']['status'].title(),
+                                                                           vaccine,
+                                                                           r['resource']['occurrenceDateTime'],
+                                                                           r['resource']['performer'][0]['actor']['display'],
+                                                                           r['resource']['lotNumber'])
+
+        return result
 
     def save(self, commit=True, *args,  **kwargs):
-
-        # Create a URL for the
+        # Create a URL
         url = "%s%s" % (settings.HOSTNAME_URL, reverse('shc_psi', args=[str(self.user.userprofile.sub)]))
-        print(url)
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -90,13 +113,13 @@ class SmartHealthCard(models.Model):
         img = qr.make_image()
         buffer = BytesIO()
         img.save(buffer)
-        filename = 'psi-%s-%s.png' % (self.id, self.user.userprofile.sub)
+        filename = 'psi-%s-%s.png' % (self.user.userprofile.sub, uuid.uuid4())
         self.qrcode.save(filename, File(buffer), save=False)
 
         # If the data is prsent, but the QR code does not exist.
         if self.payload and not self.shc_qrcode:
             # print("Generate the SMC!")
-            shc_jwks = SmartHealthJWKS.objects.get(pk=1)
+            shc_jwks = SmartHealthJWKS.objects.all()[0]
             private_keys = json.loads(shc_jwks.private_keys)
             # print(encode_vc(self.payload, private_keys['keys'][0], shc_jwks.kid))
             numeric_encoded_payload = encode_to_numeric(
@@ -113,7 +136,7 @@ class SmartHealthCard(models.Model):
             img = qr.make_image(fill_color="black", back_color="white")
             buffer = BytesIO()
             img.save(buffer)
-            filename = 'shc-%s-%s.png' % (self.id, self.user.userprofile.sub)
+            filename = 'shc-%s-%s.png' % (self.user.userprofile.sub, uuid.uuid4())
             self.shc_qrcode.save(filename, File(buffer), save=False)
         if commit:
             super().save(*args, **kwargs)
