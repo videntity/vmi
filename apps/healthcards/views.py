@@ -17,25 +17,8 @@ def jwks_json(request):
     """
     Views that returns smart health card /.well-known/jwks.json
     """
-    jwks = SmartHealthJWKS.objects.all()[0])
+    jwks = SmartHealthJWKS.objects.all()[0]
     return JsonResponse(jwks.as_jwks)
-
-
-@require_GET
-@login_required
-def display_qr(request):
-    pass
-
-
-@require_GET
-@login_required
-def display_json(request):
-    pass
-
-
-@require_GET
-def display_jws(request):
-    pass
 
 
 @require_GET
