@@ -143,7 +143,6 @@ SOCIAL_AUTH_PIPELINE = (
     'apps.okta.backends.okta_openidconnect.get_upstream_aal',
 )
 
-
 VERIFICATION_BACKENDS = [
     'apps.fido.auth.backends.FIDO2Backend',
     'apps.mfa.backends.sms.backend.SMSBackend',
