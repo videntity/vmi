@@ -1,14 +1,11 @@
 from django.conf.urls import url
-from .views import display_qr, display_json, display_jws, display_user_index, shc_psi
+from .views import display_user_index, shc_psi
 
 
 __author__ = "Alan Viars"
 
 
 urlpatterns = [
-    url(r'^display-qr$',  display_qr, name='healthcard_display_url_qr'),
-    url(r'^display-json$',  display_json, name='display_healthcard_json'),
-    url(r'^display-jws$',  display_jws, name='display_healthcard_jws'),
 
     url(r'^psi/(?P<sub>[^/]+)',  shc_psi, name='shc_psi'),
 
