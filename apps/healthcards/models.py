@@ -27,7 +27,7 @@ class SmartHealthJWKS(models.Model):
     organization = models.ForeignKey(Organization, on_delete=CASCADE, blank=True, null=True)
     nickname = models.CharField(max_length=255, default='')
     kid = models.CharField(max_length=255, default='', blank=True, editable=False,
-                           help_text=_('The KEy ID for the public/private keys. This is often an FQDN.'))
+                           help_text=_('The Key ID for the public/private keys. This is often an FQDN.'))
     public_keys = models.TextField(blank=True, default='')
     private_keys = models.TextField(blank=True, default='')
 
@@ -41,9 +41,23 @@ class SmartHealthJWKS(models.Model):
                 private_signing_key = generate_signing_key()
                 private_encryption_key = generate_encryption_key()
                 keyset = generate_keyset([private_signing_key, private_encryption_key])
-                self.private_keys = json.dumps(keyset.export(private_keys=True, as_dict=True), indent=4)
+
+                pvks = keyset.export(private_keys=True, as_dict=True)
+                sig_only = {"keys": []}
+                for pv in pvks['keys']:
+                    if pv['use'] == 'sig':
+                        sig_only['keys'].append(pv)
+                self.private_keys = json.dumps(sig_only, indent=4)
+                # self.private_keys =  json.dumps(keyset.export(private_keys=True, as_dict=True), indent=4)
                 self.public_keys = json.dumps(keyset.export(private_keys=False, as_dict=True), indent=4)
-                self.kid = keyset.export(private_keys=False, as_dict=True)['keys'][1]['kid']
+
+                pks = keyset.export(private_keys=False, as_dict=True)
+                pub_sig_only = {"keys": []}
+                for pk in pks['keys']:
+                    if pk['use'] == 'sig':
+                        pub_sig_only['keys'].append(pk)
+                self.public_keys = json.dumps(pub_sig_only, indent=4)
+                self.kid = keyset.export(private_keys=False, as_dict=True)['keys'][0]['kid']
             if not self.nickname:
                 self.nickname = self.organization.slug
 
@@ -97,7 +111,6 @@ class SmartHealthCard(models.Model):
                                                                            r['resource']['occurrenceDateTime'],
                                                                            r['resource']['performer'][0]['actor']['display'],
                                                                            r['resource']['lotNumber'])
-
         return result
 
     def save(self, commit=True, *args,  **kwargs):
@@ -123,7 +136,7 @@ class SmartHealthCard(models.Model):
             private_keys = json.loads(shc_jwks.private_keys)
             # print(encode_vc(self.payload, private_keys['keys'][0], shc_jwks.kid))
             numeric_encoded_payload = encode_to_numeric(
-                encode_vc(json.loads(self.payload), private_keys['keys'][1], private_keys['keys'][1]['kid']))
+                encode_vc(json.loads(self.payload), private_keys['keys'][0], private_keys['keys'][0]['kid']))
             # print(numeric_encoded_payload)
             qr = qrcode.QRCode(
                 version=1,
