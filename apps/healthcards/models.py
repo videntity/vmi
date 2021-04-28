@@ -136,7 +136,7 @@ class SmartHealthCard(models.Model):
             private_keys = json.loads(shc_jwks.private_keys)
             # print(encode_vc(self.payload, private_keys['keys'][0], shc_jwks.kid))
             numeric_encoded_payload = encode_to_numeric(
-            encode_vc(json.loads(self.payload), private_keys['keys'][0], private_keys['keys'][0]['kid']))
+                encode_vc(json.loads(self.payload), private_keys['keys'][0], private_keys['keys'][0]['kid']))
 
             # print(numeric_encoded_payload)
             qr = qrcode.QRCode(
