@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from django.contrib.auth.decorators import login_required
 from ..accounts.models import UserProfile
-logger = logging.getLogger('smart_health_cards.%s' % __name__)
+logger = logging.getLogger('healthcards.%s' % __name__)
 User = get_user_model()
 
 __author__ = "Alan Viars"
@@ -17,25 +17,8 @@ def jwks_json(request):
     """
     Views that returns smart health card /.well-known/jwks.json
     """
-    jwks = get_object_or_404(SmartHealthJWKS, pk=1)
+    jwks = SmartHealthJWKS.objects.all()[0]
     return JsonResponse(jwks.as_jwks)
-
-
-@require_GET
-@login_required
-def display_qr(request):
-    pass
-
-
-@require_GET
-@login_required
-def display_json(request):
-    pass
-
-
-@require_GET
-def display_jws(request):
-    pass
 
 
 @require_GET
