@@ -411,6 +411,9 @@ class Organization(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('name', )
+
     @property
     def signup_url(self):
         return "%s%s" % (settings.HOSTNAME_URL, reverse(
