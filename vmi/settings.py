@@ -119,12 +119,6 @@ SOCIAL_AUTH_OKTA_OPENIDCONNECT_KEY = env('SOCIAL_AUTH_OPENEPIC_KEY', '')
 SOCIAL_AUTH_OKTA_OPENIDCONNECT_SECRET = env('SOCIAL_AUTH_OPENEPIC_SECRET', '')
 SOCIAL_AUTH_OKTA_OPENIDCONNECT_AUTO_IAL2 = bool_env(env('SOCIAL_AUTH_OPENEPIC_AUTO_IAL2', True))
 
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 88c8d52774ecc4680f58f9c7663dbdab2595ca52
 SOCIAL_AUTH_PING_OPENIDCONNECT_KEY = env('SOCIAL_AUTH_PING_OPENIDCONNECT_KEY', '')
 SOCIAL_AUTH_PING_OPENIDCONNECT_SECRET = env('SOCIAL_AUTH_PING_OPENIDCONNECT_SECRET', '')
 
@@ -607,12 +601,11 @@ EXPIRY_DATE_ACCEPTABLE_YEARS = [x for x in range(now.year, 2050)]
 
 # VECTORS_OF_TRUST_TRUSTMARK_URLfor value of `vtm` claim.
 VECTORS_OF_TRUST_TRUSTMARK_URL = env('VECTORS_OF_TRUST_TRUSTMARK_URL',
-                                     'https://github.com/TransparentHealth/800-63-3-trustmark/')
+                                     'https://github.com/TransparentHealth/healthcare-trustmark/')
 
 # ALLOW_MULTIPLE_USERS_PER_EMAIL should never be activated on a production
 # system. It exists for debugging and testing.
-ALLOW_MULTIPLE_USERS_PER_EMAIL = bool_env(
-    env('ALLOW_MULTIPLE_USERS_PER_EMAIL', False))
+ALLOW_MULTIPLE_USERS_PER_EMAIL = bool_env(env('ALLOW_MULTIPLE_USERS_PER_EMAIL', False))
 
 
 # Use these settings to allow/disallow different ID verification modes.

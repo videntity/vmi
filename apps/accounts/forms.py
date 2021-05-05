@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
 from phonenumber_field.formfields import PhoneNumberField
-from .models import UserProfile, create_activation_key, SEX_CHOICES, GENDER_CHOICES
+from .models import UserProfile, create_activation_key, SEX_CHOICES, GENDER_CHOICES, PSP_CHOICES
 
 # Copyright Videntity Systems Inc.
 
@@ -72,6 +72,8 @@ class SignupForm(forms.Form):
                                                    help_text="If gender identity is custom, include your gender here.")
     birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=settings.BIRTHDATE_YEARS),
                                  required=False, help_text="We use this information to help look up your information.")
+    public_safety_profile = forms.BooleanField(help_text="Allow public access to your personal safety page (Recommended).")
+
     password1 = forms.CharField(widget=forms.PasswordInput, max_length=128,
                                 label=_("Password"),
                                 help_text=_("Passwords must be at least 8 characters and not be too common."))
@@ -163,7 +165,9 @@ class SignupForm(forms.Form):
                 'gender_identity_custom_value', ""),
             birth_date=self.cleaned_data.get('birth_date', ""),
             agree_tos=settings.CURRENT_TOS_VERSION,
-            agree_privacy_policy=settings.CURRENT_PP_VERSION)
+            agree_privacy_policy=settings.CURRENT_PP_VERSION,
+
+        )
 
         # Send a verification email
         create_activation_key(new_user)
@@ -194,9 +198,12 @@ class AccountSettingsForm(forms.Form):
                                         label=_("Gender"),
                                         help_text="Gender identity is not necessarily the same as birth sex.")
     gender_identity_custom_value = forms.CharField(required=False,
-                                                   help_text="If gender identity is custom, include your gender here.")
+                                                   help_text="Specify your own gender identity if you prefer.")
     birth_date = forms.DateField(label='Birth Date', widget=forms.SelectDateWidget(years=YEARS),
                                  required=False)
+    public_safety_profile = forms.ChoiceField(
+        choices=PSP_CHOICES, help_text="Allow public access to your personal safety page (Recommended).")
+
     required_css_class = 'required'
 
     def clean_first_name(self):
@@ -244,6 +251,7 @@ class AccountSettingsForm(forms.Form):
         up.gender_identity_custom_value = self.cleaned_data.get(
             'gender_identity_custom_value', ""),
         up.birth_date = self.cleaned_data.get('birth_date', ""),
+        up.public_safety_profile = self.cleaned_data.get('public_safety_profile', ""),
         up.save()
         return user
 
