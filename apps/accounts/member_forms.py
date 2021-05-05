@@ -9,7 +9,7 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from phonenumber_field.formfields import PhoneNumberField
 from .forms import RepresentsPositiveInt
-from .models import SEX_CHOICES
+from .models import SEX_CHOICES, PSP_CHOICES
 from .texts import send_text
 from .emails import send_member_verify_request_email
 
@@ -36,6 +36,8 @@ class MemberSignupForm(forms.Form):
     sex = forms.ChoiceField(label=_('Sex*'),
                             choices=SEX_CHOICES, required=True,
                             help_text="Enter birth sex. We use this information to help look up your information.")
+    public_safety_profile = forms.ChoiceField(choices=PSP_CHOICES, initial="PRIVATE",
+                                              help_text="Allow public access to your personal safety page (Recommended).")
     picture = forms.ImageField(required=False,
                                help_text=_("""Upload your profile picture."""))
 
@@ -146,6 +148,7 @@ class MemberSignupForm(forms.Form):
             picture=self.cleaned_data.get('picture'),
             mobile_phone_number=self.cleaned_data['mobile_phone_number'],
             sex=self.cleaned_data.get('sex', ""),
+            public_safety_profile=self.cleaned_data.get('public_safety_profile', ""),
             # gender_identity=self.cleaned_data.get('gender_identity', ""),
             # gender_identity_custom_value=self.cleaned_data.get(
             #     'gender_identity_custom_value', ""),
@@ -168,12 +171,10 @@ class MemberSignupForm(forms.Form):
                 new_user.username)
             send_text(msg, up.mobile_phone_number)
 
-        # Send the organization
+        # Send the organizational agents notification emails.
         organization_slug = self.cleaned_data['org_slug']
         org = Organization.objects.get(slug=organization_slug)
         for agent in org.users.all():
-
             send_member_verify_request_email(agent, up, org)
             # print(agent.first_name)
-
         return new_user

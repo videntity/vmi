@@ -43,7 +43,7 @@ GENDER_CHOICES = (('', 'Blank'),
                   ('male', 'Male'),
                   ('custom', 'Custom')
                   )
-
+PSP_CHOICES = (('PUBLIC', 'Public'), ("PRIVATE", 'Private'))
 # For Passports, SSNs, URIs, MPIs, etc.
 
 
@@ -562,7 +562,8 @@ class UserProfile(models.Model):
                                                     )
     birth_date = models.DateField(blank=True, null=True)
     subject_qrcode = models.ImageField(upload_to='subject_qrcodes', blank=True, null=True)
-    subject_qrcode_public = models.BooleanField(default=True, blank=True)
+    public_safety_profile = models.CharField(choices=PSP_CHOICES,
+                                             default='PRIVATE', blank=True, max_length=16)
     agree_tos = models.CharField(max_length=64, default="", blank=True,
                                  help_text=_('Do you agree to the terms and conditions?'))
     agree_privacy_policy = models.CharField(max_length=64, default="", blank=True,
@@ -590,7 +591,7 @@ class UserProfile(models.Model):
                                                        number_str_include=self.number_str_include)
                     if not UserProfile.objects.filter(subject=self.subject).exists():
                         break
-        if self.subject_qrcode_public is True and not self.subject_qrcode:
+        if self.public_safety_profile is True and not self.subject_qrcode:
             self.make_subject_qrcode()
 
         if commit:
