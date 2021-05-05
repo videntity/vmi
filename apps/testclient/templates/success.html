@@ -141,7 +141,7 @@ After that, you will need to go through <a href="{% url 'authorize_link' %}">Aut
 															</button>
 															</div>
 															<div class="modal-body">
-																<pre>{{id_token_payload}}</pre>
+																<pre>{{id_token_payload_indented}}</pre>
 															</div>
 															<div class="modal-footer">
 															<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
@@ -155,31 +155,29 @@ After that, you will need to go through <a href="{% url 'authorize_link' %}">Aut
 
 
 
-
-
-														<tr>
-															<th scope="row">sub</th>
-															<th scope="row">{{ id_token_payload.sub }}</th>
-															<th scope="row">The subject id for this user.</th>
-														</tr>
+											<tr>
+												<th scope="row">sub</th>
+												<th scope="row">{{ id_token_payload.sub }}</th>
+												<th scope="row">The subject id for this user.</th>
+											</tr>
 												
-														<tr>
-															<th scope="row">iss</th>
-															<th scope="row">{{ id_token_payload.iss }}</th>
-															<th scope="row">The ID provider who is the the issuer of this id_token.</th>
-														</tr>
+											<tr>
+												<th scope="row">iss</th>
+												<th scope="row">{{ id_token_payload.iss }}</th>
+												<th scope="row">The ID provider who is the the issuer of this id_token.</th>
+											</tr>
 													
-														<tr>
-															<th scope="row">Name</th>
-															<th scope="row">{{ id_token_payload.name }}</th>
-															<th scope="row">The name of the subject.</th>
-														</tr>
+											<tr>
+												<th scope="row">Name</th>
+												<th scope="row">{{ id_token_payload.name }}</th>
+												<th scope="row">The name of the subject.</th>
+											</tr>
 												
-														<tr>
-															<th scope="row">Vectors of Trust</th>
-															<th scope="row">{{ id_token_payload.vot }}</th>
-															<th scope="row">Identity assurance information.</th>
-														</tr>		
+											<tr>
+												<th scope="row">Vectors of Trust</th>
+													<th scope="row">{{ id_token_payload.vot }}</th>
+													<th scope="row">Identity assurance information.</th>
+												</tr>		
 												
 														<tr>
 															<th scope="row">Vectors of Trust Trustmark</th>
