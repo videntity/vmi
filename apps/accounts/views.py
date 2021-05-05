@@ -9,8 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from .forms import (PasswordResetForm, PasswordResetRequestForm)
 from .models import UserProfile, ValidPasswordResetKey, ActivationKey
-from .forms import (AccountSettingsForm,
-                    SignupForm, DeleteAccountForm)
+from .forms import (AccountSettingsForm, SignupForm, DeleteAccountForm)
 
 from .utils import validate_email_verify_key
 from django.conf import settings
@@ -118,6 +117,7 @@ def account_settings(request, subject=None):
             up.middle_name = data['middle_name']
             up.birth_date = data['birth_date']
             up.website = data['website']
+            up.public_safety_profile = data['public_safety_profile']
             up.save()
             messages.success(request, _(
                 'Your account settings have been updated.'))
@@ -144,6 +144,7 @@ def account_settings(request, subject=None):
             'gender_identity_custom_value': up.gender_identity_custom_value,
             'birth_date': up.birth_date,
             'nickname': up.nickname,
+            'public_safety_profile': up.public_safety_profile,
             'middle_name': up.middle_name,
         }
     )

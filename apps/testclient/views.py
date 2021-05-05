@@ -9,26 +9,13 @@ import logging
 from oauthlib.oauth2.rfc6749.errors import MissingTokenError
 from django.views.decorators.cache import never_cache
 from jwkest.jwt import JWT
+import json
 
 # Copyright Videntity Systems, Inc.
 
 __author__ = "Alan Viars"
 
 logger = logging.getLogger('verifymyidentity.%s' % __name__)
-
-
-def jwt_payload(request):
-    """ Refactor.  This fails if the JWT is large due to normal default Webserver restraints..Nginx, etc."""
-    if 'jwt' not in request.GET:
-        return JsonResponse({"error": "Supply a JWT as a GET parmeter."})
-    myjwt = request.GET.get("jwt")
-    try:
-        parsed_id_token = JWT().unpack(myjwt)
-        parsed_id_token = parsed_id_token.payload()
-    except Exception:
-        parsed_id_token = {
-            "error": "you just supply a valid jwt as a GET parmeter."}
-    return JsonResponse(parsed_id_token)
 
 
 def callback(request):
@@ -65,7 +52,7 @@ def callback(request):
     response['test_page'] = host + reverse('testclient_home')
     parsed_id_token = JWT().unpack(response['token_response']['id_token'])
     parsed_id_token = parsed_id_token.payload()
-    response['id_token_payload'] = parsed_id_token
+    response['id_token_payload'] = json.dumps(parsed_id_token, indent=4)
     return success(request, response)
 
 

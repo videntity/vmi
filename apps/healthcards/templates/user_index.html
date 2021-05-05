@@ -44,8 +44,15 @@
                     <p>Sex: {{user.userprofile.get_sex_display|default:"—"}}</p>
                     <p>Gender: {{user.userprofile.gender_flattened|default:"—"}}</p>
                     <p>Phone: {{user.userprofile.mobile_phone_number|default:"—"}}</p>
-                    <p>Patient Safety Page Links: <a href="{% url 'shc_psi'  user.userprofile.subject %}"> Webpage </a>
+                    <p>Patient Safety Page Links:
+                        
+                        {% if user.userprofile.public_safety_profile  == "PUBLIC" %}
+                        <a href="{% url 'shc_psi'  user.userprofile.subject %}"> Webpage </a>
                     | <a href="{{ user.userprofile.subject_qrcode.url }}">QR Code</a>  
+                        {% else %}
+                            (Private) |  <a href="{% url 'account_settings' %}">Change</a>
+                        {% endif %}
+
                     </p>
                     <p>SMART Health Cards: 
                         {% for shc in smart_health_cards %}
