@@ -9,6 +9,7 @@ import logging
 from oauthlib.oauth2.rfc6749.errors import MissingTokenError
 from django.views.decorators.cache import never_cache
 from jwkest.jwt import JWT
+import json
 
 # Copyright Videntity Systems, Inc.
 
@@ -65,7 +66,7 @@ def callback(request):
     response['test_page'] = host + reverse('testclient_home')
     parsed_id_token = JWT().unpack(response['token_response']['id_token'])
     parsed_id_token = parsed_id_token.payload()
-    response['id_token_payload'] = parsed_id_token
+    response['id_token_payload'] = json.dumps(parsed_id_token, indent=4)
     return success(request, response)
 
 

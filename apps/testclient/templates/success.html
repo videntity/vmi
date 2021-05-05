@@ -68,12 +68,12 @@ After that, you will need to go through <a href="{% url 'authorize_link' %}">Aut
 					
 							             <tr>
                         <th scope="row">User Profile</th>
-																								<th scope="row">Get a user's profile information using the Oauth2 access_token.</th>
+						<th scope="row">Get a user's profile information using the Oauth2 access_token.</th>
                         <th scope="row"><pre>curl -H "Authorization: Bearer {{token_response.access_token}}" "{{settings.HOSTNAME_URL}}{% url 'oidc:userinfo' %}"</pre></th>
 																				</tr>
 							             <tr>
                         <th scope="row">OpenID Connect Discovery</th>
-																								<th scope="row">Get Information about an OpenID Connect Provider. No Oauth2 Access token is needed. Its public.</th>
+						<th scope="row">Get public discovery Information about this OpenID Connect Provider. No access_token needed.</th>
                         <th scope="row"><pre>curl "{{settings.HOSTNAME_URL}}{% url 'openid-configuration' %}"</pre></th>
 																				</tr>
 																		</tbody>
@@ -87,60 +87,117 @@ After that, you will need to go through <a href="{% url 'authorize_link' %}">Aut
          <table class="table">
 												<thead>
 																<tr>
-																				<th scope="col">Name</th>
-																				<th scope="col">Value</th>
-																				<th scope="col">Details</th>
+																	<th scope="col">Name</th>
+																	<th scope="col">Value</th>
+																	<th scope="col">Details</th>
 																</tr>
 												</thead>
 												<tbody>
 
 												<tr>
-																<th scope="row">JWT Payload</th>
-																<th scope="row"><a href="{% url 'jwt-payload' %}?jwt={{token_response.id_token}}">{{token_response.id_token|truncatechars:20}}</a></th>
-																<th scope="row">The entire id_token payload rendered as JSON.</th>
-												</tr>
+													<th scope="row">id_token JWT</th>
+													<th scope="row">
+													<!-- Button trigger modal -->
+											<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#JWTModalLong">
+												JWT
+											</button>
+																												
+											<div class="modal fade" id="JWTModalLong" tabindex="-1" role="dialog" aria-labelledby="JWTModalLongTitle" aria-hidden="true">
+												<div class="modal-dialog modal-lg" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+													<h5 class="modal-title" id="JWTModalLongTitle">id_token JWT</h5>
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+													</button>
+													</div>
+													<div class="modal-body">
+														<pre>{{token_response.id_token}}</pre>
+													</div>
+													<div class="modal-footer">
+													<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+													</div>
+												</div>
+												</div>
+											</div>
+											</th>
+											<th scope="row">The id_token's JSON Web Token.</th>
+											</tr>
+											
+											<tr>
+												<th scope="row">id_token payload</th>
+												<th scope="row">
+													<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#PayloadModalLong">
+														Payload
+													</button>
+																														
+													<div class="modal fade" id="PayloadModalLong" tabindex="-1" role="dialog" aria-labelledby="PayloadModalLongTitle" aria-hidden="true">
+														<div class="modal-dialog modal-lg" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+															<h5 class="modal-title" id="JWTModalLongTitle">id_token Payload</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<span aria-hidden="true">&times;</span>
+															</button>
+															</div>
+															<div class="modal-body">
+																<pre>{{id_token_payload}}</pre>
+															</div>
+															<div class="modal-footer">
+															<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+															</div>
+														</div>
+														</div>
+													</div>
+												</th>
+												<th scope="row">id_token payload withing the JWT.</th>
+											</tr> 
 
-												<tr>
-																<th scope="row">sub</th>
-																<th scope="row">{{ id_token_payload.sub }}</th>
-																<th scope="row">The subject id for this user.</th>
-												</tr>
+
+
+
+
+														<tr>
+															<th scope="row">sub</th>
+															<th scope="row">{{ id_token_payload.sub }}</th>
+															<th scope="row">The subject id for this user.</th>
+														</tr>
 												
-													<tr>
-																<th scope="row">iss</th>
-																<th scope="row">{{ id_token_payload.iss }}</th>
-																<th scope="row">The ID provider who is the the issuer of this id_token.</th>
-												</tr>
+														<tr>
+															<th scope="row">iss</th>
+															<th scope="row">{{ id_token_payload.iss }}</th>
+															<th scope="row">The ID provider who is the the issuer of this id_token.</th>
+														</tr>
 													
-												<tr>
-																<th scope="row">Name</th>
-																<th scope="row">{{ id_token_payload.name }}</th>
-																<th scope="row">The name of the subject.</th>
-												</tr>
+														<tr>
+															<th scope="row">Name</th>
+															<th scope="row">{{ id_token_payload.name }}</th>
+															<th scope="row">The name of the subject.</th>
+														</tr>
 												
-												<tr>
-																<th scope="row">Vectors of Trust</th>
-																<th scope="row">{{ id_token_payload.vot }}</th>
-																<th scope="row">Identity assurance information.</th>
-												</tr>		
+														<tr>
+															<th scope="row">Vectors of Trust</th>
+															<th scope="row">{{ id_token_payload.vot }}</th>
+															<th scope="row">Identity assurance information.</th>
+														</tr>		
 												
-													<tr>
-																<th scope="row">Vectors of Trust Trustmark</th>
-																<th scope="row"><a href="{{ id_token_payload.vtm }}">{{ id_token_payload.vtm }}</a></th>
-																<th scope="row">NIST 800 63-3 mappings for meanings of VoT</th>
-												</tr>										
+														<tr>
+															<th scope="row">Vectors of Trust Trustmark</th>
+															<th scope="row"><a href="{{ id_token_payload.vtm }}">{{ id_token_payload.vtm }}</a></th>
+															<th scope="row">NIST 800 63-3 mappings for meanings of VoT</th>
+														</tr>										
 	
 														<tr>
-																<th scope="row">Identity Assurance Level (IAL)</th>
-																<th scope="row">{{ id_token_payload.ial }}</th>
-																<th scope="row">NIST 800 63-3 code for identity assurance.</th>
-												</tr>
+															<th scope="row">Identity Assurance Level (IAL)</th>
+															<th scope="row">{{ id_token_payload.ial }}</th>
+															<th scope="row">NIST 800 63-3 code for identity assurance.</th>
+														</tr>
 														
 														<tr>
-																<th scope="row">Authenticator Assurcance Level (AAL)</th>
-																<th scope="row">{{ id_token_payload.aal }}</th>
-																<th scope="row">NIST 800 63-3 code for authenticator assurance (e.g. MFA)</th>
-												</tr>
+															<th scope="row">Authenticator Assurcance Level (AAL)</th>
+															<th scope="row">{{ id_token_payload.aal }}</th>
+															<th scope="row">NIST 800 63-3 code for authenticator assurance (e.g. MFA)</th>
+														</tr>
 	
 												
 											</tbody>
