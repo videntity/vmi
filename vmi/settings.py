@@ -295,6 +295,9 @@ OIDC_PROVIDER = {
         # Basic amr
         'apps.accounts.claims.AMRClaimProvider',
 
+        # Basic acr which was intended for LOA, is same as IAL in this case.
+        'apps.accounts.claims.AuthenticationContextClassReferencClaimProvider',
+
         # Include address
         'apps.accounts.claims.AddressClaimProvider',
 
