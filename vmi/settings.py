@@ -119,7 +119,6 @@ SOCIAL_AUTH_OKTA_OPENIDCONNECT_KEY = env('SOCIAL_AUTH_OPENEPIC_KEY', '')
 SOCIAL_AUTH_OKTA_OPENIDCONNECT_SECRET = env('SOCIAL_AUTH_OPENEPIC_SECRET', '')
 SOCIAL_AUTH_OKTA_OPENIDCONNECT_AUTO_IAL2 = bool_env(env('SOCIAL_AUTH_OPENEPIC_AUTO_IAL2', True))
 
-
 SOCIAL_AUTH_PING_OPENIDCONNECT_KEY = env('SOCIAL_AUTH_PING_OPENIDCONNECT_KEY', '')
 SOCIAL_AUTH_PING_OPENIDCONNECT_SECRET = env('SOCIAL_AUTH_PING_OPENIDCONNECT_SECRET', '')
 
@@ -295,6 +294,9 @@ OIDC_PROVIDER = {
 
         # Basic amr
         'apps.accounts.claims.AMRClaimProvider',
+
+        # Basic acr which was intended for LOA, is same as IAL in this case.
+        'apps.accounts.claims.AuthenticationContextClassReferencClaimProvider',
 
         # Include address
         'apps.accounts.claims.AddressClaimProvider',

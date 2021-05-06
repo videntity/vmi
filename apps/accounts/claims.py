@@ -256,6 +256,16 @@ class IdentityAssuranceLevelClaimProvider(BaseProvider):
             return None
 
 
+class AuthenticationContextClassReferencClaimProvider(BaseProvider):
+    """acr"""
+
+    def claim_acr(self):
+        try:
+            return self.user.userprofile.ial
+        except Exception:
+            return None
+
+
 class AuthenticatorAssuranceLevelClaimProvider(BaseProvider):
 
     def claim_aal(self):
